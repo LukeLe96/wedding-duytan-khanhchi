@@ -452,11 +452,11 @@
       <!-- BRIDE CARD -->
       <div class="group relative bg-white p-6 sm:p-8 rounded-3xl border border-champagne-200 shadow-card-3d transition-all duration-500 hover:-translate-y-2">
         <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 mb-6 border border-stone-200">
-          <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Nguyễn Khánh Chi" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
+          <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
           <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
           <div class="absolute bottom-4 left-4 text-white">
             <span class="text-[10px] uppercase tracking-widest font-bold text-amber-300 block">CÔ DÂU</span>
-            <h3 class="font-serif text-2xl font-bold">Nguyễn Khánh Chi</h3>
+            <h3 class="font-serif text-2xl font-bold">Đinh Khánh Chi</h3>
           </div>
         </div>
         <div class="space-y-2 text-center">
@@ -781,21 +781,21 @@
         <!-- BRIDE QR -->
         <div class="p-6 rounded-3xl bg-[#FAF8F5] border border-champagne-300 shadow-sm space-y-3">
           <span class="px-3 py-1 rounded-full bg-burgundy-900 text-amber-200 text-[10px] font-bold uppercase tracking-wider">
-            CÔ DÂU: NGUYỄN KHÁNH CHI
+            CÔ DÂU: ĐINH KHÁNH CHI
           </span>
           
           <!-- VietQR Box -->
-          <div class="w-44 h-44 mx-auto bg-white p-2.5 rounded-2xl border border-stone-200 shadow-xs flex items-center justify-center">
-            <img src="https://api.vietqr.io/image/970407-19036789999015-compact2.jpg?amount=0&addInfo=MUNG%20CUOI%20KHANH%20CHI&accountName=NGUYEN%20KHANH%20CHI" alt="VietQR Khánh Chi" class="w-full h-full object-contain rounded-xl">
+          <div class="w-44 h-44 mx-auto bg-white p-2 rounded-2xl border border-stone-200 shadow-xs flex items-center justify-center overflow-hidden">
+            <img src="./assets/qr_bride_square.jpg" alt="VietQR Đinh Khánh Chi" class="w-full h-full object-contain rounded-xl">
           </div>
 
           <div class="text-xs space-y-0.5 text-stone-600">
-            <p class="font-bold text-stone-900">Techcombank</p>
-            <p class="font-mono text-sm font-bold text-stone-900">19036789999015</p>
-            <p class="text-[11px] text-stone-500">CHỦ TK: NGUYEN KHANH CHI</p>
+            <p class="font-bold text-stone-900">LPBank (Lộc Phát Việt Nam)</p>
+            <p class="font-mono text-sm font-bold text-stone-900">15093012892256</p>
+            <p class="text-[11px] text-stone-500">CHỦ TK: DINH KHANH CHI</p>
           </div>
 
-          <button onclick="copyAccount('19036789999015', 'Techcombank')" class="w-full py-2 rounded-xl bg-champagne-100 hover:bg-champagne-200 text-champagne-900 text-[11px] font-bold transition">
+          <button onclick="copyAccount('15093012892256', 'LPBank')" class="w-full py-2 rounded-xl bg-champagne-100 hover:bg-champagne-200 text-champagne-900 text-[11px] font-bold transition">
             📋 Sao Chép Số Tài Khoản
           </button>
         </div>
@@ -930,7 +930,7 @@
 
     // 5. Add to Calendar (iCal/Google)
     function addToCalendar() {
-      const title = encodeURIComponent('Lễ Thành Hôn: Lê Duy Tân & Nguyễn Khánh Chi');
+      const title = encodeURIComponent('Lễ Thành Hôn: Lê Duy Tân & Đinh Khánh Chi');
       const details = encodeURIComponent('Tiệc cưới báo hỷ tại Grand Ballroom, GEM Center, TP.HCM');
       const location = encodeURIComponent('GEM Center, 8 Nguyễn Bỉnh Khiêm, Đa Kao, Quận 1, TP.HCM');
       const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20261128T110000Z/20261128T150000Z&details=${details}&location=${location}`;
