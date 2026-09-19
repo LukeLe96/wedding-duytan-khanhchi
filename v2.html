@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Thiệp Cưới 3D Glassmorphism — Duy Tân &amp; Đinh Khánh Chi (Version 2)</title>
+
+  <!-- Google Fonts: Cormorant Garamond & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Outfit"', 'sans-serif'],
+          },
+          colors: {
+            pearl: {
+              50: '#FAF7F2',
+              100: '#F4EFE6',
+              200: '#E8DFD0',
+              300: '#D5C4AC',
+            },
+            champagne: {
+              400: '#CDB47E',
+              500: '#B89B58',
+              600: '#9E8040',
+            },
+            amber: {
+              450: '#F59E0B',
+            }
+          },
+          boxShadow: {
+            'glass': '0 20px 40px -15px rgba(184, 155, 88, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.9)',
+            'glass-gold': '0 25px 50px -12px rgba(212, 175, 55, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.35)',
+            'seal-3d': '0 12px 28px rgba(136, 19, 55, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.4)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #F8F5F0;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(245, 235, 215, 0.8) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(235, 220, 195, 0.6) 0px, transparent 50%);
+      font-family: 'Outfit', sans-serif;
+      color: #1C1917;
+    }
+    .perspective-1200 {
+      perspective: 1200px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    /* 3D Envelope Physics */
+    .envelope-wrap {
+      position: relative;
+      width: 340px;
+      height: 240px;
+      margin: 0 auto;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @media (min-width: 640px) {
+      .envelope-wrap {
+        width: 440px;
+        height: 290px;
+      }
+    }
+    .env-box {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #EFE6D8;
+      border-radius: 16px;
+      box-shadow: 0 30px 60px -10px rgba(80, 60, 30, 0.2), 0 0 0 1px rgba(212, 175, 55, 0.3);
+    }
+    .env-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(0 0, 100% 0, 50% 55%);
+      background: linear-gradient(180deg, #E6D8C3 0%, #D8C4A7 100%);
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s 0.3s;
+      z-index: 25;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));
+    }
+    .envelope-wrap.open .env-flap {
+      transform: rotateX(180deg);
+      z-index: 5;
+    }
+    .env-pocket-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(0 100%, 100% 100%, 50% 46%);
+      background: linear-gradient(0deg, #DFCEB5 0%, #D4BF9F 100%);
+      z-index: 20;
+      border-radius: 0 0 16px 16px;
+    }
+    .env-pocket-left {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(0 0, 0 100%, 50% 50%);
+      background: #D9C5A8;
+      z-index: 18;
+      border-radius: 16px 0 0 16px;
+    }
+    .env-pocket-right {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+      background: #D2BE9E;
+      z-index: 19;
+      border-radius: 0 16px 16px 0;
+    }
+    .env-card {
+      position: absolute;
+      top: 10px;
+      left: 6%;
+      width: 88%;
+      height: 92%;
+      background: #FFFFFF;
+      border-radius: 12px;
+      z-index: 12;
+      transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      transform: translateY(0) scale(0.96);
+    }
+    .envelope-wrap.open .env-card {
+      transform: translateY(-165px) scale(1.05);
+      z-index: 35;
+      box-shadow: 0 30px 70px -15px rgba(60, 45, 25, 0.28), 0 0 0 1px rgba(212, 175, 55, 0.45);
+    }
+    @media (min-width: 640px) {
+      .envelope-wrap.open .env-card {
+        transform: translateY(-205px) scale(1.08);
+      }
+    }
+    .wax-stamp {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      width: 64px;
+      height: 64px;
+      background: radial-gradient(circle at 35% 35%, #9E1C44 0%, #701A3F 65%, #4C0B25 100%);
+      border-radius: 50%;
+      z-index: 30;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(112, 26, 63, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+      border: 2px dashed rgba(255, 215, 120, 0.45);
+    }
+    .envelope-wrap.open .wax-stamp {
+      opacity: 0;
+      transform: translate(-50%, -100%) scale(0.4);
+      pointer-events: none;
+    }
+
+    /* 3D Holographic Foil Tilt */
+    .foil-tilt {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+    .foil-inner {
+      transform-style: preserve-3d;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      will-change: transform;
+      position: relative;
+    }
+    .foil-glare {
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 245, 200, 0.55) 0%, rgba(255, 220, 140, 0.2) 35%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 30;
+    }
+    .foil-tilt:hover .foil-glare,
+    .foil-tilt.touching .foil-glare {
+      opacity: 1;
+    }
+    .gold-foil-text {
+      background: linear-gradient(135deg, #B8860B 0%, #ECC274 35%, #C5A059 65%, #8C6721 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    #canvas-petals {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 40;
+    }
+  </style>
+</head>
+<body class="overflow-x-hidden antialiased selection:bg-champagne-400 selection:text-white pb-20">
+
+  <!-- PETAL RAIN CANVAS -->
+  <canvas id="canvas-petals"></canvas>
+
+  <!-- ============================================================== -->
+  <!-- VERSION SWITCHER FLOATING BAR                                  -->
+  <!-- ============================================================== -->
+  <div class="fixed top-3 left-1/2 -translate-x-1/2 z-50 bg-stone-900/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-amber-400/40 shadow-xl flex items-center gap-1.5 text-[10px] sm:text-xs">
+    <span class="text-amber-300 font-bold hidden sm:inline pl-1">PHIÊN BẢN:</span>
+    <a href="/" class="px-2.5 py-1 rounded-full text-stone-300 hover:text-white font-medium transition">
+      V1. Quiet Luxury
+    </a>
+    <a href="/v2.html" class="px-2.5 py-1 rounded-full bg-amber-400 text-stone-950 font-black shadow-sm">
+      V2. Glass 3D (Đang xem)
+    </a>
+    <a href="/v3.html" class="px-2.5 py-1 rounded-full text-stone-300 hover:text-white font-medium transition">
+      V3. Cinematic Story
+    </a>
+  </div>
+
+  <!-- HEADER -->
+  <header class="pt-16 pb-4 px-4 max-w-5xl mx-auto flex items-center justify-between">
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/80 backdrop-blur-md border border-stone-200/80 text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-champagne-600 uppercase shadow-2xs">
+      ✦ THIỆP CƯỚI 3D GLASSMORPHISM ✦
+    </span>
+    <button onclick="toggleAudio()" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-stone-200/80 text-[10px] font-bold text-stone-700 shadow-2xs hover:bg-white transition">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span>Until I Found You ♫</span>
+    </button>
+  </header>
+
+  <!-- HERO SECTION: 3D ENVELOPE STAGE -->
+  <section class="py-8 px-4 text-center">
+    <div id="hero-title" class="max-w-xl mx-auto mb-8 space-y-2 transition-all duration-700">
+      <span class="text-xs font-bold tracking-[0.25em] text-champagne-600 uppercase">SAVE THE DATE</span>
+      <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight gold-foil-text">
+        Lê Duy Tân &amp; Đinh Khánh Chi
+      </h1>
+      <p class="text-xs sm:text-sm text-stone-500 max-w-md mx-auto">
+        Kính mời Quý khách cùng gia đình đến chung vui và chúc phúc cho ngày hôn lễ trọng đại của chúng tôi.
+      </p>
+    </div>
+
+    <!-- 3D ENVELOPE -->
+    <div class="perspective-1200 py-12 flex flex-col items-center">
+      <div id="env-wrapper" class="envelope-wrap cursor-pointer" onclick="toggleEnv()">
+        <div class="env-box">
+          <!-- Pop-up Card -->
+          <div class="env-card p-4 sm:p-6 flex flex-col justify-between text-center">
+            <div class="w-full h-full border border-champagne-400/60 rounded-xl p-4 flex flex-col justify-between">
+              <div class="flex justify-between text-[10px] text-champagne-500">✦<span>✦</span></div>
+              <div class="space-y-1.5 my-auto">
+                <span class="text-[10px] font-bold tracking-[0.25em] text-champagne-600 uppercase">HÔN LỄ TRỌNG THỂ</span>
+                <h3 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900 leading-tight">
+                  Duy Tân &amp; Đinh Khánh Chi
+                </h3>
+                <div class="w-12 h-px bg-champagne-400 mx-auto my-1.5"></div>
+                <p class="text-xs sm:text-sm font-serif italic text-stone-600">
+                  Thứ Bảy, ngày 28 tháng 11 năm 2026
+                </p>
+                <p class="text-[11px] font-medium text-stone-500">
+                  Grand Ballroom — GEM Center • TP.HCM
+                </p>
+              </div>
+              <div class="flex justify-between text-[10px] text-champagne-500">✦<span>✦</span></div>
+            </div>
+          </div>
+
+          <div class="env-pocket-left"></div>
+          <div class="env-pocket-right"></div>
+          <div class="env-pocket-bottom"></div>
+          <div class="env-flap"></div>
+
+          <!-- Wax Stamp with T & C -->
+          <div class="wax-stamp" title="Chạm mở thiệp">
+            <span class="font-serif text-amber-200 text-lg font-bold tracking-wider select-none drop-shadow">
+              T&amp;C
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action button under envelope -->
+      <div class="mt-28 sm:mt-32 flex flex-col items-center gap-2 z-30">
+        <button id="env-btn" onclick="toggleEnv()" class="px-7 py-3 rounded-full bg-stone-900 text-amber-300 text-xs sm:text-sm font-bold tracking-wider uppercase shadow-xl hover:scale-105 active:scale-95 transition flex items-center gap-2 border border-amber-400/30">
+          <span id="env-icon">💌</span>
+          <span id="env-text">CHẠM ĐỂ MỞ PHONG BÌ 3D</span>
+        </button>
+        <p class="text-[11px] text-stone-400">Chạm vào con dấu sáp đỏ để mở phong bì</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE COUNTDOWN CLOCK (GLASSMORPHISM STYLE) -->
+  <section class="py-12 px-4 max-w-3xl mx-auto">
+    <div class="bg-white/70 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/80 shadow-glass text-center">
+      <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-champagne-600 uppercase block mb-1">
+        THỜI GIAN ĐẾM NGƯỢC
+      </span>
+      <h2 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900 mb-6">
+        Khoảnh Khắc Về Chung Một Nhà
+      </h2>
+
+      <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-md mx-auto">
+        <div class="p-3 sm:p-4 rounded-2xl bg-white/80 border border-champagne-200 shadow-sm">
+          <span id="cd-days" class="block font-serif text-2xl sm:text-3xl font-bold gold-foil-text">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase">Ngày</span>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-white/80 border border-champagne-200 shadow-sm">
+          <span id="cd-hours" class="block font-serif text-2xl sm:text-3xl font-bold gold-foil-text">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase">Giờ</span>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-white/80 border border-champagne-200 shadow-sm">
+          <span id="cd-minutes" class="block font-serif text-2xl sm:text-3xl font-bold gold-foil-text">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase">Phút</span>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-white/80 border border-champagne-200 shadow-sm">
+          <span id="cd-seconds" class="block font-serif text-2xl sm:text-3xl font-bold gold-foil-text">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase">Giây</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRIDE & GROOM: 3D HOLOGRAPHIC FOIL TILT CARDS -->
+  <section class="py-16 px-4 max-w-5xl mx-auto">
+    <div class="text-center max-w-lg mx-auto mb-12 space-y-2">
+      <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-champagne-600 uppercase">
+        NHÂN VẬT CHÍNH
+      </span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900">
+        Chú Rể &amp; Cô Dâu
+      </h2>
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-champagne-300/80 text-[11px] font-bold tracking-[0.2em] text-champagne-700 uppercase shadow-2xs mt-2">
+        <span>LÊ DUY TÂN</span>
+        <span class="text-amber-500 text-xs">💍</span>
+        <span>ĐINH KHÁNH CHI</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+      <!-- Groom Card -->
+      <div id="groom-tilt" class="foil-tilt group relative">
+        <div class="foil-inner bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[32px] border border-white shadow-glass">
+          <div class="foil-glare"></div>
+          <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 mb-5 border border-stone-200">
+            <img src="./assets/groom_duytan.jpg" alt="Chú rể Lê Duy Tân" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <span class="text-[9px] uppercase tracking-widest font-bold text-amber-300 block">CHÚ RỂ</span>
+              <h3 class="font-serif text-2xl font-bold">Lê Duy Tân</h3>
+            </div>
+          </div>
+          <div class="space-y-2 text-center">
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Kỹ sư công nghệ &amp; Nhà sáng lập Tahi System. Một người điềm đạm, yêu công nghệ và luôn dành trọn sự ấm áp, chu toàn cho gia đình nhỏ.
+            </p>
+            <div class="pt-2 flex justify-center gap-2">
+              <span class="px-3 py-1 rounded-full bg-pearl-100 border border-pearl-200 text-[10px] font-semibold text-champagne-700">Trưởng Nam</span>
+              <span class="px-3 py-1 rounded-full bg-pearl-100 border border-pearl-200 text-[10px] font-semibold text-champagne-700">Gia Lai - Sài Gòn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bride Card -->
+      <div id="bride-tilt" class="foil-tilt group relative">
+        <div class="foil-inner bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[32px] border border-white shadow-glass">
+          <div class="foil-glare"></div>
+          <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 mb-5 border border-stone-200">
+            <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white">
+              <span class="text-[9px] uppercase tracking-widest font-bold text-amber-300 block">CÔ DÂU</span>
+              <h3 class="font-serif text-2xl font-bold">Đinh Khánh Chi</h3>
+            </div>
+          </div>
+          <div class="space-y-2 text-center">
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Cô gái dịu dàng, nụ cười rạng rỡ và phúc hậu, luôn mang lại sự bình yên, tiếng cười và nguồn năng lượng ấm áp cho tổ ấm chung đôi.
+            </p>
+            <div class="pt-2 flex justify-center gap-2">
+              <span class="px-3 py-1 rounded-full bg-pearl-100 border border-pearl-200 text-[10px] font-semibold text-champagne-700">Ái Nữ</span>
+              <span class="px-3 py-1 rounded-full bg-pearl-100 border border-pearl-200 text-[10px] font-semibold text-champagne-700">Hà Nội - Sài Gòn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENT TIME & LOCATION (DUAL CARDS) -->
+  <section class="py-16 px-4 max-w-5xl mx-auto">
+    <div class="text-center max-w-lg mx-auto mb-12 space-y-2">
+      <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-champagne-600 uppercase">
+        LỊCH TRÌNH SỰ KIỆN
+      </span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900">
+        Thời Gian &amp; Địa Điểm
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Ceremony -->
+      <div class="bg-white/80 backdrop-blur-xl p-7 rounded-3xl border border-white shadow-glass space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="px-3 py-1 rounded-full bg-stone-900 text-amber-300 text-[10px] font-bold uppercase">
+            LỄ THÀNH HÔN
+          </span>
+          <span class="text-xs font-serif font-bold text-stone-500">09:00 AM</span>
+        </div>
+        <div>
+          <h3 class="font-serif text-2xl font-bold text-stone-900">Nghi Thức Gia Tiên</h3>
+          <p class="text-xs text-stone-500 mt-1">Thứ Bảy, ngày 28 tháng 11 năm 2026</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-pearl-50 border border-stone-200/70 text-xs space-y-1 text-stone-600">
+          <p class="font-bold text-stone-900">Tư Gia Nhà Trai</p>
+          <p>128 Nguyễn Đình Chiểu, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh</p>
+        </div>
+        <button onclick="copyText('128 Nguyễn Đình Chiểu, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh')" class="w-full py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition">
+          📋 Sao Chép Địa Chỉ
+        </button>
+      </div>
+
+      <!-- Reception -->
+      <div class="bg-white/90 backdrop-blur-xl p-7 rounded-3xl border-2 border-champagne-400 shadow-glass-gold space-y-4 relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="px-3 py-1 rounded-full bg-champagne-100 text-champagne-800 border border-champagne-300 text-[10px] font-bold uppercase">
+            TIỆC CƯỚI CHÍNH
+          </span>
+          <span class="text-xs font-serif font-bold text-champagne-700">18:00</span>
+        </div>
+        <div>
+          <h3 class="font-serif text-2xl font-bold text-stone-900">Hôn Lễ &amp; Dạ Tiệc</h3>
+          <p class="text-xs text-stone-500 mt-1">Thứ Bảy, ngày 28 tháng 11 năm 2026</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-champagne-50/70 border border-champagne-200 text-xs space-y-1 text-stone-700">
+          <p class="font-bold text-stone-900 text-sm">Grand Ballroom — GEM Center</p>
+          <p>Số 8 Nguyễn Bỉnh Khiêm, Phường Đa Kao, Quận 1, TP. Hồ Chí Minh</p>
+          <p class="text-[11px] text-champagne-700 font-medium">18:00 Đón Khách • 19:00 Khai Tiệc</p>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <a href="https://maps.google.com/?q=GEM+Center+Nguyen+Binh+Khiem" target="_blank" class="py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold text-center transition flex items-center justify-center gap-1 shadow-md">
+            <span>📍 Chỉ Đường</span>
+          </a>
+          <button onclick="addToCalendar()" class="py-2.5 rounded-xl bg-champagne-100 hover:bg-champagne-200 border border-champagne-300 text-champagne-900 text-xs font-bold transition">
+            📅 Thêm Lịch
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REAL PHOTO BENTO GALLERY -->
+  <section class="py-16 px-4 max-w-6xl mx-auto">
+    <div class="text-center max-w-xl mx-auto mb-12 space-y-2">
+      <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-champagne-600 uppercase">
+        KỶ NIỆM LỄ DẠM NGÕ
+      </span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900">
+        Khoảnh Khắc Đính Ước
+      </h2>
+      <p class="text-xs text-stone-500">16.09.2026 (06.08 Bính Ngọ) • Ngày kết thân thiêng liêng</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <!-- Feature Card -->
+      <div class="md:col-span-2 relative overflow-hidden rounded-3xl bg-white shadow-glass aspect-[16/10] group">
+        <img src="./assets/couple_hero.jpg" alt="Duy Tân & Khánh Chi" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/75 via-transparent to-transparent"></div>
+        <div class="absolute bottom-5 left-5 text-white">
+          <span class="text-[9px] uppercase tracking-widest font-bold text-amber-300 block">KHOẢNH KHẮC ĐẸP NHẤT</span>
+          <h3 class="font-serif text-2xl font-bold">Duy Tân 囍 Đinh Khánh Chi</h3>
+        </div>
+      </div>
+
+      <!-- Full Couple Standing -->
+      <div class="relative overflow-hidden rounded-3xl bg-white shadow-glass aspect-[4/5] md:aspect-auto group">
+        <img src="./assets/couple_full.jpg" alt="Bảng Chào Lễ Dạm Ngõ" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-transparent to-transparent"></div>
+        <div class="absolute bottom-4 left-4 text-white">
+          <span class="text-[9px] uppercase tracking-widest font-bold text-amber-300 block">LỄ DẠM NGÕ 16.09</span>
+          <h4 class="font-serif text-lg font-bold">Hạnh Phúc Trọn Vẹn</h4>
+        </div>
+      </div>
+
+      <!-- Small 1 -->
+      <div class="relative overflow-hidden rounded-2xl bg-white shadow-sm aspect-square group">
+        <img src="./assets/gallery_1.jpg" alt="Tráp Lễ" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+      </div>
+      <!-- Small 2 -->
+      <div class="relative overflow-hidden rounded-2xl bg-white shadow-sm aspect-square group">
+        <img src="./assets/gallery_2.jpg" alt="Gia Đình Hai Bên" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+      </div>
+      <!-- Small 3 -->
+      <div class="relative overflow-hidden rounded-2xl bg-white shadow-sm aspect-square group">
+        <img src="./assets/gallery_3.jpg" alt="Nụ Cười Ngày Vui" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+      </div>
+    </div>
+  </section>
+
+  <!-- VIETQR DIGITAL WISHING BOX -->
+  <section class="py-16 px-4 max-w-4xl mx-auto text-center">
+    <div class="max-w-md mx-auto mb-10 space-y-2">
+      <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-champagne-600 uppercase">
+        HỘP MỪNG CƯỚI TỪ XA
+      </span>
+      <h2 class="font-serif text-3xl font-bold text-stone-900">
+        Gửi Quà Chúc Phúc
+      </h2>
+      <p class="text-xs text-stone-500">Dành cho Quý khách ở xa muốn gửi lời chúc mừng hạnh phúc</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+      <!-- Groom QR -->
+      <div class="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white shadow-glass space-y-3">
+        <span class="px-3 py-1 rounded-full bg-stone-900 text-amber-300 text-[10px] font-bold uppercase">
+          CHÚ RỂ: LÊ DUY TÂN
+        </span>
+        <div class="w-44 h-44 mx-auto bg-white p-2 rounded-2xl border border-stone-200 shadow-2xs">
+          <img src="https://api.vietqr.io/image/970422-0000112233440-compact2.jpg?amount=0&addInfo=MUNG%20CUOI%20DUY%20TAN&accountName=LE%20DUY%20TAN" alt="VietQR Duy Tân" class="w-full h-full object-contain">
+        </div>
+        <div class="text-xs space-y-0.5 text-stone-600">
+          <p class="font-bold text-stone-900">MBBank Quân Đội</p>
+          <p class="font-mono text-sm font-bold text-stone-900">0000112233440</p>
+          <p class="text-[11px] text-stone-500">CHỦ TK: LE DUY TAN</p>
+        </div>
+        <button onclick="copyText('0000112233440')" class="w-full py-2 rounded-xl bg-pearl-100 hover:bg-pearl-200 text-champagne-700 text-[11px] font-bold transition">
+          📋 Sao Chép Số Tài Khoản
+        </button>
+      </div>
+
+      <!-- Bride QR -->
+      <div class="p-6 rounded-3xl bg-white/80 backdrop-blur-xl border border-white shadow-glass space-y-3">
+        <span class="px-3 py-1 rounded-full bg-burgundy-800 text-amber-200 text-[10px] font-bold uppercase">
+          CÔ DÂU: ĐINH KHÁNH CHI
+        </span>
+        <div class="w-44 h-44 mx-auto bg-white p-2 rounded-2xl border border-stone-200 shadow-2xs overflow-hidden">
+          <img src="./assets/qr_bride_square.jpg" alt="VietQR Đinh Khánh Chi" class="w-full h-full object-contain">
+        </div>
+        <div class="text-xs space-y-0.5 text-stone-600">
+          <p class="font-bold text-stone-900">LPBank (Lộc Phát Việt Nam)</p>
+          <p class="font-mono text-sm font-bold text-stone-900">15093012892256</p>
+          <p class="text-[11px] text-stone-500">CHỦ TK: DINH KHANH CHI</p>
+        </div>
+        <button onclick="copyText('15093012892256')" class="w-full py-2 rounded-xl bg-pearl-100 hover:bg-pearl-200 text-champagne-700 text-[11px] font-bold transition">
+          📋 Sao Chép Số Tài Khoản
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 bg-stone-950 text-stone-400 text-center px-4 space-y-2">
+    <div class="font-serif text-2xl font-bold text-amber-300">
+      Duy Tân &amp; Đinh Khánh Chi
+    </div>
+    <p class="text-xs text-stone-500">
+      Cảm ơn tình cảm quý báu của tất cả mọi người trên hành trình hạnh phúc của chúng tôi.
+    </p>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    // 1. Envelope Toggle
+    let isEnvOpen = false;
+    function toggleEnv() {
+      const w = document.getElementById('env-wrapper');
+      const txt = document.getElementById('env-text');
+      const icon = document.getElementById('env-icon');
+      const hero = document.getElementById('hero-title');
+      isEnvOpen = !isEnvOpen;
+      if (isEnvOpen) {
+        w.classList.add('open');
+        txt.innerText = 'ĐÃ MỞ THIỆP • CHẠM ĐỂ GẬP LẠI';
+        icon.innerText = '✨';
+        if (hero) hero.classList.add('opacity-20', 'scale-95');
+      } else {
+        w.classList.remove('open');
+        txt.innerText = 'CHẠM ĐỂ MỞ PHONG BÌ 3D';
+        icon.innerText = '💌';
+        if (hero) hero.classList.remove('opacity-20', 'scale-95');
+      }
+    }
+
+    // 2. Countdown Timer
+    const target = new Date('2026-11-28T18:00:00+07:00').getTime();
+    function tick() {
+      const now = Date.now();
+      const diff = target - now;
+      if (diff > 0) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('cd-days').innerText = String(d).padStart(2, '0');
+        document.getElementById('cd-hours').innerText = String(h).padStart(2, '0');
+        document.getElementById('cd-minutes').innerText = String(m).padStart(2, '0');
+        document.getElementById('cd-seconds').innerText = String(s).padStart(2, '0');
+      }
+    }
+    setInterval(tick, 1000);
+    tick();
+
+    // 3. Audio Player Simulation
+    function toggleAudio() {
+      alert('Đang phát bài hát: Until I Found You ♫');
+    }
+
+    // 4. Copy Text Helper
+    function copyText(val) {
+      navigator.clipboard.writeText(val);
+      alert('Đã sao chép: ' + val);
+    }
+
+    function addToCalendar() {
+      const title = encodeURIComponent('Lễ Thành Hôn: Lê Duy Tân & Đinh Khánh Chi');
+      const details = encodeURIComponent('Tiệc cưới báo hỷ tại Grand Ballroom, GEM Center, TP.HCM');
+      const location = encodeURIComponent('GEM Center, 8 Nguyễn Bỉnh Khiêm, Đa Kao, Quận 1, TP.HCM');
+      window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20261128T110000Z/20261128T150000Z&details=${details}&location=${location}`, '_blank');
+    }
+
+    // 5. Foil Tilt Setup
+    function setupTilt(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const inner = el.querySelector('.foil-inner');
+      const glare = el.querySelector('.foil-glare');
+
+      function move(cx, cy) {
+        const rect = el.getBoundingClientRect();
+        const x = cx - rect.left;
+        const y = cy - rect.top;
+        const rx = ((y - rect.height/2)/(rect.height/2)) * -10;
+        const ry = ((x - rect.width/2)/(rect.width/2)) * 10;
+        inner.style.transform = `rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(1.02)`;
+        if (glare) {
+          glare.style.setProperty('--gx', `${(x/rect.width)*100}%`);
+          glare.style.setProperty('--gy', `${(y/rect.height)*100}%`);
+        }
+      }
+      function reset() {
+        inner.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+        el.classList.remove('touching');
+      }
+
+      el.addEventListener('mousemove', (e) => move(e.clientX, e.clientY));
+      el.addEventListener('mouseleave', reset);
+      el.addEventListener('touchstart', (e) => {
+        el.classList.add('touching');
+        if (e.touches[0]) move(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      el.addEventListener('touchmove', (e) => {
+        if (e.touches[0]) move(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      el.addEventListener('touchend', reset);
+    }
+    setupTilt('groom-tilt');
+    setupTilt('bride-tilt');
+
+    // 6. Floating Rose Petals
+    const canvas = document.getElementById('canvas-petals');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
+
+    const petals = [];
+    for (let i = 0; i < 24; i++) {
+      petals.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 5 + 3,
+        color: Math.random() > 0.4 ? 'rgba(225, 112, 136, 0.4)' : 'rgba(218, 165, 32, 0.35)',
+        tiltAngle: Math.random() * 5,
+        speedY: Math.random() * 1.2 + 0.6,
+        speedX: Math.random() * 0.8 - 0.4
+      });
+    }
+
+    function drawPetals() {
+      ctx.clearRect(0, 0, W, H);
+      for (let p of petals) {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.ellipse(p.x, p.y, p.r, p.r * 1.5, p.tiltAngle, 0, Math.PI * 2);
+        ctx.fill();
+        p.y += p.speedY;
+        p.x += p.speedX;
+        p.tiltAngle += 0.02;
+        if (p.y > H) {
+          p.y = -15;
+          p.x = Math.random() * W;
+        }
+      }
+      requestAnimationFrame(drawPetals);
+    }
+    drawPetals();
+  </script>
+</body>
+</html>
