@@ -221,6 +221,84 @@
       filter: drop-shadow(0 1px 2px rgba(184, 144, 71, 0.2));
     }
 
+    /* 3D Holographic Foil Tilt Cards */
+    .foil-tilt-card {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+    .foil-inner {
+      transform-style: preserve-3d;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      will-change: transform;
+      position: relative;
+    }
+    .foil-glare {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 240, 180, 0.45) 0%, rgba(255, 215, 120, 0.2) 35%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 30;
+    }
+    .foil-shimmer {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: linear-gradient(135deg, transparent 20%, rgba(255, 225, 120, 0.25) 45%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 225, 120, 0.25) 55%, transparent 80%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      z-index: 29;
+    }
+    .foil-tilt-card:hover .foil-glare,
+    .foil-tilt-card:hover .foil-shimmer,
+    .foil-tilt-card.touching .foil-glare,
+    .foil-tilt-card.touching .foil-shimmer {
+      opacity: 1;
+    }
+    .card-3d-depth {
+      transform: translateZ(30px);
+    }
+
+    /* 3D Interlocking Wedding Rings */
+    .rings-stage {
+      perspective: 900px;
+    }
+    .ring-container {
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ring-container:hover {
+      transform: scale(1.08) rotateX(10deg);
+    }
+    @keyframes ring-spin-left {
+      0% { transform: rotateY(-25deg) rotateX(25deg) translateY(0); }
+      100% { transform: rotateY(15deg) rotateX(15deg) translateY(-5px); }
+    }
+    @keyframes ring-spin-right {
+      0% { transform: rotateY(25deg) rotateX(25deg) translateY(0); }
+      100% { transform: rotateY(-15deg) rotateX(15deg) translateY(-5px); }
+    }
+    .animate-ring-left {
+      animation: ring-spin-left 7s ease-in-out infinite alternate;
+    }
+    .animate-ring-right {
+      animation: ring-spin-right 7s ease-in-out infinite alternate;
+    }
+
+    /* 3D CoverFlow Carousel */
+    .coverflow-scene {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+    .coverflow-card {
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-style: preserve-3d;
+    }
+
     /* Floating Music Vinyl Animation */
     @keyframes spin-slow {
       from { transform: rotate(0deg); }
@@ -424,48 +502,79 @@
       <p class="text-xs sm:text-sm text-stone-500">
         "Tình yêu không phải là nhìn nhau, mà là cùng nhau nhìn về một hướng."
       </p>
+
+      <!-- 3D Interlocking Rings Element -->
+      <div class="rings-stage my-6 flex flex-col items-center justify-center">
+        <div class="ring-container relative flex items-center justify-center h-16 w-32 cursor-pointer">
+          <!-- Groom's Ring (Gold 18K) -->
+          <div class="absolute -left-2 w-14 h-14 rounded-full border-4 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)] animate-ring-left flex items-center justify-center bg-gradient-to-tr from-amber-600/20 via-amber-300/40 to-transparent">
+            <span class="text-[8px] font-black text-amber-900 tracking-tighter uppercase select-none font-sans">TÂN</span>
+          </div>
+          <!-- Bride's Ring (Platinum & Diamond Solitaire) -->
+          <div class="absolute -right-2 w-14 h-14 rounded-full border-4 border-slate-300 shadow-[0_0_15px_rgba(255,255,255,0.8)] animate-ring-right flex items-center justify-center bg-gradient-to-tr from-slate-200/30 via-white/50 to-transparent">
+            <!-- Diamond Solitaire -->
+            <div class="absolute -top-2.5 w-4 h-4 rotate-45 bg-cyan-50 border-2 border-white shadow-[0_0_10px_rgba(6,182,212,0.9)] flex items-center justify-center">
+              <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+            </div>
+            <span class="text-[8px] font-black text-slate-700 tracking-tighter uppercase select-none font-sans">CHI</span>
+          </div>
+        </div>
+        <div class="mt-2 text-[10px] font-bold tracking-[0.25em] text-champagne-700 uppercase font-sans flex items-center gap-2">
+          <span>LÊ DUY TÂN</span>
+          <span class="text-amber-500 text-xs">💍</span>
+          <span>ĐINH KHÁNH CHI</span>
+        </div>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-12">
       
-      <!-- GROOM CARD -->
-      <div class="group relative bg-white p-6 sm:p-8 rounded-3xl border border-champagne-200 shadow-card-3d transition-all duration-500 hover:-translate-y-2">
-        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 mb-6 border border-stone-200">
-          <img src="./assets/groom_duytan.jpg" alt="Chú rể Lê Duy Tân" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
-          <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <span class="text-[10px] uppercase tracking-widest font-bold text-amber-300 block">CHÚ RỂ</span>
-            <h3 class="font-serif text-2xl font-bold">Lê Duy Tân</h3>
+      <!-- GROOM CARD (3D Holographic Foil Tilt) -->
+      <div id="groom-card" class="foil-tilt-card group relative">
+        <div class="foil-inner bg-white p-6 sm:p-8 rounded-3xl border border-champagne-200 shadow-card-3d">
+          <div class="foil-glare"></div>
+          <div class="foil-shimmer"></div>
+          <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 mb-6 border border-stone-200">
+            <img src="./assets/groom_duytan.jpg" alt="Chú rể Lê Duy Tân" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white card-3d-depth">
+              <span class="text-[10px] uppercase tracking-widest font-bold text-amber-300 block">CHÚ RỂ</span>
+              <h3 class="font-serif text-2xl font-bold">Lê Duy Tân</h3>
+            </div>
           </div>
-        </div>
-        <div class="space-y-2 text-center">
-          <p class="text-xs text-stone-600 leading-relaxed">
-            Kỹ sư công nghệ &amp; Nhà sáng lập Tahi System. Một người điềm đạm, yêu công nghệ và luôn dành trọn sự ấm áp, chu toàn cho gia đình nhỏ.
-          </p>
-          <div class="pt-2 flex justify-center gap-2">
-            <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Trưởng Nam</span>
-            <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Gia Lai - Sài Gòn</span>
+          <div class="space-y-2 text-center card-3d-depth">
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Kỹ sư công nghệ &amp; Nhà sáng lập Tahi System. Một người điềm đạm, yêu công nghệ và luôn dành trọn sự ấm áp, chu toàn cho gia đình nhỏ.
+            </p>
+            <div class="pt-2 flex justify-center gap-2">
+              <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Trưởng Nam</span>
+              <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Gia Lai - Sài Gòn</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- BRIDE CARD -->
-      <div class="group relative bg-white p-6 sm:p-8 rounded-3xl border border-champagne-200 shadow-card-3d transition-all duration-500 hover:-translate-y-2">
-        <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 mb-6 border border-stone-200">
-          <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
-          <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
-          <div class="absolute bottom-4 left-4 text-white">
-            <span class="text-[10px] uppercase tracking-widest font-bold text-amber-300 block">CÔ DÂU</span>
-            <h3 class="font-serif text-2xl font-bold">Đinh Khánh Chi</h3>
+      <!-- BRIDE CARD (3D Holographic Foil Tilt) -->
+      <div id="bride-card" class="foil-tilt-card group relative">
+        <div class="foil-inner bg-white p-6 sm:p-8 rounded-3xl border border-champagne-200 shadow-card-3d">
+          <div class="foil-glare"></div>
+          <div class="foil-shimmer"></div>
+          <div class="relative overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 mb-6 border border-stone-200">
+            <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-4 left-4 text-white card-3d-depth">
+              <span class="text-[10px] uppercase tracking-widest font-bold text-amber-300 block">CÔ DÂU</span>
+              <h3 class="font-serif text-2xl font-bold">Đinh Khánh Chi</h3>
+            </div>
           </div>
-        </div>
-        <div class="space-y-2 text-center">
-          <p class="text-xs text-stone-600 leading-relaxed">
-            Cô gái dịu dàng, nụ cười rạng rỡ và phúc hậu, luôn mang lại sự bình yên, tiếng cười và nguồn năng lượng ấm áp cho tổ ấm chung đôi.
-          </p>
-          <div class="pt-2 flex justify-center gap-2">
-            <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Ái Nữ</span>
-            <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Hà Nội - Sài Gòn</span>
+          <div class="space-y-2 text-center card-3d-depth">
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Cô gái dịu dàng, nụ cười rạng rỡ và phúc hậu, luôn mang lại sự bình yên, tiếng cười và nguồn năng lượng ấm áp cho tổ ấm chung đôi.
+            </p>
+            <div class="pt-2 flex justify-center gap-2">
+              <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Ái Nữ</span>
+              <span class="px-3 py-1 rounded-full bg-champagne-50 border border-champagne-200 text-[10px] font-semibold text-champagne-700">Hà Nội - Sài Gòn</span>
+            </div>
           </div>
         </div>
       </div>
@@ -998,6 +1107,56 @@
         particles[i].y = Math.random() * (height / 2);
       }
     }
+
+    // 8. 3D Holographic Foil Tilt Cards Physics
+    function setupFoilTilt(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const inner = card.querySelector('.foil-inner');
+      const glare = card.querySelector('.foil-glare');
+
+      function handleMove(clientX, clientY) {
+        const rect = card.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -12; // -12 to 12 deg
+        const rotateY = ((x - centerX) / centerX) * 12;
+
+        const glareX = (x / rect.width) * 100;
+        const glareY = (y / rect.height) * 100;
+
+        inner.style.transform = `rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1.02)`;
+        if (glare) {
+          glare.style.setProperty('--gx', `${glareX}%`);
+          glare.style.setProperty('--gy', `${glareY}%`);
+        }
+      }
+
+      function handleReset() {
+        inner.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+        card.classList.remove('touching');
+      }
+
+      card.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+      card.addEventListener('mouseleave', handleReset);
+
+      card.addEventListener('touchstart', (e) => {
+        card.classList.add('touching');
+        if (e.touches[0]) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      card.addEventListener('touchmove', (e) => {
+        if (e.touches[0]) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      card.addEventListener('touchend', handleReset);
+    }
+
+    setupFoilTilt('groom-card');
+    setupFoilTilt('bride-card');
   </script>
 
 </body>
