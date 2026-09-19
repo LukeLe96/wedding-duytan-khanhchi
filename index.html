@@ -12,6 +12,9 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js WebGL 3D Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -503,25 +506,29 @@
         "Tình yêu không phải là nhìn nhau, mà là cùng nhau nhìn về một hướng."
       </p>
 
-      <!-- 3D Interlocking Rings Element -->
-      <div class="rings-stage my-6 flex flex-col items-center justify-center">
-        <div class="ring-container relative flex items-center justify-center h-16 w-32 cursor-pointer">
-          <!-- Groom's Ring (Gold 18K) -->
-          <div class="absolute -left-2 w-14 h-14 rounded-full border-4 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)] animate-ring-left flex items-center justify-center bg-gradient-to-tr from-amber-600/20 via-amber-300/40 to-transparent">
-            <span class="text-[8px] font-black text-amber-900 tracking-tighter uppercase select-none font-sans">TÂN</span>
+      <!-- 3D WebGL Interactive Wedding Rings Stage -->
+      <div class="my-6 flex flex-col items-center justify-center w-full">
+        <div class="relative w-full max-w-md h-52 sm:h-60 rounded-3xl bg-gradient-to-b from-amber-50/80 via-white/90 to-champagne-100/60 border border-champagne-300 shadow-card-3d overflow-hidden group">
+          <!-- Three.js Canvas Container -->
+          <div id="three-rings-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+          
+          <!-- Floating Tag Hint -->
+          <div class="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-2 pointer-events-none">
+            <span class="px-3.5 py-1 rounded-full bg-stone-900/80 backdrop-blur-md text-amber-200 text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-md">
+              <span class="text-xs">💍</span>
+              <span>ĐÔI NHẪN 3D WEBGL • CHẠM XOAY 360°</span>
+            </span>
           </div>
-          <!-- Bride's Ring (Platinum & Diamond Solitaire) -->
-          <div class="absolute -right-2 w-14 h-14 rounded-full border-4 border-slate-300 shadow-[0_0_15px_rgba(255,255,255,0.8)] animate-ring-right flex items-center justify-center bg-gradient-to-tr from-slate-200/30 via-white/50 to-transparent">
-            <!-- Diamond Solitaire -->
-            <div class="absolute -top-2.5 w-4 h-4 rotate-45 bg-cyan-50 border-2 border-white shadow-[0_0_10px_rgba(6,182,212,0.9)] flex items-center justify-center">
-              <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
-            </div>
-            <span class="text-[8px] font-black text-slate-700 tracking-tighter uppercase select-none font-sans">CHI</span>
-          </div>
+
+          <!-- Reset rotation button -->
+          <button onclick="resetRingsView()" class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/80 backdrop-blur-sm border border-champagne-200 text-[10px] font-bold text-stone-600 hover:text-stone-900 shadow-2xs transition">
+            ↺ Đặt lại
+          </button>
         </div>
-        <div class="mt-2 text-[10px] font-bold tracking-[0.25em] text-champagne-700 uppercase font-sans flex items-center gap-2">
+
+        <div class="mt-3 text-[11px] font-bold tracking-[0.25em] text-champagne-700 uppercase font-sans flex items-center gap-2">
           <span>LÊ DUY TÂN</span>
-          <span class="text-amber-500 text-xs">💍</span>
+          <span class="text-amber-500 text-xs animate-pulse">💍</span>
           <span>ĐINH KHÁNH CHI</span>
         </div>
       </div>
@@ -600,6 +607,37 @@
         <p class="text-xs sm:text-sm text-stone-500 font-normal">
           Dấu mốc thiêng liêng ngày 16.09.2026 (06.08 Bính Ngọ) ghi dấu sự gắn kết trọn đời của hai bên gia đình
         </p>
+      </div>
+
+      <!-- 3D WebGL Spatial Gallery Carousel (Full 3D Orbit) -->
+      <div class="relative w-full max-w-4xl mx-auto h-80 sm:h-96 mb-12 rounded-3xl bg-stone-950 border border-champagne-400/60 shadow-2xl overflow-hidden group">
+        <div id="three-gallery-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+        
+        <!-- Header HUD -->
+        <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+          <span class="px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-amber-400/40 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-300 shadow-md flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            <span>KHÔNG GIAN TRIỂN LÃM ẢNH 3D 360° (SPATIAL ORBIT)</span>
+          </span>
+          <span class="text-[10px] text-stone-400 font-mono hidden sm:inline-block bg-black/40 px-2 py-1 rounded-md">
+            WebGL PBR Canvas
+          </span>
+        </div>
+
+        <!-- Footer HUD & Controls -->
+        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+          <span class="text-[10px] sm:text-xs text-stone-300 font-sans bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10">
+            💡 Kéo chuột hoặc vuốt ngón tay để xoay vòng ảnh 3D
+          </span>
+          <div class="flex items-center gap-2 pointer-events-auto">
+            <button onclick="rotateGallery(-1)" class="w-9 h-9 rounded-full bg-stone-900/90 hover:bg-stone-800 text-amber-300 font-bold text-sm flex items-center justify-center border border-amber-400/40 shadow-md transition active:scale-95">
+              ◀
+            </button>
+            <button onclick="rotateGallery(1)" class="w-9 h-9 rounded-full bg-stone-900/90 hover:bg-stone-800 text-amber-300 font-bold text-sm flex items-center justify-center border border-amber-400/40 shadow-md transition active:scale-95">
+              ▶
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Bento Grid Gallery of Real Photos -->
@@ -1157,6 +1195,334 @@
 
     setupFoilTilt('groom-card');
     setupFoilTilt('bride-card');
+
+    // ==============================================================
+    // 9. THREE.JS 3D INTERACTIVE WEDDING RINGS ENGINE
+    // ==============================================================
+    let resetRingsView = () => {};
+    function initThreeRings() {
+      const container = document.getElementById('three-rings-container');
+      if (!container || typeof THREE === 'undefined') return;
+
+      const width = container.clientWidth || 380;
+      const height = container.clientHeight || 230;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 50);
+      camera.position.set(0, 0, 5.0);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      container.appendChild(renderer.domElement);
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xfff5e6, 0.9);
+      scene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0xfffbeb, 1.3);
+      dirLight1.position.set(3, 4, 3);
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0xfef08a, 0.9);
+      dirLight2.position.set(-3, -2, 2);
+      scene.add(dirLight2);
+
+      const pointLight = new THREE.PointLight(0xffd700, 1.5, 8);
+      pointLight.position.set(0, 2, 2);
+      scene.add(pointLight);
+
+      // Rings Master Group
+      const ringsGroup = new THREE.Group();
+      scene.add(ringsGroup);
+
+      // Ring 1: Groom Duy Tân (Gold 18K)
+      const ring1Geo = new THREE.TorusGeometry(1.05, 0.16, 24, 64);
+      const ring1Mat = new THREE.MeshStandardMaterial({
+        color: 0xf59e0b,
+        metalness: 0.95,
+        roughness: 0.13,
+      });
+      const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+      ring1.position.set(-0.55, 0, 0);
+      ring1.rotation.set(0.45, 0.35, 0);
+      ringsGroup.add(ring1);
+
+      // Ring 2: Bride Đinh Khánh Chi (Platinum Solitaire)
+      const ring2Geo = new THREE.TorusGeometry(0.95, 0.13, 24, 64);
+      const ring2Mat = new THREE.MeshStandardMaterial({
+        color: 0xf8fafc,
+        metalness: 0.98,
+        roughness: 0.08,
+      });
+      const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+      ring2.position.set(0.55, 0, 0);
+      ring2.rotation.set(-0.35, 0.45, 0);
+      ringsGroup.add(ring2);
+
+      // Solitaire Diamond on Bride Ring
+      const diamondGeo = new THREE.OctahedronGeometry(0.24, 2);
+      const diamondMat = new THREE.MeshStandardMaterial({
+        color: 0xe0f2fe,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 0.45,
+        metalness: 0.1,
+        roughness: 0.05,
+      });
+      const diamond = new THREE.Mesh(diamondGeo, diamondMat);
+      diamond.position.set(0, 1.05, 0);
+      ring2.add(diamond);
+
+      // Floating dust particles inside ring stage
+      const dustGeo = new THREE.BufferGeometry();
+      const dustCount = 40;
+      const dustPos = new Float32Array(dustCount * 3);
+      for (let i = 0; i < dustCount * 3; i += 3) {
+        dustPos[i] = (Math.random() - 0.5) * 4;
+        dustPos[i+1] = (Math.random() - 0.5) * 3;
+        dustPos[i+2] = (Math.random() - 0.5) * 2;
+      }
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+      const dustMat = new THREE.PointsMaterial({
+        color: 0xfef08a,
+        size: 0.06,
+        transparent: true,
+        opacity: 0.7,
+      });
+      const dustPoints = new THREE.Points(dustGeo, dustMat);
+      scene.add(dustPoints);
+
+      // Interaction Variables
+      let isDragging = false;
+      let prevX = 0, prevY = 0;
+      let targetRotX = 0.2, targetRotY = 0;
+      let autoRotate = true;
+
+      resetRingsView = function() {
+        targetRotX = 0.2;
+        targetRotY = 0;
+        autoRotate = true;
+      };
+
+      function onPointerDown(e) {
+        isDragging = true;
+        autoRotate = false;
+        prevX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        prevY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+      }
+
+      function onPointerMove(e) {
+        if (!isDragging) return;
+        const curX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        const curY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        const deltaX = curX - prevX;
+        const deltaY = curY - prevY;
+        prevX = curX;
+        prevY = curY;
+
+        targetRotY += deltaX * 0.012;
+        targetRotX += deltaY * 0.012;
+        targetRotX = Math.max(-1.2, Math.min(1.2, targetRotX));
+      }
+
+      function onPointerUp() {
+        isDragging = false;
+      }
+
+      container.addEventListener('mousedown', onPointerDown);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+
+      container.addEventListener('touchstart', onPointerDown, { passive: true });
+      window.addEventListener('touchmove', onPointerMove, { passive: true });
+      window.addEventListener('touchend', onPointerUp);
+
+      // Render Loop
+      function animate() {
+        requestAnimationFrame(animate);
+
+        if (autoRotate && !isDragging) {
+          targetRotY += 0.007;
+          ringsGroup.position.y = Math.sin(Date.now() * 0.002) * 0.08;
+        }
+
+        ringsGroup.rotation.y += (targetRotY - ringsGroup.rotation.y) * 0.08;
+        ringsGroup.rotation.x += (targetRotX - ringsGroup.rotation.x) * 0.08;
+
+        diamond.rotation.y += 0.02;
+        dustPoints.rotation.y += 0.002;
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        const newW = container.clientWidth;
+        const newH = container.clientHeight;
+        camera.aspect = newW / newH;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newW, newH);
+      });
+    }
+
+    // ==============================================================
+    // 10. THREE.JS 3D SPATIAL GALLERY 360° CYLINDER ENGINE
+    // ==============================================================
+    let rotateGallery = () => {};
+    function initThreeGallery() {
+      const container = document.getElementById('three-gallery-container');
+      if (!container || typeof THREE === 'undefined') return;
+
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 360;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0c0a09); // Dark luxury charcoal
+
+      const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 50);
+      camera.position.set(0, 0, 4.6);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      container.appendChild(renderer.domElement);
+
+      // Studio Lighting
+      const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambient);
+
+      const spotLight = new THREE.SpotLight(0xfef08a, 1.8);
+      spotLight.position.set(0, 4, 3);
+      spotLight.angle = Math.PI / 4;
+      spotLight.penumbra = 0.8;
+      scene.add(spotLight);
+
+      // Gallery Master Group
+      const galleryGroup = new THREE.Group();
+      scene.add(galleryGroup);
+
+      // Photos Array
+      const photoUrls = [
+        './assets/couple_hero.jpg',
+        './assets/gallery_1.jpg',
+        './assets/gallery_2.jpg',
+        './assets/gallery_3.jpg',
+        './assets/gallery_4.jpg',
+        './assets/gallery_5.jpg',
+      ];
+
+      const radius = 3.2;
+      const count = photoUrls.length;
+      const textureLoader = new THREE.TextureLoader();
+
+      photoUrls.forEach((url, i) => {
+        const angle = (i / count) * Math.PI * 2;
+        const x = radius * Math.sin(angle);
+        const z = radius * Math.cos(angle);
+
+        const cardGroup = new THREE.Group();
+        cardGroup.position.set(x, 0, z);
+        cardGroup.rotation.y = angle + Math.PI; // Face center
+
+        // Frame backplate (Gold metallic)
+        const frameGeo = new THREE.BoxGeometry(2.06, 1.46, 0.05);
+        const frameMat = new THREE.MeshStandardMaterial({
+          color: 0xc5a059,
+          metalness: 0.9,
+          roughness: 0.2,
+        });
+        const frame = new THREE.Mesh(frameGeo, frameMat);
+        cardGroup.add(frame);
+
+        // Photo texture plane
+        const photoGeo = new THREE.PlaneGeometry(1.98, 1.38);
+        const texture = textureLoader.load(url);
+        texture.generateMipmaps = true;
+        const photoMat = new THREE.MeshBasicMaterial({
+          map: texture,
+        });
+        const photoMesh = new THREE.Mesh(photoGeo, photoMat);
+        photoMesh.position.z = 0.03;
+        cardGroup.add(photoMesh);
+
+        galleryGroup.add(cardGroup);
+      });
+
+      // Drag / Swipe Controls
+      let isDragging = false;
+      let prevX = 0;
+      let targetAngle = 0;
+      let autoSpin = true;
+
+      rotateGallery = function(dir) {
+        targetAngle += (Math.PI * 2 / count) * dir;
+        autoSpin = false;
+      };
+
+      function onDown(e) {
+        isDragging = true;
+        autoSpin = false;
+        prevX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      }
+
+      function onMove(e) {
+        if (!isDragging) return;
+        const curX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        const deltaX = curX - prevX;
+        prevX = curX;
+        targetAngle += deltaX * 0.008;
+      }
+
+      function onUp() {
+        isDragging = false;
+      }
+
+      container.addEventListener('mousedown', onDown);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+
+      container.addEventListener('touchstart', onDown, { passive: true });
+      window.addEventListener('touchmove', onMove, { passive: true });
+      window.addEventListener('touchend', onUp);
+
+      // Animate Gallery
+      function animate() {
+        requestAnimationFrame(animate);
+
+        if (autoSpin && !isDragging) {
+          targetAngle += 0.003;
+        }
+
+        galleryGroup.rotation.y += (targetAngle - galleryGroup.rotation.y) * 0.08;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        const newW = container.clientWidth;
+        const newH = container.clientHeight;
+        camera.aspect = newW / newH;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newW, newH);
+      });
+    }
+
+    // Init Three.js scenes on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeRings();
+      initThreeGallery();
+    });
+    // Fallback if already loaded
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(() => {
+        initThreeRings();
+        initThreeGallery();
+      }, 100);
+    }
   </script>
 
 </body>
