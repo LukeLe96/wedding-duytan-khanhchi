@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Thiệp Cưới Cinematic Story — Duy Tân &amp; Đinh Khánh Chi (Version 3)</title>
+  <title>Thiệp Cưới Chính Thức — Lê Duy Tân &amp; Đinh Khánh Chi</title>
 
-  <!-- Google Fonts: Playfair Display & Outfit -->
+  <!-- Google Fonts: Playfair Display, Outfit & Alex Brush -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700;800&family=Alex+Brush&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -24,15 +24,23 @@
           colors: {
             rosewood: {
               50: '#FDF8F6',
-              100: '#F2E8E5',
-              200: '#E4CFCA',
+              100: '#F5EBE8',
+              200: '#EAD6D1',
               800: '#881337',
               900: '#4C0519',
             },
             champagne: {
+              100: '#F9F5EC',
+              200: '#F0E6D2',
+              300: '#E4D3B1',
               400: '#D4AF37',
               500: '#C5A059',
+              600: '#9E8040',
             }
+          },
+          boxShadow: {
+            'polaroid': '0 20px 45px -10px rgba(40, 20, 10, 0.15), 0 0 0 1px rgba(0,0,0,0.05)',
+            'glass': '0 20px 40px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 2px rgba(255,255,255,0.9)',
           }
         }
       }
@@ -44,19 +52,35 @@
       background-color: #FAF6F0;
       font-family: 'Outfit', sans-serif;
       color: #292524;
+      overflow-x: hidden;
     }
-    /* Polaroid 3D Pin Card */
+    .gold-foil {
+      background: linear-gradient(135deg, #ECC274 0%, #FAF0D2 35%, #D4AF37 60%, #9B782B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Floating Rose Petals Canvas */
+    #canvas-petals {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 40;
+    }
+    /* Polaroid 3D Cards */
     .polaroid-card {
       background: #FFFFFF;
       padding: 12px 12px 28px 12px;
-      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04);
+      box-shadow: 0 18px 40px -12px rgba(45, 25, 10, 0.18), 0 0 0 1px rgba(212, 175, 55, 0.2);
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
     }
     .polaroid-card:hover {
       transform: scale(1.04) rotate(0deg) !important;
-      box-shadow: 0 25px 50px -12px rgba(180, 83, 9, 0.25);
-      z-index: 20;
+      box-shadow: 0 28px 60px -15px rgba(180, 83, 9, 0.3);
+      z-index: 25;
     }
     .washi-tape {
       position: absolute;
@@ -65,36 +89,52 @@
       transform: translateX(-50%);
       width: 80px;
       height: 22px;
-      background: rgba(212, 175, 55, 0.45);
+      background: rgba(212, 175, 55, 0.5);
       backdrop-filter: blur(2px);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    /* Spinning Vinyl */
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 12s linear infinite;
+    }
+    .anim-paused {
+      animation-play-state: paused;
     }
   </style>
 </head>
-<body class="overflow-x-hidden antialiased pb-24">
+<body class="antialiased pb-28">
+
+  <!-- PETAL RAIN CANVAS -->
+  <canvas id="canvas-petals"></canvas>
 
   <!-- ============================================================== -->
-  <!-- VERSION SWITCHER FLOATING BAR                                  -->
+  <!-- FLOATING MUSIC PLAYER                                          -->
   <!-- ============================================================== -->
-  <div class="fixed top-3 left-1/2 -translate-x-1/2 z-50 bg-stone-900/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-amber-400/40 shadow-xl flex items-center gap-1.5 text-[10px] sm:text-xs">
-    <span class="text-amber-300 font-bold hidden sm:inline pl-1">PHIÊN BẢN:</span>
-    <a href="/" class="px-2.5 py-1 rounded-full text-stone-300 hover:text-white font-medium transition">
-      V1. Quiet Luxury
-    </a>
-    <a href="/v2.html" class="px-2.5 py-1 rounded-full text-stone-300 hover:text-white font-medium transition">
-      V2. Glass 3D
-    </a>
-    <a href="/v3.html" class="px-2.5 py-1 rounded-full bg-rose-500 text-white font-black shadow-sm">
-      V3. Cinematic (Đang xem)
-    </a>
+  <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+    <button id="audio-btn" onclick="toggleAudio()" class="group flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-stone-900/85 backdrop-blur-md border border-amber-400/40 text-white shadow-xl hover:bg-stone-900 transition">
+      <div id="vinyl-disc" class="w-6 h-6 rounded-full bg-stone-950 border border-amber-400 flex items-center justify-center animate-spin-slow shrink-0">
+        <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+      </div>
+      <div class="text-left hidden sm:block">
+        <span class="block text-[10px] font-bold tracking-wider text-amber-200 uppercase font-sans">Until I Found You</span>
+        <span id="audio-status" class="block text-[9px] text-stone-400">Đang phát ♫</span>
+      </div>
+    </button>
   </div>
 
-  <!-- CINEMATIC HERO SECTION (FULL PHOTO BANNER) -->
-  <section class="relative min-h-[90vh] flex flex-col justify-end pt-20 pb-16 px-4 overflow-hidden">
+
+  <!-- ============================================================== -->
+  <!-- 1. CINEMATIC HERO SECTION (FULL PHOTO BANNER)                  -->
+  <!-- ============================================================== -->
+  <section class="relative min-h-[92vh] flex flex-col justify-end pt-24 pb-16 px-4 overflow-hidden">
     <!-- Hero Background Image -->
     <div class="absolute inset-0 z-0">
-      <img src="./assets/couple_hero.jpg" alt="Duy Tân & Khánh Chi Lễ Dạm Ngõ" class="w-full h-full object-cover object-center filter brightness-90 contrast-105">
-      <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-stone-950/20"></div>
+      <img src="./assets/couple_hero.jpg" alt="Duy Tân & Đinh Khánh Chi Lễ Dạm Ngõ" class="w-full h-full object-cover object-center filter brightness-95 contrast-105">
+      <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/45 to-stone-950/20"></div>
     </div>
 
     <!-- Hero Content Overlay -->
@@ -102,25 +142,65 @@
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-[11px] font-bold tracking-[0.25em] uppercase text-amber-200 shadow-md">
         ✦ WE ARE GETTING MARRIED ✦
       </div>
-      <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight drop-shadow-lg">
-        Lê Duy Tân <span class="font-script text-amber-300 text-5xl sm:text-7xl font-normal">&amp;</span> Đinh Khánh Chi
+      
+      <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight drop-shadow-2xl">
+        Lê Duy Tân <span class="font-script text-amber-300 text-5xl sm:text-7xl md:text-8xl font-normal">&amp;</span> Đinh Khánh Chi
       </h1>
-      <p class="text-xs sm:text-sm text-stone-200 max-w-md mx-auto drop-shadow font-light">
-        Dấu mốc thiêng liêng từ Lễ Dạm Ngõ 16.09.2026 đến ngày chung đôi 28.11.2026 tại GEM Center TP.HCM
+      
+      <p class="text-xs sm:text-sm text-stone-200 max-w-md mx-auto drop-shadow font-light leading-relaxed">
+        Dấu mốc thiêng liêng từ Lễ Dạm Ngõ 16.09.2026 đến ngày chung đôi 28.11.2026 tại Grand Ballroom, GEM Center TP. Hồ Chí Minh
       </p>
 
       <div class="pt-4 flex flex-wrap justify-center gap-3">
-        <a href="#event-details" class="px-6 py-3 rounded-full bg-white text-stone-950 text-xs font-bold uppercase tracking-wider shadow-xl hover:scale-105 transition">
+        <a href="#event-details" class="px-7 py-3.5 rounded-full bg-white text-stone-950 text-xs font-bold uppercase tracking-wider shadow-2xl hover:scale-105 active:scale-95 transition">
           Xem Lịch Trình Hôn Lễ
         </a>
-        <a href="#wishing-box" class="px-6 py-3 rounded-full bg-white/20 backdrop-blur-md border border-white/40 text-white text-xs font-bold uppercase tracking-wider hover:bg-white/30 transition">
-          Hộp Mừng Cưới Số
+        <a href="#rsvp-section" class="px-7 py-3.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 text-xs font-black uppercase tracking-wider shadow-2xl hover:scale-105 active:scale-95 transition">
+          Xác Nhận Tham Dự 💌
         </a>
       </div>
     </div>
   </section>
 
-  <!-- LOVE STORY TIMELINE -->
+
+  <!-- ============================================================== -->
+  <!-- 2. COUNTDOWN TIMER CLOCK                                       -->
+  <!-- ============================================================== -->
+  <section class="py-12 bg-[#F5EFE6] border-y border-champagne-300/80 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-champagne-600 uppercase block mb-1">
+        CÙNG ĐẾM NGƯỢC THỜI GIAN
+      </span>
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-stone-900 mb-6">
+        Khoảnh Khắc Về Chung Một Nhà
+      </h2>
+
+      <!-- 4 Clock Cards -->
+      <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-md mx-auto">
+        <div class="p-3 sm:p-4 rounded-2xl bg-white border border-champagne-300/70 shadow-sm">
+          <span id="cd-days" class="block font-display text-2xl sm:text-4xl font-bold text-amber-700">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-wider">Ngày</span>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-white border border-champagne-300/70 shadow-sm">
+          <span id="cd-hours" class="block font-display text-2xl sm:text-4xl font-bold text-amber-700">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-wider">Giờ</span>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-white border border-champagne-300/70 shadow-sm">
+          <span id="cd-minutes" class="block font-display text-2xl sm:text-4xl font-bold text-amber-700">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-wider">Phút</span>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-white border border-champagne-300/70 shadow-sm">
+          <span id="cd-seconds" class="block font-display text-2xl sm:text-4xl font-bold text-amber-700">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-wider">Giây</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================== -->
+  <!-- 3. LOVE STORY TIMELINE                                         -->
+  <!-- ============================================================== -->
   <section class="py-20 px-4 max-w-4xl mx-auto">
     <div class="text-center max-w-md mx-auto mb-16 space-y-2">
       <span class="text-[11px] font-bold tracking-[0.25em] text-amber-700 uppercase">
@@ -129,41 +209,42 @@
       <h2 class="font-display text-3xl sm:text-4xl font-bold text-stone-900">
         Câu Chuyện Chung Đôi
       </h2>
+      <p class="text-xs text-stone-500">"Hạnh phúc là một hành trình, không phải là đích đến"</p>
     </div>
 
     <!-- Vertical Timeline -->
-    <div class="relative border-l-2 border-amber-300/60 ml-4 sm:ml-32 space-y-12 pl-6 sm:pl-10">
+    <div class="relative border-l-2 border-amber-400/50 ml-4 sm:ml-28 space-y-12 pl-6 sm:pl-10">
       
       <!-- Timeline 1: Lễ Dạm Ngõ -->
       <div class="relative group">
-        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-amber-500 border-4 border-white shadow-md flex items-center justify-center text-white text-[10px]">
+        <div class="absolute -left-[31px] sm:-left-[47px] top-2 w-7 h-7 rounded-full bg-amber-500 border-4 border-white shadow-md flex items-center justify-center text-white text-xs">
           💍
         </div>
-        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-2">
+        <div class="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/90 shadow-sm space-y-2 hover:shadow-md transition">
           <div class="flex justify-between items-center text-xs text-amber-800 font-bold">
             <span>NGÀY 16 THÁNG 09 NĂM 2026</span>
-            <span class="text-[10px] bg-amber-100 px-2 py-0.5 rounded font-mono">06.08 Bính Ngọ</span>
+            <span class="text-[10px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-mono font-bold">06.08 Bính Ngọ</span>
           </div>
-          <h3 class="font-display text-xl font-bold text-stone-900">Lễ Dạm Ngõ Thiêng Liêng</h3>
-          <p class="text-xs text-stone-600 leading-relaxed">
-            Hai bên gia đình chính thức gặp gỡ, trao tráp sính lễ và kết thân thông gia. Đôi bạn trẻ nhận được sự chúc phúc ấm áp từ bố mẹ và quan khách hai họ.
+          <h3 class="font-display text-2xl font-bold text-stone-900">Lễ Dạm Ngõ Thiêng Liêng</h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            Hai bên gia đình chính thức gặp gỡ tại tư gia, trao tráp sính lễ và kết thân thông gia. Đôi bạn trẻ nhận được sự chúc phúc ấm áp từ bố mẹ, người thân và quan khách hai họ.
           </p>
         </div>
       </div>
 
       <!-- Timeline 2: Lễ Thành Hôn -->
       <div class="relative group">
-        <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-6 h-6 rounded-full bg-rose-600 border-4 border-white shadow-md flex items-center justify-center text-white text-[10px]">
+        <div class="absolute -left-[31px] sm:-left-[47px] top-2 w-7 h-7 rounded-full bg-rose-600 border-4 border-white shadow-md flex items-center justify-center text-white text-xs">
           💒
         </div>
-        <div class="bg-white p-6 rounded-3xl border-2 border-amber-400 shadow-md space-y-2">
+        <div class="bg-white p-6 sm:p-7 rounded-3xl border-2 border-champagne-400 shadow-md space-y-2 hover:shadow-lg transition">
           <div class="flex justify-between items-center text-xs text-rose-700 font-bold">
             <span>NGÀY 28 THÁNG 11 NĂM 2026</span>
-            <span class="text-[10px] bg-rose-100 px-2 py-0.5 rounded font-mono">18:00 PM</span>
+            <span class="text-[10px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-mono font-bold">18:00</span>
           </div>
-          <h3 class="font-display text-xl font-bold text-stone-900">Hôn Lễ Trọng Thể &amp; Dạ Tiệc Cưới</h3>
-          <p class="text-xs text-stone-600 leading-relaxed">
-            Khai tiệc tại Grand Ballroom, Trung tâm Sự kiện GEM Center (Quận 1, TP.HCM) với sự hiện diện chứng kiến của toàn thể bạn bè thân hữu và gia đình.
+          <h3 class="font-display text-2xl font-bold text-stone-900">Hôn Lễ Trọng Thể &amp; Dạ Tiệc Cưới</h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            Nghi thức gia tiên buổi sáng lúc 09:00 tại tư gia nhà trai (Quận 3) &amp; Khai tiệc chúc mừng lúc 18:00 tại Grand Ballroom, Trung tâm Sự kiện GEM Center (Quận 1, TP.HCM).
           </p>
         </div>
       </div>
@@ -171,8 +252,11 @@
     </div>
   </section>
 
-  <!-- POLAROID PHOTO GALLERY (FLOATING 3D CARDS) -->
-  <section class="py-16 px-4 max-w-6xl mx-auto">
+
+  <!-- ============================================================== -->
+  <!-- 4. POLAROID PHOTO GALLERY (FLOATING 3D CARDS)                  -->
+  <!-- ============================================================== -->
+  <section class="py-20 px-4 max-w-6xl mx-auto">
     <div class="text-center max-w-md mx-auto mb-16 space-y-2">
       <span class="text-[11px] font-bold tracking-[0.25em] text-amber-700 uppercase">
         ALBUM PHIM POLAROID
@@ -184,151 +268,362 @@
     </div>
 
     <!-- Floating Polaroid Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10">
       
-      <!-- Polaroid 1 -->
+      <!-- Polaroid 1: Groom Duy Tân -->
       <div class="polaroid-card rounded-md -rotate-2">
         <div class="washi-tape"></div>
         <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
           <img src="./assets/groom_duytan.jpg" alt="Chú rể Lê Duy Tân" class="w-full h-full object-cover">
         </div>
-        <p class="font-script text-xl text-center text-stone-800">Chú rể Duy Tân</p>
-        <p class="text-[10px] text-center text-stone-400 font-sans">Kỹ sư công nghệ • Trưởng Nam</p>
+        <p class="font-script text-2xl text-center text-stone-800">Chú rể Duy Tân</p>
+        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Kỹ sư công nghệ • Trưởng Nam • Gia Lai</p>
       </div>
 
-      <!-- Polaroid 2 -->
+      <!-- Polaroid 2: Bride Khánh Chi -->
       <div class="polaroid-card rounded-md rotate-2">
         <div class="washi-tape"></div>
         <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
           <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover">
         </div>
-        <p class="font-script text-xl text-center text-stone-800">Cô dâu Khánh Chi</p>
-        <p class="text-[10px] text-center text-stone-400 font-sans">Duyên dáng, phúc hậu • Ái Nữ</p>
+        <p class="font-script text-2xl text-center text-stone-800">Cô dâu Khánh Chi</p>
+        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Duyên dáng, phúc hậu • Ái Nữ • Hà Nội</p>
       </div>
 
-      <!-- Polaroid 3 -->
+      <!-- Polaroid 3: Full Couple Standing -->
       <div class="polaroid-card rounded-md -rotate-1">
         <div class="washi-tape"></div>
         <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
           <img src="./assets/couple_full.jpg" alt="Bảng Chào Dạm Ngõ" class="w-full h-full object-cover">
         </div>
-        <p class="font-script text-xl text-center text-stone-800">Duy Tân 囍 Khánh Chi</p>
-        <p class="text-[10px] text-center text-stone-400 font-sans">Lễ Dạm Ngõ 16.09.2026</p>
+        <p class="font-script text-2xl text-center text-stone-800">Duy Tân 囍 Khánh Chi</p>
+        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Lễ Dạm Ngõ 16.09.2026</p>
       </div>
 
-      <!-- Polaroid 4 -->
+      <!-- Polaroid 4: Tráp Sính Lễ -->
       <div class="polaroid-card rounded-md rotate-1">
         <div class="washi-tape"></div>
         <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
           <img src="./assets/gallery_1.jpg" alt="Tráp Lễ" class="w-full h-full object-cover">
         </div>
-        <p class="font-script text-xl text-center text-stone-800">Sính lễ dạm ngõ</p>
-        <p class="text-[10px] text-center text-stone-400 font-sans">Nghi thức gia tiên trang trọng</p>
+        <p class="font-script text-2xl text-center text-stone-800">Sính lễ dạm ngõ</p>
+        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Nghi thức gia tiên trang trọng</p>
       </div>
 
-      <!-- Polaroid 5 -->
+      <!-- Polaroid 5: Gia Đình Hai Họ -->
       <div class="polaroid-card rounded-md -rotate-2">
         <div class="washi-tape"></div>
         <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
           <img src="./assets/gallery_2.jpg" alt="Gia Đình" class="w-full h-full object-cover">
         </div>
-        <p class="font-script text-xl text-center text-stone-800">Gia đình hai họ</p>
-        <p class="text-[10px] text-center text-stone-400 font-sans">Sum họp ấm cúng thân tình</p>
+        <p class="font-script text-2xl text-center text-stone-800">Gia đình hai họ</p>
+        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Sum họp ấm cúng thân tình</p>
       </div>
 
-      <!-- Polaroid 6 -->
+      <!-- Polaroid 6: Nụ Cười Ngày Vui -->
       <div class="polaroid-card rounded-md rotate-2">
         <div class="washi-tape"></div>
         <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
           <img src="./assets/gallery_3.jpg" alt="Nụ cười ngày vui" class="w-full h-full object-cover">
         </div>
-        <p class="font-script text-xl text-center text-stone-800">Nụ cười đính ước</p>
-        <p class="text-[10px] text-center text-stone-400 font-sans">Hạnh phúc vẹn tròn chung đôi</p>
+        <p class="font-script text-2xl text-center text-stone-800">Nụ cười đính ước</p>
+        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Hạnh phúc vẹn tròn chung đôi</p>
       </div>
 
     </div>
   </section>
 
-  <!-- EVENT DETAILS -->
-  <section id="event-details" class="py-16 px-4 max-w-4xl mx-auto">
-    <div class="bg-white p-8 sm:p-10 rounded-[32px] border border-amber-300 shadow-sm space-y-6">
-      <div class="text-center space-y-1">
-        <span class="text-[10px] uppercase tracking-widest font-bold text-amber-700">ĐỊA ĐIỂM TỔ CHỨC</span>
-        <h3 class="font-display text-3xl font-bold text-stone-900">Grand Ballroom — GEM Center</h3>
-        <p class="text-xs text-stone-500">Số 8 Nguyễn Bỉnh Khiêm, Phường Đa Kao, Quận 1, TP. Hồ Chí Minh</p>
+
+  <!-- ============================================================== -->
+  <!-- 5. EVENT DETAILS & LOCATIONS (THỜI GIAN & ĐỊA ĐIỂM)           -->
+  <!-- ============================================================== -->
+  <section id="event-details" class="py-16 px-4 max-w-5xl mx-auto">
+    <div class="bg-white p-7 sm:p-12 rounded-[36px] border border-amber-300/80 shadow-polaroid space-y-8">
+      
+      <div class="text-center space-y-2">
+        <span class="text-[10px] sm:text-[11px] uppercase tracking-widest font-bold text-amber-700">ĐỊA ĐIỂM TỔ CHỨC</span>
+        <h3 class="font-display text-3xl sm:text-4xl font-bold text-stone-900">Grand Ballroom — GEM Center</h3>
+        <p class="text-xs sm:text-sm text-stone-500">Số 8 Nguyễn Bỉnh Khiêm, Phường Đa Kao, Quận 1, TP. Hồ Chí Minh</p>
       </div>
 
-      <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-stone-700 text-center">
-        <p class="font-bold text-amber-900">18:00 Thứ Bảy, Ngày 28 Tháng 11 Năm 2026</p>
-        <p class="text-[11px] mt-1">Đón khách: 18:00 • Khai tiệc: 19:00 • Âm nhạc &amp; Dạ vũ: 20:30</p>
+      <!-- Detail Box -->
+      <div class="p-6 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs sm:text-sm text-stone-700 text-center space-y-1">
+        <p class="font-bold text-amber-900 text-base">18:00 Thứ Bảy, Ngày 28 Tháng 11 Năm 2026</p>
+        <p class="text-stone-600">Đón khách: 18:00 • Khai tiệc trọng thể: 19:00 • Âm nhạc &amp; Dạ vũ: 20:30</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 max-w-md mx-auto">
-        <a href="https://maps.google.com/?q=GEM+Center+Nguyen+Binh+Khiem" target="_blank" class="py-3 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs text-center transition shadow-md">
-          📍 Chỉ Đường Maps
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto">
+        <a href="https://maps.google.com/?q=GEM+Center+Nguyen+Binh+Khiem" target="_blank" class="py-3.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs text-center uppercase tracking-wider transition shadow-md flex items-center justify-center gap-1.5">
+          <span>📍 Chỉ Đường Maps</span>
         </a>
-        <button onclick="addToCal()" class="py-3 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 font-bold text-xs transition">
-          📅 Thêm Vào Lịch
+        <button onclick="addToCal()" class="py-3.5 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-1.5">
+          <span>📅 Thêm Vào Lịch</span>
         </button>
       </div>
+
     </div>
   </section>
 
-  <!-- WISHING BOX VIETQR -->
+
+  <!-- ============================================================== -->
+  <!-- 6. RSVP FORM (XÁC NHẬN THAM DỰ TIỆC CƯỚI)                    -->
+  <!-- ============================================================== -->
+  <section id="rsvp-section" class="py-16 px-4 max-w-3xl mx-auto">
+    <div class="bg-white p-7 sm:p-10 rounded-[36px] border border-amber-300/80 shadow-polaroid space-y-6">
+      
+      <div class="text-center space-y-2 mb-6">
+        <span class="text-[10px] uppercase tracking-widest font-bold text-amber-700">XÁC NHẬN THAM DỰ</span>
+        <h3 class="font-display text-3xl font-bold text-stone-900">Gửi Lời Phản Hồi (RSVP)</h3>
+        <p class="text-xs text-stone-500 max-w-md mx-auto">
+          Để công tác chuẩn bị chỗ ngồi và tiếp đón được chu toàn nhất, xin Quý khách vui lòng xác nhận trước ngày 15/11/2026.
+        </p>
+      </div>
+
+      <form onsubmit="handleRsvp(event)" class="space-y-4 text-xs">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Họ và tên của bạn *</label>
+            <input type="text" required placeholder="Ví dụ: Nguyễn Văn A" class="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-amber-500 transition text-stone-900 text-sm">
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Số điện thoại / Zalo *</label>
+            <input type="tel" required placeholder="0908 xxx xxx" class="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-amber-500 transition text-stone-900 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1.5">Khả năng tham dự tiệc *</label>
+          <div class="grid grid-cols-2 gap-3 font-semibold">
+            <label class="p-3 rounded-xl border border-amber-400 bg-amber-50/60 flex items-center gap-2.5 cursor-pointer">
+              <input type="radio" name="attend" value="yes" checked class="text-amber-600 focus:ring-amber-500">
+              <span class="text-stone-900">Chắc chắn tham dự ✨</span>
+            </label>
+            <label class="p-3 rounded-xl border border-stone-200 bg-stone-50 flex items-center gap-2.5 cursor-pointer">
+              <input type="radio" name="attend" value="no" class="text-stone-500">
+              <span class="text-stone-600">Rất tiếc, tôi bận mất 💌</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Số lượng khách đi cùng</label>
+            <select class="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-amber-500 transition text-stone-900">
+              <option value="1">Đi 1 mình tôi</option>
+              <option value="2">Đi cùng 1 người thân (+1)</option>
+              <option value="3">Gia đình 3 người</option>
+              <option value="4">Cả gia đình (4 người trở lên)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 mb-1">Khẩu phần ăn</label>
+            <select class="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-amber-500 transition text-stone-900">
+              <option value="standard">Tiệc mặn tiêu chuẩn</option>
+              <option value="veg">Thực đơn chay thanh tịnh</option>
+              <option value="allergy">Dị ứng hải sản</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Gửi lời chúc mừng đến Tân &amp; Chi</label>
+          <textarea rows="3" placeholder="Chúc hai bạn trăm năm hạnh phúc..." class="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-amber-500 transition text-stone-900 text-sm"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-xs uppercase tracking-wider shadow-xl transition flex items-center justify-center gap-2 border border-amber-400/30">
+          <span>XÁC NHẬN GỬI PHẢN HỒI</span>
+          <span>✦</span>
+        </button>
+
+      </form>
+
+      <div id="rsvp-alert" class="hidden mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-center text-xs text-emerald-800 font-bold animate-in fade-in">
+        🎉 Đã gửi xác nhận thành công! Hẹn gặp Quý khách tại GEM Center!
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================== -->
+  <!-- 7. WISHING BOX VIETQR (HỘP MỪNG CƯỚI TỪ XA)                   -->
+  <!-- ============================================================== -->
   <section id="wishing-box" class="py-16 px-4 max-w-3xl mx-auto text-center">
     <div class="mb-10 space-y-1">
       <span class="text-[10px] uppercase tracking-widest font-bold text-amber-700">MỪNG CƯỚI TỪ XA</span>
       <h3 class="font-display text-3xl font-bold text-stone-900">Hộp Quà Chúc Phúc</h3>
+      <p class="text-xs text-stone-500">Dành cho Quý khách ở xa muốn gửi lời chúc mừng hạnh phúc</p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <!-- Groom -->
-      <div class="p-6 bg-white rounded-3xl border border-stone-200 shadow-sm space-y-3">
+      
+      <!-- Groom QR -->
+      <div class="p-6 bg-white rounded-3xl border border-amber-200 shadow-sm space-y-3">
         <span class="px-3 py-1 rounded-full bg-stone-900 text-amber-300 text-[10px] font-bold uppercase">
           CHÚ RỂ: LÊ DUY TÂN
         </span>
-        <div class="w-40 h-40 mx-auto bg-white p-2 rounded-2xl border border-stone-200">
+        <div class="w-44 h-44 mx-auto bg-white p-2 rounded-2xl border border-stone-200 shadow-2xs">
           <img src="https://api.vietqr.io/image/970422-0000112233440-compact2.jpg?amount=0&addInfo=MUNG%20CUOI%20DUY%20TAN&accountName=LE%20DUY%20TAN" alt="QR Duy Tân" class="w-full h-full object-contain">
         </div>
-        <div class="text-xs text-stone-600">
-          <p class="font-bold">MBBank • 0000112233440</p>
-          <p class="text-[11px] text-stone-400">CHỦ TK: LE DUY TAN</p>
+        <div class="text-xs text-stone-600 space-y-0.5">
+          <p class="font-bold text-stone-900">MBBank Quân Đội</p>
+          <p class="font-mono text-sm font-bold text-stone-900">0000112233440</p>
+          <p class="text-[11px] text-stone-500">CHỦ TK: LE DUY TAN</p>
         </div>
+        <button onclick="copyAccount('0000112233440')" class="w-full py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-[11px] font-bold transition">
+          📋 Sao Chép Số Tài Khoản
+        </button>
       </div>
 
-      <!-- Bride -->
-      <div class="p-6 bg-white rounded-3xl border border-stone-200 shadow-sm space-y-3">
+      <!-- Bride QR -->
+      <div class="p-6 bg-white rounded-3xl border border-amber-200 shadow-sm space-y-3">
         <span class="px-3 py-1 rounded-full bg-rose-700 text-white text-[10px] font-bold uppercase">
           CÔ DÂU: ĐINH KHÁNH CHI
         </span>
-        <div class="w-40 h-40 mx-auto bg-white p-2 rounded-2xl border border-stone-200 overflow-hidden">
+        <div class="w-44 h-44 mx-auto bg-white p-2 rounded-2xl border border-stone-200 shadow-2xs overflow-hidden">
           <img src="./assets/qr_bride_square.jpg" alt="QR Khánh Chi" class="w-full h-full object-contain">
         </div>
-        <div class="text-xs text-stone-600">
-          <p class="font-bold">LPBank • 15093012892256</p>
-          <p class="text-[11px] text-stone-400">CHỦ TK: DINH KHANH CHI</p>
+        <div class="text-xs text-stone-600 space-y-0.5">
+          <p class="font-bold text-stone-900">LPBank (Lộc Phát Việt Nam)</p>
+          <p class="font-mono text-sm font-bold text-stone-900">15093012892256</p>
+          <p class="text-[11px] text-stone-500">CHỦ TK: DINH KHANH CHI</p>
         </div>
+        <button onclick="copyAccount('15093012892256')" class="w-full py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-900 text-[11px] font-bold transition">
+          📋 Sao Chép Số Tài Khoản
+        </button>
       </div>
+
     </div>
   </section>
+
 
   <!-- FOOTER -->
   <footer class="py-12 bg-stone-950 text-stone-400 text-center px-4 space-y-2">
     <div class="font-display text-2xl font-bold text-amber-300">
-      Duy Tân &amp; Đinh Khánh Chi
+      Lê Duy Tân &amp; Đinh Khánh Chi
     </div>
     <p class="text-xs text-stone-500">
-      Trân trọng cảm ơn tình cảm và lời chúc phúc của Quý khách!
+      Trân trọng cảm ơn tình cảm và sự đồng hành của Quý khách trên hành trình hạnh phúc của chúng tôi!
     </p>
+    <div class="pt-4 flex justify-center gap-3 text-[11px] text-stone-600 font-mono">
+      <span>© 2026 Duy Tân &amp; Khánh Chi</span>
+      <span>•</span>
+      <a href="/v1.html" class="hover:text-amber-400 underline">Bản V1</a>
+      <span>•</span>
+      <a href="/v2.html" class="hover:text-amber-400 underline">Bản V2</a>
+    </div>
   </footer>
 
+
+  <!-- STICKY BOTTOM ACTION BAR FOR MOBILE -->
+  <div class="fixed bottom-0 left-0 right-0 z-50 p-3 bg-white/95 backdrop-blur-md border-t border-amber-300 sm:hidden flex items-center gap-2.5 shadow-2xl">
+    <a href="#rsvp-section" class="flex-1 py-3 rounded-xl bg-stone-900 text-amber-300 text-xs font-bold text-center tracking-wider uppercase shadow-md flex items-center justify-center gap-1.5">
+      <span>💌 Xác Nhận Tham Dự</span>
+    </a>
+    <a href="tel:0908322122" class="px-4 py-3 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold flex items-center justify-center">
+      <span>📞 Gọi</span>
+    </a>
+  </div>
+
+
+  <!-- JAVASCRIPT -->
   <script>
+    // 1. Live Countdown Timer to Nov 28, 2026 18:00:00
+    const targetDate = new Date('2026-11-28T18:00:00+07:00').getTime();
+    function updateCountdown() {
+      const now = Date.now();
+      const diff = targetDate - now;
+      if (diff > 0) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('cd-days').innerText = String(d).padStart(2, '0');
+        document.getElementById('cd-hours').innerText = String(h).padStart(2, '0');
+        document.getElementById('cd-minutes').innerText = String(m).padStart(2, '0');
+        document.getElementById('cd-seconds').innerText = String(s).padStart(2, '0');
+      }
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 2. Audio Player Toggle
+    let isPlaying = true;
+    function toggleAudio() {
+      const disc = document.getElementById('vinyl-disc');
+      const status = document.getElementById('audio-status');
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        disc.classList.remove('anim-paused');
+        if (status) status.innerText = 'Đang phát ♫';
+      } else {
+        disc.classList.add('anim-paused');
+        if (status) status.innerText = 'Tạm dừng ⏸';
+      }
+    }
+
+    // 3. Copy Account Helper
+    function copyAccount(acc) {
+      navigator.clipboard.writeText(acc);
+      alert('Đã sao chép số tài khoản: ' + acc);
+    }
+
+    // 4. Add to Google Calendar
     function addToCal() {
       const title = encodeURIComponent('Lễ Thành Hôn: Lê Duy Tân & Đinh Khánh Chi');
       const details = encodeURIComponent('Tiệc cưới báo hỷ tại Grand Ballroom, GEM Center, TP.HCM');
       const location = encodeURIComponent('GEM Center, 8 Nguyễn Bỉnh Khiêm, Đa Kao, Quận 1, TP.HCM');
       window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20261128T110000Z/20261128T150000Z&details=${details}&location=${location}`, '_blank');
     }
+
+    // 5. RSVP Form Handler
+    function handleRsvp(e) {
+      e.preventDefault();
+      document.getElementById('rsvp-alert').classList.remove('hidden');
+      alert('Cảm ơn Quý khách đã gửi phản hồi! Chúng tôi rất vinh hạnh được đón tiếp Quý khách.');
+    }
+
+    // 6. Floating Rose Petals & Golden Dust
+    const canvas = document.getElementById('canvas-petals');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
+
+    const petals = [];
+    for (let i = 0; i < 26; i++) {
+      petals.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 5 + 3,
+        color: Math.random() > 0.4 ? 'rgba(225, 112, 136, 0.45)' : 'rgba(218, 165, 32, 0.35)',
+        tiltAngle: Math.random() * 5,
+        speedY: Math.random() * 1.2 + 0.5,
+        speedX: Math.random() * 0.8 - 0.4
+      });
+    }
+
+    function drawPetals() {
+      ctx.clearRect(0, 0, W, H);
+      for (let p of petals) {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.ellipse(p.x, p.y, p.r, p.r * 1.5, p.tiltAngle, 0, Math.PI * 2);
+        ctx.fill();
+        p.y += p.speedY;
+        p.x += p.speedX;
+        p.tiltAngle += 0.02;
+        if (p.y > H) {
+          p.y = -15;
+          p.x = Math.random() * W;
+        }
+      }
+      requestAnimationFrame(drawPetals);
+    }
+    drawPetals();
   </script>
+
 </body>
 </html>
