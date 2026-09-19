@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="vi" class="overflow-hidden h-full select-none">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Không Gian 3D WebGL Hoàng Gia — Duy Tân &amp; Đinh Khánh Chi</title>
+
+  <!-- Google Fonts: Cormorant Garamond & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Three.js & GSAP Animation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0c0a09;
+      font-family: 'Outfit', sans-serif;
+    }
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      outline: none;
+    }
+    .hud-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .interactive {
+      pointer-events: auto;
+    }
+    .gold-foil {
+      background: linear-gradient(135deg, #ECC274 0%, #FAF0D2 35%, #D4AF37 60%, #9B782B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Smooth glass HUD */
+    .glass-hud {
+      background: rgba(18, 16, 15, 0.72);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    /* Spinning vinyl */
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 12s linear infinite;
+    }
+    .anim-paused {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+<body class="text-stone-200">
+
+  <!-- ============================================================== -->
+  <!-- 1. FULL-VIEWPORT THREE.JS WEBGL CANVAS                         -->
+  <!-- ============================================================== -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- ============================================================== -->
+  <!-- 2. HEADS-UP DISPLAY (HUD) INTERFACE LAYER                      -->
+  <!-- ============================================================== -->
+  <div class="hud-layer p-4 sm:p-6">
+    
+    <!-- TOP HEADER HUD -->
+    <header class="flex items-center justify-between w-full max-w-6xl mx-auto interactive">
+      
+      <!-- Brand & Mode Indicator -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="w-10 h-10 rounded-2xl glass-hud flex items-center justify-center text-amber-300 font-bold hover:scale-105 transition shadow-md">
+          ←
+        </a>
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-hud text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-amber-300 uppercase">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            <span>THREE.JS 3D UNIVERSE</span>
+          </div>
+          <h1 class="text-xs sm:text-sm font-serif font-bold text-white tracking-wide mt-1 hidden sm:block">
+            Lê Duy Tân &amp; Đinh Khánh Chi
+          </h1>
+        </div>
+      </div>
+
+      <!-- Right Controls: Audio Player & 3D Orbit Mode Toggle -->
+      <div class="flex items-center gap-2.5">
+        
+        <!-- 3D Orbit Free Look Toggle -->
+        <button id="orbit-toggle" onclick="toggleFreeOrbit()" class="px-3 py-1.5 rounded-full glass-hud text-[10px] sm:text-xs font-bold text-amber-200 hover:text-white flex items-center gap-1.5 transition">
+          <span id="orbit-icon">🔄</span>
+          <span id="orbit-text">Tự Do Xoay 360°</span>
+        </button>
+
+        <!-- Audio Vinyl Button -->
+        <button onclick="toggleAudio()" class="p-1.5 sm:px-3 sm:py-1.5 rounded-full glass-hud flex items-center gap-2 hover:border-amber-400/50 transition">
+          <div id="vinyl-disc" class="w-6 h-6 rounded-full bg-stone-900 border border-amber-400 flex items-center justify-center animate-spin-slow">
+            <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+          </div>
+          <span class="text-[10px] font-bold text-stone-200 hidden md:inline">Until I Found You</span>
+        </button>
+
+      </div>
+
+    </header>
+
+    <!-- CENTER DYNAMIC FLOATING CARD (Updates per 3D chapter) -->
+    <div class="my-auto w-full max-w-lg mx-auto interactive pointer-events-auto">
+      <div id="chapter-card" class="glass-hud p-5 sm:p-7 rounded-3xl transition-all duration-700 transform translate-y-0 opacity-100 relative overflow-hidden">
+        
+        <!-- Dynamic Glow Accent -->
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Chapter Tag -->
+        <div class="flex items-center justify-between mb-3">
+          <span id="card-tag" class="text-[10px] font-bold tracking-[0.25em] text-amber-400 uppercase font-sans">
+            ✦ CHƯƠNG 1: THƯ MỜI 3D ✦
+          </span>
+          <span id="card-step" class="text-[10px] font-mono text-stone-400">01 / 05</span>
+        </div>
+
+        <!-- Dynamic Title & Subtitle -->
+        <h2 id="card-title" class="font-serif text-2xl sm:text-3xl font-bold text-white leading-tight gold-foil mb-2">
+          Duy Tân &amp; Đinh Khánh Chi
+        </h2>
+        <p id="card-desc" class="text-xs sm:text-sm text-stone-300 leading-relaxed font-normal mb-5">
+          Chào mừng Quý khách đến với không gian cưới 3D WebGL. Chạm xoay không gian để khám phá đôi nhẫn cưới và những khoảnh khắc đính ước thiêng liêng.
+        </p>
+
+        <!-- Dynamic Action Buttons -->
+        <div id="card-actions" class="flex flex-wrap items-center gap-2.5">
+          <button onclick="nextChapter()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 text-xs font-bold tracking-wider uppercase hover:scale-105 active:scale-95 transition shadow-lg flex items-center gap-1.5">
+            <span>Tiếp Tục Khám Phá</span>
+            <span>➤</span>
+          </button>
+          <a href="/" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-stone-200 text-xs font-bold transition">
+            Xem Thiệp Truyền Thống
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM 3D CHAPTER NAVIGATION BAR -->
+    <footer class="w-full max-w-xl mx-auto interactive mb-2">
+      <div class="glass-hud p-2 rounded-2xl flex items-center justify-between gap-1 sm:gap-2 shadow-2xl">
+        
+        <button onclick="goToChapter(0)" id="nav-btn-0" class="chapter-nav-btn flex-1 py-2 px-1.5 rounded-xl text-center transition text-amber-300 bg-white/15 font-bold text-[10px] sm:text-xs">
+          💌 Thư Mời
+        </button>
+        <button onclick="goToChapter(1)" id="nav-btn-1" class="chapter-nav-btn flex-1 py-2 px-1.5 rounded-xl text-center transition text-stone-400 hover:text-stone-200 font-medium text-[10px] sm:text-xs">
+          💍 Đôi Nhẫn
+        </button>
+        <button onclick="goToChapter(2)" id="nav-btn-2" class="chapter-nav-btn flex-1 py-2 px-1.5 rounded-xl text-center transition text-stone-400 hover:text-stone-200 font-medium text-[10px] sm:text-xs">
+          📸 Kỷ Niệm
+        </button>
+        <button onclick="goToChapter(3)" id="nav-btn-3" class="chapter-nav-btn flex-1 py-2 px-1.5 rounded-xl text-center transition text-stone-400 hover:text-stone-200 font-medium text-[10px] sm:text-xs">
+          🏛️ Hôn Lễ
+        </button>
+        <button onclick="goToChapter(4)" id="nav-btn-4" class="chapter-nav-btn flex-1 py-2 px-1.5 rounded-xl text-center transition text-stone-400 hover:text-stone-200 font-medium text-[10px] sm:text-xs">
+          🎁 Mừng Cưới
+        </button>
+
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- 3. THREE.JS 3D UNIVERSE ENGINE                                 -->
+  <!-- ============================================================== -->
+  <script>
+    // -----------------------------------------------------------------
+    // A. CHAPTER CONTENT CONFIGURATION
+    // -----------------------------------------------------------------
+    const CHAPTERS = [
+      {
+        tag: "✦ CHƯƠNG 1: THƯ MỜI HOÀNG GIA ✦",
+        step: "01 / 05",
+        title: "Duy Tân & Đinh Khánh Chi",
+        desc: "Trân trọng kính mời Quý khách cùng gia đình đến chứng kiến và chúc phúc cho ngày trọng đại của chúng tôi tại không gian 3D tương tác.",
+        btnText: "Ngắm Đôi Nhẫn Cưới 3D ➤",
+        camPos: { x: 0, y: 0.5, z: 5.5 },
+        camLook: { x: 0, y: 0, z: 0 },
+        actionHtml: `
+          <button onclick="nextChapter()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-stone-950 text-xs font-bold tracking-wider uppercase hover:scale-105 active:scale-95 transition shadow-lg">
+            Khám Phá Đôi Nhẫn 3D ➤
+          </button>
+          <a href="/" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-stone-200 text-xs font-bold transition">
+            Về Bản Thiệp Chuẩn
+          </a>
+        `
+      },
+      {
+        tag: "✦ CHƯƠNG 2: ĐÔI NHẪN KẾT DUYÊN ✦",
+        step: "02 / 05",
+        title: "Lời Thề Nguyện Gắn Kết Trọn Đời",
+        desc: "Nhẫn Vàng 18K 'TÂN' đan lồng cùng Nhẫn Bạch Kim 'CHI' đính Solitaire Diamond phát sáng lung linh trong không gian 3D PBR.",
+        camPos: { x: 0, y: 0, z: 3.2 },
+        camLook: { x: 0, y: 0, z: 0 },
+        actionHtml: `
+          <button onclick="nextChapter()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-stone-950 text-xs font-bold tracking-wider uppercase hover:scale-105 active:scale-95 transition shadow-lg">
+            Xem Triển Lãm Ảnh 3D 360° ➤
+          </button>
+        `
+      },
+      {
+        tag: "✦ CHƯƠNG 3: VÒNG XOAY KỶ NIỆM 3D ✦",
+        step: "03 / 05",
+        title: "Khoảnh Khắc Lễ Dạm Ngõ 16.09",
+        desc: "6 bức ảnh thật của Duy Tân & Khánh Chi cùng hai bên gia đình bay lơ lửng trên quỹ đạo vòm cong mạ vàng 3D.",
+        camPos: { x: 0, y: 0.4, z: 4.8 },
+        camLook: { x: 0, y: 0, z: 0 },
+        actionHtml: `
+          <button onclick="nextChapter()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-stone-950 text-xs font-bold tracking-wider uppercase hover:scale-105 active:scale-95 transition shadow-lg">
+            Thông Tin Lịch Trình Hôn Lễ ➤
+          </button>
+        `
+      },
+      {
+        tag: "✦ CHƯƠNG 4: THỜI GIAN & ĐỊA ĐIỂM ✦",
+        step: "04 / 05",
+        title: "Grand Ballroom — GEM Center",
+        desc: "18:00 PM Thứ Bảy, Ngày 28 Tháng 11 Năm 2026. Số 8 Nguyễn Bỉnh Khiêm, Phường Đa Kao, Quận 1, TP. Hồ Chí Minh.",
+        camPos: { x: -1.2, y: 0.6, z: 4.2 },
+        camLook: { x: 0, y: 0, z: 0 },
+        actionHtml: `
+          <a href="https://maps.google.com/?q=GEM+Center+Nguyen+Binh+Khiem" target="_blank" class="px-5 py-2.5 rounded-xl bg-stone-100 text-stone-900 text-xs font-bold tracking-wider uppercase hover:bg-white transition flex items-center gap-1.5 shadow-md">
+            <span>📍 Chỉ Đường Maps</span>
+          </a>
+          <button onclick="nextChapter()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-stone-950 text-xs font-bold tracking-wider uppercase hover:scale-105 transition shadow-lg">
+            Hộp Mừng Cưới Số ➤
+          </button>
+        `
+      },
+      {
+        tag: "✦ CHƯƠNG 5: HỘP MỪNG CƯỚI TỪ XA ✦",
+        step: "05 / 05",
+        title: "Gửi Quà Chúc Phúc Số",
+        desc: "Quý khách có thể quét mã VietQR MBBank (Lê Duy Tân: 0000112233440) hoặc LPBank (Đinh Khánh Chi: 15093012892256).",
+        camPos: { x: 1.2, y: 0.6, z: 4.2 },
+        camLook: { x: 0, y: 0, z: 0 },
+        actionHtml: `
+          <a href="/" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-600 text-stone-950 text-xs font-bold tracking-wider uppercase hover:scale-105 transition shadow-lg">
+            Quét Mã QR & Xác Nhận Tham Dự 💌
+          </a>
+          <button onclick="goToChapter(0)" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-stone-200 text-xs font-bold transition">
+            ↺ Xem Lại Từ Đầu
+          </button>
+        `
+      }
+    ];
+
+    let currentChapterIndex = 0;
+    let isFreeOrbit = false;
+
+    // -----------------------------------------------------------------
+    // B. THREE.JS SCENE SETUP
+    // -----------------------------------------------------------------
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x0c0a09, 0.08);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0.5, 5.5);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
+    // LIGHTING SYSTEM
+    const ambientLight = new THREE.AmbientLight(0xffecd2, 0.8);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.5);
+    sunLight.position.set(5, 8, 5);
+    scene.add(sunLight);
+
+    const rimLight = new THREE.DirectionalLight(0xc5a059, 1.2);
+    rimLight.position.set(-5, -3, -2);
+    scene.add(rimLight);
+
+    const pointLight = new THREE.PointLight(0xffd700, 2.0, 15);
+    pointLight.position.set(0, 2, 3);
+    scene.add(pointLight);
+
+    // -----------------------------------------------------------------
+    // C. 3D OBJECTS & GEOMETRY
+    // -----------------------------------------------------------------
+
+    // 1. 3D INTERLOCKING RINGS
+    const ringsMaster = new THREE.Group();
+    scene.add(ringsMaster);
+
+    // Ring 1 (Gold 18K - Groom Duy Tân)
+    const ring1Geo = new THREE.TorusGeometry(1.2, 0.17, 32, 80);
+    const ring1Mat = new THREE.MeshStandardMaterial({
+      color: 0xf59e0b,
+      metalness: 0.95,
+      roughness: 0.14,
+    });
+    const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+    ring1.position.set(-0.62, 0, 0);
+    ring1.rotation.set(0.4, 0.35, 0);
+    ringsMaster.add(ring1);
+
+    // Ring 2 (Platinum Solitaire - Bride Đinh Khánh Chi)
+    const ring2Geo = new THREE.TorusGeometry(1.08, 0.14, 32, 80);
+    const ring2Mat = new THREE.MeshStandardMaterial({
+      color: 0xf8fafc,
+      metalness: 0.98,
+      roughness: 0.08,
+    });
+    const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+    ring2.position.set(0.62, 0, 0);
+    ring2.rotation.set(-0.35, 0.45, 0);
+    ringsMaster.add(ring2);
+
+    // Solitaire Diamond on Bride Ring
+    const diamondGeo = new THREE.OctahedronGeometry(0.28, 2);
+    const diamondMat = new THREE.MeshStandardMaterial({
+      color: 0xe0f2fe,
+      emissive: 0x38bdf8,
+      emissiveIntensity: 0.5,
+      metalness: 0.1,
+      roughness: 0.05,
+    });
+    const diamond = new THREE.Mesh(diamondGeo, diamondMat);
+    diamond.position.set(0, 1.2, 0);
+    ring2.add(diamond);
+
+    // 2. 3D FLOATING GALLERY CYLINDER
+    const galleryGroup = new THREE.Group();
+    scene.add(galleryGroup);
+
+    const textureLoader = new THREE.TextureLoader();
+    const photoUrls = [
+      './assets/couple_hero.jpg',
+      './assets/gallery_1.jpg',
+      './assets/gallery_2.jpg',
+      './assets/gallery_3.jpg',
+      './assets/gallery_4.jpg',
+      './assets/gallery_5.jpg',
+    ];
+
+    const radius = 3.6;
+    photoUrls.forEach((url, i) => {
+      const angle = (i / photoUrls.length) * Math.PI * 2;
+      const x = radius * Math.sin(angle);
+      const z = radius * Math.cos(angle);
+
+      const panel = new THREE.Group();
+      panel.position.set(x, 0, z);
+      panel.rotation.y = angle + Math.PI;
+
+      // Golden backplate
+      const frameGeo = new THREE.BoxGeometry(2.1, 1.45, 0.06);
+      const frameMat = new THREE.MeshStandardMaterial({
+        color: 0xc5a059,
+        metalness: 0.92,
+        roughness: 0.22,
+      });
+      const frame = new THREE.Mesh(frameGeo, frameMat);
+      panel.add(frame);
+
+      // Photo
+      const photoGeo = new THREE.PlaneGeometry(2.0, 1.35);
+      const tex = textureLoader.load(url);
+      tex.generateMipmaps = true;
+      const photoMat = new THREE.MeshBasicMaterial({ map: tex });
+      const photoMesh = new THREE.Mesh(photoGeo, photoMat);
+      photoMesh.position.z = 0.035;
+      panel.add(photoMesh);
+
+      galleryGroup.add(panel);
+    });
+
+    // 3. 3D FLOATING ROSE PETALS (100 Petals)
+    const petalGroup = new THREE.Group();
+    scene.add(petalGroup);
+    const petalCount = 90;
+    const petalMeshes = [];
+
+    const petalGeo = new THREE.PlaneGeometry(0.18, 0.24);
+    const petalMat = new THREE.MeshStandardMaterial({
+      color: 0xe17088, // soft pink
+      side: THREE.DoubleSide,
+      roughness: 0.8,
+      metalness: 0.1,
+      transparent: true,
+      opacity: 0.85
+    });
+
+    for (let i = 0; i < petalCount; i++) {
+      const petal = new THREE.Mesh(petalGeo, petalMat);
+      petal.position.set(
+        (Math.random() - 0.5) * 12,
+        Math.random() * 10 - 2,
+        (Math.random() - 0.5) * 10
+      );
+      petal.rotation.set(
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        Math.random() * Math.PI
+      );
+      petal.userData = {
+        speedY: Math.random() * 0.015 + 0.008,
+        rotSpeedX: Math.random() * 0.02 - 0.01,
+        rotSpeedY: Math.random() * 0.02 - 0.01,
+        swaySpeed: Math.random() * 0.003 + 0.001,
+        swayOffset: Math.random() * Math.PI * 2
+      };
+      petalMeshes.push(petal);
+      petalGroup.add(petal);
+    }
+
+    // 4. 3D GOLDEN DUST PARTICLES (200 Sparkles)
+    const dustCount = 200;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPositions = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount * 3; i += 3) {
+      dustPositions[i] = (Math.random() - 0.5) * 16;
+      dustPositions[i+1] = (Math.random() - 0.5) * 12;
+      dustPositions[i+2] = (Math.random() - 0.5) * 14;
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+    const dustMat = new THREE.PointsMaterial({
+      color: 0xfef08a,
+      size: 0.07,
+      transparent: true,
+      opacity: 0.75,
+    });
+    const dustField = new THREE.Points(dustGeo, dustMat);
+    scene.add(dustField);
+
+    // -----------------------------------------------------------------
+    // D. CHAPTER NAVIGATION & CAMERA TRANSITIONS
+    // -----------------------------------------------------------------
+    function updateHUD(idx) {
+      const ch = CHAPTERS[idx];
+      const card = document.getElementById('chapter-card');
+      
+      gsap.to(card, {
+        opacity: 0,
+        y: 15,
+        duration: 0.25,
+        onComplete: () => {
+          document.getElementById('card-tag').innerText = ch.tag;
+          document.getElementById('card-step').innerText = ch.step;
+          document.getElementById('card-title').innerText = ch.title;
+          document.getElementById('card-desc').innerText = ch.desc;
+          document.getElementById('card-actions').innerHTML = ch.actionHtml;
+
+          // Update active bottom nav tabs
+          for (let i = 0; i < 5; i++) {
+            const btn = document.getElementById(`nav-btn-${i}`);
+            if (i === idx) {
+              btn.className = "chapter-nav-btn flex-1 py-2 px-1.5 rounded-xl text-center transition text-amber-300 bg-white/15 font-bold text-[10px] sm:text-xs shadow-sm";
+            } else {
+              btn.className = "chapter-nav-btn flex-1 py-2 px-1.5 rounded-xl text-center transition text-stone-400 hover:text-stone-200 font-medium text-[10px] sm:text-xs";
+            }
+          }
+
+          gsap.to(card, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" });
+        }
+      });
+    }
+
+    function goToChapter(idx) {
+      if (idx < 0 || idx >= CHAPTERS.length) return;
+      currentChapterIndex = idx;
+      isFreeOrbit = false;
+      document.getElementById('orbit-text').innerText = "Tự Do Xoay 360°";
+      updateHUD(idx);
+
+      const target = CHAPTERS[idx];
+      gsap.to(camera.position, {
+        x: target.camPos.x,
+        y: target.camPos.y,
+        z: target.camPos.z,
+        duration: 1.6,
+        ease: "power3.inOut"
+      });
+    }
+
+    function nextChapter() {
+      const nextIdx = (currentChapterIndex + 1) % CHAPTERS.length;
+      goToChapter(nextIdx);
+    }
+
+    // -----------------------------------------------------------------
+    // E. 3D INTERACTION & ORBIT CONTROL
+    // -----------------------------------------------------------------
+    let isPointerDown = false;
+    let prevPointerX = 0, prevPointerY = 0;
+
+    function toggleFreeOrbit() {
+      isFreeOrbit = !isFreeOrbit;
+      const text = document.getElementById('orbit-text');
+      if (isFreeOrbit) {
+        text.innerText = "Đang Tự Do Xoay 360°";
+      } else {
+        text.innerText = "Tự Do Xoay 360°";
+        goToChapter(currentChapterIndex);
+      }
+    }
+
+    function onPointerDown(e) {
+      isPointerDown = true;
+      prevPointerX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      prevPointerY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    }
+
+    function onPointerMove(e) {
+      const curX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      const curY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+
+      // Parallax mouse light
+      pointLight.position.x = (curX / window.innerWidth - 0.5) * 6;
+      pointLight.position.y = -(curY / window.innerHeight - 0.5) * 4 + 1;
+
+      if (!isPointerDown) return;
+      const deltaX = curX - prevPointerX;
+      const deltaY = curY - prevPointerY;
+      prevPointerX = curX;
+      prevPointerY = curY;
+
+      if (isFreeOrbit) {
+        camera.position.x -= deltaX * 0.01;
+        camera.position.y += deltaY * 0.01;
+      } else {
+        ringsMaster.rotation.y += deltaX * 0.008;
+        ringsMaster.rotation.x += deltaY * 0.008;
+        galleryGroup.rotation.y += deltaX * 0.008;
+      }
+    }
+
+    function onPointerUp() {
+      isPointerDown = false;
+    }
+
+    window.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    window.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+    window.addEventListener('touchend', onPointerUp);
+
+    // -----------------------------------------------------------------
+    // F. AUDIO TOGGLE
+    // -----------------------------------------------------------------
+    let isAudioPlaying = true;
+    function toggleAudio() {
+      const disc = document.getElementById('vinyl-disc');
+      isAudioPlaying = !isAudioPlaying;
+      if (isAudioPlaying) {
+        disc.classList.remove('anim-paused');
+      } else {
+        disc.classList.add('anim-paused');
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // G. MAIN ANIMATION LOOP (60 FPS)
+    // -----------------------------------------------------------------
+    const clock = new THREE.Clock();
+
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
+
+      // Animate Rings
+      if (!isPointerDown && !isFreeOrbit) {
+        ringsMaster.rotation.y += 0.006;
+        ringsMaster.position.y = Math.sin(time * 1.5) * 0.08;
+      }
+      diamond.rotation.y += 0.015;
+
+      // Animate Gallery
+      if (!isPointerDown && !isFreeOrbit) {
+        galleryGroup.rotation.y += 0.002;
+      }
+
+      // Animate Rose Petals
+      for (let i = 0; i < petalCount; i++) {
+        const p = petalMeshes[i];
+        p.position.y -= p.userData.speedY;
+        p.position.x += Math.sin(time + p.userData.swayOffset) * 0.004;
+        p.rotation.x += p.userData.rotSpeedX;
+        p.rotation.y += p.userData.rotSpeedY;
+
+        if (p.position.y < -3.5) {
+          p.position.y = 6.5;
+          p.position.x = (Math.random() - 0.5) * 12;
+        }
+      }
+
+      // Animate Gold Dust
+      dustField.rotation.y = time * 0.02;
+
+      // Keep camera looking at scene center
+      if (!isFreeOrbit) {
+        camera.lookAt(0, 0, 0);
+      }
+
+      renderer.render(scene, camera);
+    }
+    renderLoop();
+
+    // Responsive Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Initial HUD
+    updateHUD(0);
+  </script>
+
+</body>
+</html>
