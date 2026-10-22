@@ -331,32 +331,41 @@
   <!-- ============================================================== -->
   <!-- 2. COUNTDOWN TIMER CLOCK                                       -->
   <!-- ============================================================== -->
-  <section class="py-14 bg-gradient-to-b from-[#F5EFE6] via-[#F8F4ED] to-[#F5EFE6] border-y border-champagne-300/80 px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-champagne-600 uppercase block mb-1.5">
-        CÙNG ĐẾM NGƯỢC THỜI GIAN
-      </span>
-      <h2 class="font-display text-2xl sm:text-3xl font-bold text-stone-900 mb-8">
+  <section class="py-16 bg-gradient-to-b from-stone-900 via-stone-950 to-stone-900 text-white border-y border-gold/30 px-4 relative overflow-hidden">
+    <!-- Ambient gold bokeh glow -->
+    <div class="absolute inset-0 pointer-events-none opacity-20">
+      <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-72 h-72 rounded-full bg-gold-bright blur-3xl"></div>
+      <div class="absolute top-1/2 right-1/4 -translate-y-1/2 w-72 h-72 rounded-full bg-ruby blur-3xl"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto text-center relative z-10 space-y-4">
+      <div class="inline-flex items-center gap-2 text-xs font-bold tracking-[0.3em] text-gold-bright uppercase">
+        <span>✦</span> CÙNG ĐẾM NGƯỢC THỜI GIAN <span>✦</span>
+      </div>
+      <h2 class="font-display text-2xl sm:text-4xl font-bold text-white tracking-wide">
         Khoảnh Khắc Về Chung Một Nhà
       </h2>
+      <p class="text-xs sm:text-sm text-stone-300 font-serif italic max-w-md mx-auto">
+        Từng giây phút đều là lời hẹn ước cho ngày chung đôi vẹn tròn
+      </p>
 
-      <!-- 4 Clock Cards -->
-      <div class="grid grid-cols-4 gap-2.5 sm:gap-5 max-w-lg mx-auto">
-        <div class="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-md border border-amber-300/60 shadow-xs hover:shadow-md transition">
-          <span id="cd-days" class="block font-display text-2xl sm:text-4xl font-extrabold text-amber-800 tracking-tight">00</span>
-          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.2em] mt-1 block">Ngày</span>
+      <!-- 4 Clock Cards: Editorial Dark Luxury & Gold Foil Accents -->
+      <div class="grid grid-cols-4 gap-2.5 sm:gap-6 max-w-lg mx-auto pt-4">
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-gold/40 shadow-2xl hover:border-gold-bright transition group">
+          <span id="cd-days" class="block font-display text-3xl sm:text-5xl font-extrabold text-gold-bright tracking-tight group-hover:scale-105 transition">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.25em] mt-1.5 block">Ngày</span>
         </div>
-        <div class="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-md border border-amber-300/60 shadow-xs hover:shadow-md transition">
-          <span id="cd-hours" class="block font-display text-2xl sm:text-4xl font-extrabold text-amber-800 tracking-tight">00</span>
-          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.2em] mt-1 block">Giờ</span>
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-gold/40 shadow-2xl hover:border-gold-bright transition group">
+          <span id="cd-hours" class="block font-display text-3xl sm:text-5xl font-extrabold text-gold-bright tracking-tight group-hover:scale-105 transition">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.25em] mt-1.5 block">Giờ</span>
         </div>
-        <div class="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-md border border-amber-300/60 shadow-xs hover:shadow-md transition">
-          <span id="cd-minutes" class="block font-display text-2xl sm:text-4xl font-extrabold text-amber-800 tracking-tight">00</span>
-          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.2em] mt-1 block">Phút</span>
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-gold/40 shadow-2xl hover:border-gold-bright transition group">
+          <span id="cd-minutes" class="block font-display text-3xl sm:text-5xl font-extrabold text-gold-bright tracking-tight group-hover:scale-105 transition">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.25em] mt-1.5 block">Phút</span>
         </div>
-        <div class="p-3.5 sm:p-5 rounded-2xl bg-white/90 backdrop-blur-md border border-amber-300/60 shadow-xs hover:shadow-md transition">
-          <span id="cd-seconds" class="block font-display text-2xl sm:text-4xl font-extrabold text-amber-800 tracking-tight">00</span>
-          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.2em] mt-1 block">Giây</span>
+        <div class="p-3.5 sm:p-5 rounded-2xl bg-stone-900/90 backdrop-blur-md border border-gold/40 shadow-2xl hover:border-gold-bright transition group">
+          <span id="cd-seconds" class="block font-display text-3xl sm:text-5xl font-extrabold text-gold-bright tracking-tight group-hover:scale-105 transition">00</span>
+          <span class="text-[9px] sm:text-[10px] text-stone-400 font-bold uppercase tracking-[0.25em] mt-1.5 block">Giây</span>
         </div>
       </div>
     </div>
@@ -382,16 +391,16 @@
       
       <!-- Timeline 1: Lễ Dạm Ngõ -->
       <div class="relative group">
-        <div class="absolute -left-[41px] sm:-left-[57px] top-2 w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-200 border-2 border-white shadow-md flex items-center justify-center text-stone-950 text-sm font-bold">
-          💍
+        <div class="absolute -left-[41px] sm:-left-[57px] top-2 w-9 h-9 rounded-full bg-gradient-to-br from-ruby via-ruby-700 to-ruby-900 border-2 border-gold-bright shadow-lg flex items-center justify-center text-gold-bright text-xs font-serif font-bold">
+          I
         </div>
-        <div class="bg-white/90 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-amber-300/70 shadow-xs hover:shadow-md transition space-y-2">
-          <div class="flex justify-between items-center text-xs text-amber-800 font-bold">
-            <span>NGÀY 16 THÁNG 09 NĂM 2026</span>
-            <span class="text-[10px] bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full font-mono font-bold">06.08 Bính Ngọ</span>
+        <div class="bg-white/95 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-gold/40 shadow-polaroid hover:border-gold-bright transition duration-300 space-y-2.5">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-ruby tracking-wider uppercase">NGÀY 16 THÁNG 09 NĂM 2026</span>
+            <span class="text-[10px] bg-gold/15 text-gold-700 px-3 py-0.5 rounded-full font-mono font-bold border border-gold/30">06.08 Bính Ngọ</span>
           </div>
           <h3 class="font-display text-2xl font-bold text-stone-900">Lễ Dạm Ngõ Thiêng Liêng</h3>
-          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
             Hai bên gia đình chính thức gặp gỡ tại tư gia, trao tráp sính lễ và kết thân thông gia. Đôi bạn trẻ nhận được sự chúc phúc ấm áp từ bố mẹ, người thân và quan khách hai họ.
           </p>
         </div>
@@ -399,18 +408,18 @@
 
       <!-- Timeline 2: Lễ Vu Quy & Tiệc Cưới -->
       <div class="relative group">
-        <div class="absolute -left-[41px] sm:-left-[57px] top-2 w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-200 border-2 border-white shadow-md flex items-center justify-center text-stone-950 text-sm font-bold">
-          💒
+        <div class="absolute -left-[41px] sm:-left-[57px] top-2 w-9 h-9 rounded-full bg-gradient-to-br from-ruby via-ruby-700 to-ruby-900 border-2 border-gold-bright shadow-lg flex items-center justify-center text-gold-bright text-xs font-serif font-bold">
+          II
         </div>
-        <div class="bg-white/90 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-amber-300/70 shadow-xs hover:shadow-md transition space-y-2">
-          <div class="flex justify-between items-center text-xs text-rose-700 font-bold">
-            <span>NGÀY 16 &amp; 17 THÁNG 01 NĂM 2027</span>
-            <span class="text-[10px] bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-full font-mono font-bold">09 &amp; 10 Tháng Chạp</span>
+        <div class="bg-white/95 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-gold/40 shadow-polaroid hover:border-gold-bright transition duration-300 space-y-2.5">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-ruby tracking-wider uppercase">NGÀY 16 &amp; 17 THÁNG 01 NĂM 2027</span>
+            <span class="text-[10px] bg-ruby-50 text-ruby px-3 py-0.5 rounded-full font-mono font-bold border border-ruby-200">09 &amp; 10 Tháng Chạp</span>
           </div>
           <h3 class="font-display text-2xl font-bold text-stone-900">Lễ Vu Quy &amp; Tiệc Cưới Trọng Thể</h3>
-          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
-            • <strong>Thứ Bảy, 16/01/2027:</strong> 17:00 Tiệc Nhóm Họ &amp; Tiếp Đón Họ Hàng Thân Hữu.<br>
-            • <strong>Chủ Nhật, 17/01/2027:</strong> 10:30 Nghi Thức Lễ Vu Quy &amp; Khai Tiệc Mừng Hạnh Phúc tại Tư Gia Nhà Gái.
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
+            • <strong class="text-stone-900">Thứ Bảy, 16/01/2027:</strong> 17:00 Tiệc Nhóm Họ &amp; Tiếp Đón Họ Hàng Thân Hữu.<br>
+            • <strong class="text-stone-900">Chủ Nhật, 17/01/2027:</strong> 10:30 Nghi Thức Lễ Vu Quy &amp; Khai Tiệc Mừng Hạnh Phúc tại Tư Gia Nhà Gái.
           </p>
         </div>
       </div>
@@ -422,11 +431,11 @@
   <!-- ============================================================== -->
   <!-- 3.5. THƯỚC PHIM CHUYỆN TRĂM NĂM (HỌA KHẮC TÌNH YÊU)            -->
   <!-- ============================================================== -->
-  <section class="py-16 px-4 max-w-4xl mx-auto">
-    <div class="bg-gradient-to-b from-white/95 via-[#FDFBF7] to-amber-50/70 p-6 sm:p-10 rounded-[36px] border border-amber-300/80 shadow-polaroid space-y-6">
+  <section class="py-20 px-4 max-w-4xl mx-auto">
+    <div class="bg-gradient-to-b from-[#FFFDF9] via-[#FAF7F2] to-[#F5EFE6] p-6 sm:p-10 rounded-[36px] border border-gold/40 shadow-polaroid space-y-6">
       
       <div class="text-center space-y-2">
-        <span class="inline-block px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300/80 text-amber-900 text-[10px] font-bold tracking-[0.25em] uppercase">
+        <span class="inline-block px-3.5 py-1 rounded-full bg-ruby-50 border border-ruby-200 text-ruby text-[10px] font-bold tracking-[0.3em] uppercase">
           ✦ HỌA KHẮC TÌNH YÊU ✦
         </span>
         <h3 class="font-display text-2xl sm:text-3xl font-bold text-stone-900 [text-wrap:balance]">
@@ -448,8 +457,8 @@
       </div>
 
       <!-- Fine-Art Framed Artwork & Cinematic Video Card -->
-      <div class="relative max-w-xl mx-auto rounded-3xl overflow-hidden bg-white p-3.5 sm:p-5 shadow-2xl border border-amber-200/90 group">
-        <div class="relative overflow-hidden rounded-2xl aspect-square bg-stone-900 shadow-inner">
+      <div class="relative max-w-xl mx-auto rounded-3xl overflow-hidden bg-white p-3.5 sm:p-5 shadow-polaroid border border-gold/40 group">
+        <div class="relative overflow-hidden rounded-2xl aspect-square bg-stone-950 border border-stone-800 shadow-inner">
           <video 
             id="couple-cinematic-video"
             src="./assets/front_greeting_perfect.mp4" 
@@ -769,48 +778,55 @@
 
   <!-- 5. EVENT DETAILS & LOCATIONS (THỜI GIAN & ĐỊA ĐIỂM)           -->
   <!-- ============================================================== -->
-  <section id="event-details" class="py-16 px-4 max-w-4xl mx-auto">
-    <div class="bg-gradient-to-b from-white to-[#FDFBF7] p-6 sm:p-12 rounded-[36px] border border-amber-300/80 shadow-polaroid space-y-8">
+  <section id="event-details" class="py-20 px-4 max-w-4xl mx-auto">
+    <div class="bg-gradient-to-b from-[#FFFDF9] via-[#FAF7F2] to-[#F5EFE6] p-6 sm:p-12 rounded-[36px] border border-gold/40 shadow-polaroid space-y-8 relative overflow-hidden">
       
-      <div class="text-center space-y-2">
-        <span class="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] font-bold text-amber-700">LỊCH TRÌNH HÔN LỄ</span>
-        <h3 class="font-display text-3xl sm:text-4xl font-bold text-stone-900">Lễ Vu Quy &amp; Tiệc Cưới Tại Tư Gia Nhà Gái</h3>
-        <p class="text-xs sm:text-sm text-stone-500 font-light">Trân trọng kính mời Quý khách cùng gia đình đến chung vui và chúc phúc cho đôi bạn trẻ</p>
+      <!-- Subtle watermark monogram in background -->
+      <div class="absolute -right-12 -bottom-12 font-display text-[160px] font-bold text-gold/5 pointer-events-none select-none">
+        T&C
       </div>
 
-      <!-- Detail Box: 2 Harmonized Cards with Concentric Radius -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+      <div class="text-center space-y-2 relative z-10">
+        <span class="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-bold text-ruby">✦ LỊCH TRÌNH HÔN LỄ ✦</span>
+        <h3 class="font-display text-3xl sm:text-4xl font-bold text-stone-900">Lễ Vu Quy &amp; Tiệc Cưới Tại Tư Gia Nhà Gái</h3>
+        <p class="text-xs sm:text-sm text-stone-600 font-serif italic max-w-lg mx-auto">
+          Trân trọng kính mời Quý khách cùng gia đình đến chung vui và chúc phúc cho đôi bạn trẻ Duy Tân &amp; Khánh Chi
+        </p>
+      </div>
+
+      <!-- Detail Box: 2 Harmonized Distinctive Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 text-left relative z-10">
         
-        <!-- Day 1 Card -->
-        <div class="p-6 rounded-3xl bg-white/90 border border-amber-200/90 shadow-2xs space-y-3 relative overflow-hidden group hover:border-amber-400 transition">
+        <!-- Day 1 Card: Twilight Velvet Charcoal -->
+        <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-stone-950 via-stone-900 to-stone-950 text-white border border-gold/40 shadow-2xl space-y-4 relative overflow-hidden group hover:border-gold-bright transition duration-300">
           <div class="flex items-center justify-between">
-            <span class="px-3 py-1 rounded-full bg-stone-900 text-amber-300 text-[10px] font-bold tracking-wider uppercase">
+            <span class="px-3.5 py-1 rounded-full bg-gold/20 text-gold-bright border border-gold/40 text-[10px] font-bold tracking-widest uppercase">
               NGÀY 1 • TIỆC NHÓM HỌ
             </span>
-            <span class="text-xs font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">09 Th. Chạp</span>
+            <span class="text-xs font-mono font-bold text-gold-bright bg-stone-800/80 px-2.5 py-1 rounded-full border border-gold/30">09 Th. Chạp</span>
           </div>
           <div class="space-y-1">
-            <p class="font-display text-xl font-bold text-stone-900">17:00 Thứ Bảy, 16/01/2027</p>
-            <p class="text-xs text-amber-800 font-medium">Bính Ngọ Niên • Đón tiếp họ hàng thân hữu</p>
+            <p class="font-display text-2xl font-bold text-white tracking-tight">17:00 Thứ Bảy</p>
+            <p class="text-xs font-semibold text-gold-bright uppercase tracking-wider">16 · 01 · 2027 (Bính Ngọ Niên)</p>
           </div>
-          <p class="text-[11px] text-stone-500 leading-relaxed border-t border-stone-100 pt-2.5">
+          <p class="text-xs text-stone-300 leading-relaxed border-t border-stone-800 pt-3">
             Buổi tiệc ấm cúng tiếp đón họ hàng, người thân và bà con lối xóm cùng chung vui, dựng rạp tại tư gia nhà gái.
           </p>
         </div>
 
-        <!-- Day 2 Card -->
-        <div class="p-6 rounded-3xl bg-white/90 border border-amber-200/90 shadow-2xs space-y-3 relative overflow-hidden group hover:border-amber-400 transition">
+        <!-- Day 2 Card: Royal Ruby Splendor -->
+        <div class="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#722F37] via-[#8B1E2D] to-[#5A1F27] text-white border border-gold-bright/60 shadow-2xl space-y-4 relative overflow-hidden group hover:border-gold transition duration-300">
           <div class="flex items-center justify-between">
-            <span class="px-3 py-1 rounded-full bg-amber-500 text-stone-950 text-[10px] font-bold tracking-wider uppercase">
+            <span class="px-3.5 py-1 rounded-full bg-gold-bright text-stone-950 text-[10px] font-black tracking-widest uppercase shadow-sm">
               NGÀY 2 • LỄ VU QUY &amp; KHAI TIỆC
             </span>
-            <span class="text-xs font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">10 Th. Chạp</span>
+            <span class="text-xs font-mono font-bold text-amber-200 bg-ruby-900/80 px-2.5 py-1 rounded-full border border-gold/40">10 Th. Chạp</span>
           </div>
           <div class="space-y-1">
-            <p class="font-display text-xl font-bold text-stone-900">10:30 Chủ Nhật, 17/01/2027</p>
-            <p class="text-xs text-amber-800 font-medium">Bính Ngọ Niên • Hôn lễ chính thức</p>
+            <p class="font-display text-2xl font-bold text-white tracking-tight">10:30 Chủ Nhật</p>
+            <p class="text-xs font-semibold text-gold-bright uppercase tracking-wider">17 · 01 · 2027 (Hôn Lễ Chính Thức)</p>
           </div>
-          <p class="text-[11px] text-stone-500 leading-relaxed border-t border-stone-100 pt-2.5">
+          <p class="text-xs text-rose-100/90 leading-relaxed border-t border-rose-900/60 pt-3">
             Nghi thức Lễ Vu Quy trang trọng đón dâu &amp; Khai tiệc mừng hạnh phúc đôi bạn trẻ tại Tư Gia Nhà Gái.
           </p>
         </div>
@@ -818,8 +834,8 @@
       </div>
 
       <!-- Action Button: Sophisticated Pill CTA -->
-      <div class="flex justify-center max-w-sm mx-auto pt-2">
-        <button onclick="addToCal()" class="w-full py-3.5 px-6 rounded-2xl bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-xs uppercase tracking-wider transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 border border-amber-400/40 active:scale-98">
+      <div class="flex justify-center max-w-sm mx-auto pt-3 relative z-10">
+        <button onclick="addToCal()" class="w-full py-3.5 px-6 rounded-full bg-stone-900 hover:bg-stone-800 text-gold-bright font-bold text-xs uppercase tracking-widest transition shadow-xl flex items-center justify-center gap-2 border border-gold/50 active:scale-98 cursor-pointer">
           <span>📅 Thêm Vào Lịch (16 &amp; 17/01/2027)</span>
         </button>
       </div>
@@ -831,14 +847,14 @@
   <!-- ============================================================== -->
   <!-- 6. RSVP FORM (XÁC NHẬN THAM DỰ TIỆC CƯỚI)                    -->
   <!-- ============================================================== -->
-  <section id="rsvp-section" class="py-16 px-4 max-w-3xl mx-auto">
-    <div class="bg-white p-7 sm:p-10 rounded-[36px] border border-amber-300/80 shadow-polaroid space-y-6">
+  <section id="rsvp-section" class="py-20 px-4 max-w-3xl mx-auto">
+    <div class="bg-gradient-to-b from-[#FFFDF9] via-[#FAF7F2] to-[#F5EFE6] p-7 sm:p-12 rounded-[36px] border border-gold/40 shadow-polaroid space-y-7 relative overflow-hidden">
       
       <div class="text-center space-y-2 mb-6">
-        <span class="text-[10px] uppercase tracking-widest font-bold text-amber-700">XÁC NHẬN THAM DỰ</span>
-        <h3 class="font-display text-3xl font-bold text-stone-900">Gửi Lời Phản Hồi (RSVP)</h3>
-        <p class="text-xs text-stone-500 max-w-md mx-auto">
-          Để công tác chuẩn bị cỗ bàn và tiếp đón được chu đáo nhất, xin Quý khách vui lòng xác nhận trước ngày 05/01/2027.
+        <span class="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-bold text-ruby block mb-1">✦ XÁC NHẬN THAM DỰ ✦</span>
+        <h3 class="font-display text-3xl sm:text-4xl font-bold text-stone-900">Gửi Lời Phản Hồi (RSVP)</h3>
+        <p class="text-xs sm:text-sm text-stone-600 font-serif italic max-w-md mx-auto">
+          Để công tác chuẩn bị cỗ bàn và tiếp đón được chu đáo nhất, xin Quý khách vui lòng gửi phản hồi trước ngày 05/01/2027.
         </p>
       </div>
 
@@ -911,9 +927,8 @@
           <textarea id="rsvp-message" rows="3" placeholder="Chúc hai bạn trăm năm hạnh phúc, mãi mãi bên nhau..." class="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-200 focus:outline-none focus:border-amber-500 transition text-stone-900 text-sm"></textarea>
         </div>
 
-        <button id="rsvp-submit-btn" type="submit" class="w-full py-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-xs uppercase tracking-wider shadow-xl transition flex items-center justify-center gap-2 border border-amber-400/30 active:scale-98">
-          <span>XÁC NHẬN GỬI PHẢN HỒI</span>
-          <span>✦</span>
+        <button id="rsvp-submit-btn" type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-r from-ruby via-ruby-700 to-ruby-800 hover:from-ruby-700 hover:to-ruby-900 text-gold-bright font-bold text-xs uppercase tracking-[0.2em] shadow-xl transition flex items-center justify-center gap-2 border border-gold/40 hover:border-gold-bright active:scale-98 cursor-pointer">
+          <span>✦ XÁC NHẬN GỬI PHẢN HỒI ✦</span>
         </button>
 
       </form>
@@ -950,15 +965,15 @@
   <!-- ============================================================== -->
   <!-- 7. TÂM SỰ MỎNG & HỘP MỪNG CƯỚI TỪ XA                            -->
   <!-- ============================================================== -->
-  <section id="wishing-box" class="py-16 px-4 max-w-2xl mx-auto text-center">
-    <div class="p-8 sm:p-12 rounded-[36px] bg-gradient-to-b from-white/95 via-[#FDFBF7] to-amber-50/60 border border-amber-300/80 shadow-polaroid space-y-6 relative overflow-hidden">
+  <section id="wishing-box" class="py-20 px-4 max-w-2xl mx-auto text-center">
+    <div class="p-8 sm:p-12 rounded-[36px] bg-gradient-to-b from-[#FFFDF9] via-[#FAF7F2] to-[#F5EFE6] border border-gold/40 shadow-polaroid space-y-6 relative overflow-hidden">
       <!-- Decorative Stamp / Monogram -->
-      <div class="w-14 h-14 mx-auto rounded-full bg-gradient-to-tr from-amber-200 via-amber-100 to-white border border-amber-300 shadow-xs flex items-center justify-center text-2xl select-none">
+      <div class="w-14 h-14 mx-auto rounded-full bg-gradient-to-tr from-gold-100 via-gold-50 to-white border border-gold/40 shadow-xs flex items-center justify-center text-2xl select-none">
         💌
       </div>
 
       <div class="space-y-1.5">
-        <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-amber-800 uppercase block">
+        <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.3em] text-ruby uppercase block">
           ✦ TÂM SỰ MỎNG CỦA TÂN &amp; CHI ✦
         </span>
         <h3 class="font-display text-2xl sm:text-3xl font-bold text-stone-900">
@@ -976,9 +991,8 @@
       </div>
 
       <div class="pt-3 space-y-2">
-        <button onclick="openGiftModal()" class="px-7 py-3.5 rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2 mx-auto border border-amber-400/40 active:scale-98">
-          <span>✉️ Gửi Món Quà Chúc Phúc Từ Xa</span>
-          <span>✦</span>
+        <button onclick="openGiftModal()" class="px-8 py-4 rounded-full bg-gradient-to-r from-stone-950 via-stone-900 to-stone-950 hover:from-stone-900 hover:to-stone-800 text-gold-bright font-bold text-xs uppercase tracking-[0.2em] shadow-2xl transition flex items-center justify-center gap-2 mx-auto border border-gold/50 active:scale-98 cursor-pointer">
+          <span>✉️ GỬI MÓN QUÀ CHÚC PHÚC TỪ XA ✦</span>
         </button>
         <p class="text-[11px] text-stone-400 font-sans">
           (Dành riêng cho bạn bè &amp; người thân ở xa không thể tham dự)
