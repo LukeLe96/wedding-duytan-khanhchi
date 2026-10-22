@@ -24,10 +24,10 @@
   <!-- Canvas Confetti Library (Lightweight) -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-  <!-- Google Fonts: Playfair Display, Outfit & Alex Brush -->
+  <!-- Google Fonts: Playfair Display, Be Vietnam Pro, Outfit & Alex Brush -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap&subset=vietnamese" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -35,12 +35,40 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            display: ['"Playfair Display"', 'serif'],
-            script: ['"Alex Brush"', 'cursive'],
-            sans: ['"Outfit"', 'sans-serif'],
-          },
           colors: {
+            ruby: {
+              50: '#FBF3F4',
+              100: '#F3DFE2',
+              200: '#E4B8BF',
+              300: '#C9808B',
+              400: '#A94B5A',
+              DEFAULT: '#8B1E2D',
+              600: '#8B1E2D',
+              700: '#722F37',
+              800: '#5A1F27',
+              900: '#3D1419'
+            },
+            gold: {
+              50: '#FBF7EC',
+              100: '#F4EAD0',
+              200: '#E8D4A2',
+              300: '#DCC07A',
+              DEFAULT: '#C5A059',
+              bright: '#D4AF37',
+              600: '#A8843F',
+              700: '#86672F',
+              800: '#5F4820'
+            },
+            ivory: {
+              DEFAULT: '#FAF7F2',
+              warm: '#F5EFE6',
+              deep: '#EDE4D6'
+            },
+            ink: {
+              DEFAULT: '#1C1917',
+              soft: '#44403C',
+              muted: '#78716C'
+            },
             rosewood: {
               50: '#FDF8F6',
               100: '#F5EBE8',
@@ -49,16 +77,23 @@
               900: '#4C0519',
             },
             champagne: {
-              100: '#F9F5EC',
-              200: '#F0E6D2',
-              300: '#E4D3B1',
-              400: '#D4AF37',
+              100: '#FDFBF7',
+              200: '#F7F2EA',
+              300: '#ECE3D4',
+              400: '#DFD1BA',
               500: '#C5A059',
               600: '#9E8040',
             }
           },
+          fontFamily: {
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Be Vietnam Pro"', '"Outfit"', 'sans-serif'],
+            script: ['"Alex Brush"', 'cursive'],
+          },
           boxShadow: {
-            'polaroid': '0 20px 45px -10px rgba(40, 20, 10, 0.15), 0 0 0 1px rgba(0,0,0,0.05)',
+            'polaroid': '0 2px 4px rgba(28,25,23,0.04), 0 12px 28px -6px rgba(28,25,23,0.12), 0 28px 48px -16px rgba(114,47,55,0.18)',
+            'polaroid-lift': '0 4px 8px rgba(28,25,23,0.06), 0 20px 40px -8px rgba(28,25,23,0.16), 0 40px 64px -20px rgba(114,47,55,0.25)',
+            'gold-glow': '0 0 0 1px rgba(212,175,55,0.35), 0 8px 30px -6px rgba(212,175,55,0.35)',
             'glass': '0 20px 40px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.8), inset 0 1px 2px rgba(255,255,255,0.9)',
           }
         }
@@ -67,17 +102,39 @@
   </script>
 
   <style>
-    body {
-      background-color: #FAF6F0;
-      font-family: 'Outfit', sans-serif;
-      color: #292524;
-      overflow-x: hidden;
+    :root {
+      --ruby: #8B1E2D;
+      --ruby-deep: #722F37;
+      --gold: #C5A059;
+      --gold-bright: #D4AF37;
+      --ivory: #FAF7F2;
+      --ivory-warm: #F5EFE6;
+      --ink: #1C1917;
+      --foil: linear-gradient(115deg, #86672F 0%, #C5A059 20%, #FAF0D2 38%, #D4AF37 55%, #A8843F 72%, #F1DFA6 85%, #C5A059 100%);
     }
+
+    body {
+      background-color: var(--ivory);
+      font-family: 'Be Vietnam Pro', 'Outfit', sans-serif;
+      color: var(--ink);
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 10% 20%, rgba(212,175,55,0.025) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(139,30,45,0.025) 0%, transparent 40%);
+    }
+
     .gold-foil {
-      background: linear-gradient(135deg, #ECC274 0%, #FAF0D2 35%, #D4AF37 60%, #9B782B 100%);
+      background-image: var(--foil);
+      background-size: 200% 100%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      animation: foil-shimmer 6s linear infinite;
     }
+
+    @keyframes foil-shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
     /* Floating Rose Petals Canvas */
     #canvas-petals {
       position: fixed;
@@ -88,32 +145,42 @@
       pointer-events: none;
       z-index: 40;
     }
-    /* Polaroid 3D Cards */
+
+    /* High Craftsmanship Washi Tape with torn fibre edges */
+    .washi-tape {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1.5deg);
+      width: 88px;
+      height: 24px;
+      background: linear-gradient(135deg, rgba(244,230,195,0.85) 0%, rgba(212,175,55,0.9) 40%, rgba(255,248,220,0.95) 60%, rgba(184,134,11,0.85) 100%);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 3px 10px rgba(180,83,9,0.22), inset 0 1px 2px rgba(255,255,255,0.8);
+      clip-path: polygon(
+        2% 0%, 98% 0%, 100% 10%, 97% 22%, 100% 35%, 98% 48%, 100% 60%, 97% 72%, 100% 85%, 98% 95%, 99% 100%,
+        1% 100%, 3% 88%, 0% 75%, 2% 62%, 0% 48%, 3% 35%, 0% 22%, 2% 10%, 0% 4%
+      );
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Polaroid Cards with Smooth Elevation */
     .polaroid-card {
       background: #FFFFFF;
       padding: 12px 12px 28px 12px;
-      box-shadow: 0 18px 40px -12px rgba(45, 25, 10, 0.18), 0 0 0 1px rgba(212, 175, 55, 0.2);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 6px -1px rgba(28, 25, 23, 0.05), 0 16px 32px -8px rgba(114, 47, 55, 0.12), 0 0 0 1px rgba(212, 175, 55, 0.2);
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
     }
+
     .polaroid-card:hover {
-      transform: scale(1.04) rotate(0deg) !important;
-      box-shadow: 0 28px 60px -15px rgba(180, 83, 9, 0.3);
+      transform: scale(1.03) rotate(0deg) translateY(-4px) !important;
+      box-shadow: 0 24px 48px -12px rgba(114, 47, 55, 0.28), 0 0 0 1.5px rgba(212, 175, 55, 0.45);
       z-index: 25;
     }
-    .washi-tape {
-      position: absolute;
-      top: -11px;
-      left: 50%;
-      transform: translateX(-50%) rotate(-1deg);
-      width: 86px;
-      height: 22px;
-      background: linear-gradient(135deg, rgba(255,223,137,0.7) 0%, rgba(212,175,55,0.85) 40%, rgba(255,248,220,0.9) 60%, rgba(184,134,11,0.75) 100%);
-      backdrop-filter: blur(3px);
-      box-shadow: 0 3px 8px rgba(180,83,9,0.22), inset 0 1px 1px rgba(255,255,255,0.8);
-      border-left: 2px dashed rgba(255,255,255,0.6);
-      border-right: 2px dashed rgba(255,255,255,0.6);
-    }
+
     /* Spinning Vinyl */
     @keyframes spin-slow {
       from { transform: rotate(0deg); }
@@ -132,6 +199,10 @@
     .no-scrollbar {
       -ms-overflow-style: none;
       scrollbar-width: none;
+    }
+
+    h1, h2, h3, h4 {
+      text-wrap: balance;
     }
   </style>
 </head>
@@ -424,12 +495,12 @@
     <div class="relative group max-w-5xl mx-auto px-2 sm:px-6">
       
       <!-- Prev Arrow Button -->
-      <button onclick="slideAlbum(-1)" aria-label="Xem ảnh trước" class="absolute -left-2 sm:left-1 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/95 hover:bg-white text-stone-900 shadow-xl border border-amber-300/90 flex items-center justify-center transition duration-200 active:scale-90 text-2xl font-bold cursor-pointer hover:shadow-2xl hover:border-amber-500">
+      <button onclick="slideAlbum(-1)" aria-label="Xem ảnh trước" class="absolute -left-2 sm:left-1 top-[42%] -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/95 hover:bg-white text-stone-900 shadow-xl border border-amber-300/90 flex items-center justify-center transition duration-200 active:scale-90 text-2xl font-bold cursor-pointer hover:shadow-2xl hover:border-amber-500">
         ‹
       </button>
 
       <!-- Next Arrow Button -->
-      <button onclick="slideAlbum(1)" aria-label="Xem ảnh tiếp theo" class="absolute -right-2 sm:right-1 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/95 hover:bg-white text-stone-900 shadow-xl border border-amber-300/90 flex items-center justify-center transition duration-200 active:scale-90 text-2xl font-bold cursor-pointer hover:shadow-2xl hover:border-amber-500">
+      <button onclick="slideAlbum(1)" aria-label="Xem ảnh tiếp theo" class="absolute -right-2 sm:right-1 top-[42%] -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/95 hover:bg-white text-stone-900 shadow-xl border border-amber-300/90 flex items-center justify-center transition duration-200 active:scale-90 text-2xl font-bold cursor-pointer hover:shadow-2xl hover:border-amber-500">
         ›
       </button>
 
