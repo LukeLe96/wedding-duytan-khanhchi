@@ -125,6 +125,14 @@
     .anim-paused {
       animation-play-state: paused;
     }
+    /* Hide scrollbar for clean carousels */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
 <body class="antialiased pb-28">
@@ -386,270 +394,308 @@
 
 
   <!-- ============================================================== -->
-  <!-- 4. POLAROID PHOTO GALLERY (FLOATING 3D CARDS)                  -->
+  <!-- 4. POLAROID PHOTO GALLERY (CAROUSEL SLIDE & LIGHTBOX)          -->
   <!-- ============================================================== -->
-  <section class="py-20 px-4 max-w-6xl mx-auto">
-    <div class="text-center max-w-md mx-auto mb-16 space-y-2">
+  <section class="py-20 px-4 max-w-6xl mx-auto overflow-hidden">
+    <div class="text-center max-w-md mx-auto mb-10 space-y-2">
       <span class="text-[11px] font-bold tracking-[0.25em] text-amber-700 uppercase">
-        ALBUM PHIM POLAROID
+        ✦ ALBUM PHIM POLAROID ✦
       </span>
       <h2 class="font-display text-3xl sm:text-4xl font-bold text-stone-900">
         Khoảnh Khắc Kỷ Niệm
       </h2>
-      <p class="text-xs text-stone-500">Những bức ảnh thật ghi dấu nụ cười ngày hạnh phúc</p>
+      <p class="text-xs text-stone-500">Vuốt ngang hoặc bấm mũi tên để ngắm nhìn từng khung hình hạnh phúc</p>
     </div>
 
     <!-- Album Switcher Tabs -->
-    <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 mb-10">
-      <button id="btn-tab-red" onclick="switchAlbum('red')" class="px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-rose-700 hover:bg-rose-800 text-white shadow-md flex items-center gap-2 border border-rose-600 active:scale-98">
+    <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 mb-8">
+      <button id="btn-tab-red" onclick="switchAlbum('red')" class="px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-rose-700 hover:bg-rose-800 text-white shadow-md flex items-center gap-2 border border-rose-600 active:scale-98 cursor-pointer">
         <span>🏮</span> Sắc Đỏ "Nhà Có Hỷ" (8 ảnh)
       </button>
-      <button id="btn-tab-wedding" onclick="switchAlbum('wedding')" class="px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-white/90 hover:bg-stone-100 text-stone-700 flex items-center gap-2 border border-stone-300 shadow-2xs active:scale-98">
+      <button id="btn-tab-wedding" onclick="switchAlbum('wedding')" class="px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-white/90 hover:bg-stone-100 text-stone-700 flex items-center gap-2 border border-stone-300 shadow-2xs active:scale-98 cursor-pointer">
         <span>💍</span> Váy Cưới Studio (8 ảnh)
       </button>
-      <button id="btn-tab-damngo" onclick="switchAlbum('damngo')" class="px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-white/90 hover:bg-stone-100 text-stone-700 flex items-center gap-2 border border-stone-300 shadow-2xs active:scale-98">
+      <button id="btn-tab-damngo" onclick="switchAlbum('damngo')" class="px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-white/90 hover:bg-stone-100 text-stone-700 flex items-center gap-2 border border-stone-300 shadow-2xs active:scale-98 cursor-pointer">
         <span>🌿</span> Kỷ Niệm Dạm Ngõ (6 ảnh)
       </button>
     </div>
 
-    <!-- 1. RED CONCEPT: SẮC ĐỎ "NHÀ CÓ HỶ" (8 POLAROIDS) -->
-    <div id="album-red-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+    <!-- Carousel Slide Wrapper with Floating Nav Controls -->
+    <div class="relative group max-w-5xl mx-auto px-2 sm:px-6">
       
-      <!-- Polaroid R1: Nhà Có Hỷ Couple -->
-      <div class="polaroid-card rounded-md -rotate-1 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_couple_hysu.webp" alt="Duy Tân 囍 Khánh Chi Nhà Có Hỷ" class="w-full h-full object-cover">
+      <!-- Prev Arrow Button -->
+      <button onclick="slideAlbum(-1)" aria-label="Xem ảnh trước" class="absolute -left-2 sm:left-1 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/95 hover:bg-white text-stone-900 shadow-xl border border-amber-300/90 flex items-center justify-center transition duration-200 active:scale-90 text-2xl font-bold cursor-pointer hover:shadow-2xl hover:border-amber-500">
+        ‹
+      </button>
+
+      <!-- Next Arrow Button -->
+      <button onclick="slideAlbum(1)" aria-label="Xem ảnh tiếp theo" class="absolute -right-2 sm:right-1 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/95 hover:bg-white text-stone-900 shadow-xl border border-amber-300/90 flex items-center justify-center transition duration-200 active:scale-90 text-2xl font-bold cursor-pointer hover:shadow-2xl hover:border-amber-500">
+        ›
+      </button>
+
+      <!-- Track 1: Sắc Đỏ Nhà Có Hỷ (8 Slides) -->
+      <div id="album-red-track" class="album-slider-track flex gap-5 sm:gap-7 overflow-x-auto snap-x snap-mandatory py-7 px-4 no-scrollbar scroll-smooth">
+        
+        <!-- Slide R1 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_couple_hysu.webp" data-title="Duy Tân 囍 Khánh Chi" data-desc="Nhà Có Hỷ • Sắc đỏ trăm năm tình nồng" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-1 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_couple_hysu.webp" alt="Duy Tân 囍 Khánh Chi Nhà Có Hỷ" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Duy Tân 囍 Khánh Chi</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Nhà Có Hỷ • Sắc đỏ trăm năm tình nồng</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Duy Tân 囍 Khánh Chi</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Nhà Có Hỷ • Sắc đỏ trăm năm tình nồng</p>
+
+        <!-- Slide R2 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_bride_solo.webp" data-title="Cô dâu Khánh Chi" data-desc="Nét duyên áo dài truyền thống thướt tha" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-2 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_bride_solo.webp" alt="Cô dâu Khánh Chi Áo Dài Đỏ" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Cô dâu Khánh Chi</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Nét duyên áo dài truyền thống thướt tha</p>
+        </div>
+
+        <!-- Slide R3 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_groom_solo.webp" data-title="Chú rể Duy Tân" data-desc="Lịch lãm phong độ • Rạng rỡ ngày vui" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-2 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_groom_solo.webp" alt="Chú rể Duy Tân" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Chú rể Duy Tân</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Lịch lãm phong độ • Rạng rỡ ngày vui</p>
+        </div>
+
+        <!-- Slide R4 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_nose_touch.webp" data-title="Ánh mắt hẹn ước" data-desc="Tựa trán chạm mũi • Ngọt ngào tình duyên" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-1 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_nose_touch.webp" alt="Ánh Mắt Hẹn Ước" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Ánh mắt hẹn ước</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Tựa trán chạm mũi • Ngọt ngào tình duyên</p>
+        </div>
+
+        <!-- Slide R5 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_handkiss.webp" data-title="Nụ hôn bàn tay" data-desc="Lời thề trân trọng • Che chở một đời" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-1 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_handkiss.webp" alt="Nụ Hôn Bàn Tay" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Nụ hôn bàn tay</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Lời thề trân trọng • Che chở một đời</p>
+        </div>
+
+        <!-- Slide R6 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_couple_handinhand.webp" data-title="Nắm chặt bàn tay" data-desc="Cùng nhau đi qua bốn mùa bình yên" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-2 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_couple_handinhand.webp" alt="Nắm Chặt Bàn Tay" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Nắm chặt bàn tay</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Cùng nhau đi qua bốn mùa bình yên</p>
+        </div>
+
+        <!-- Slide R7 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_playful_pose.webp" data-title="Nụ cười hỷ sự" data-desc="Tinh nghịch vui tươi • Rạng rỡ thanh xuân" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-2 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_playful_pose.webp" alt="Nụ Cười Hỷ Sự" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Nụ cười hỷ sự</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Tinh nghịch vui tươi • Rạng rỡ thanh xuân</p>
+        </div>
+
+        <!-- Slide R8 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_red_couple_romantic.webp" data-title="Sánh bước chung đôi" data-desc="Ấm áp nghĩa tình phu thê trọn kiếp" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-1 border border-rose-200 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
+            <img src="./assets/wedding_red_couple_romantic.webp" alt="Sánh Bước Chung Đôi" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-rose-950">Sánh bước chung đôi</p>
+          <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Ấm áp nghĩa tình phu thê trọn kiếp</p>
+        </div>
+
       </div>
 
-      <!-- Polaroid R2: Bride Solo Red Ao Dai -->
-      <div class="polaroid-card rounded-md rotate-2 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_bride_solo.webp" alt="Cô dâu Khánh Chi Áo Dài Đỏ" class="w-full h-full object-cover">
+      <!-- Track 2: Váy Cưới Studio (8 Slides) -->
+      <div id="album-wedding-track" class="album-slider-track hidden flex gap-5 sm:gap-7 overflow-x-auto snap-x snap-mandatory py-7 px-4 no-scrollbar scroll-smooth">
+        
+        <!-- Slide W1 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_couple_classic.webp" data-title="Duy Tân 囍 Khánh Chi" data-desc="Sánh bước trọn đời • 16-17.01.2027" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-1 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_couple_classic.webp" alt="Duy Tân 囍 Khánh Chi" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Duy Tân 囍 Khánh Chi</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Sánh bước trọn đời • 16-17.01.2027</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Cô dâu Khánh Chi</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Nét duyên áo dài truyền thống thướt tha</p>
+
+        <!-- Slide W2 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_bride_solo.webp" data-title="Cô dâu Khánh Chi" data-desc="Rạng rỡ trong tà váy cưới trắng" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-1 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_bride_solo.webp" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Cô dâu Khánh Chi</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Rạng rỡ trong tà váy cưới trắng</p>
+        </div>
+
+        <!-- Slide W3 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_white_groom_solo.webp" data-title="Chú rể Duy Tân" data-desc="Vest đen lịch lãm • Phong thái đĩnh đạc" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_white_groom_solo.webp" alt="Chú rể Duy Tân" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Chú rể Duy Tân</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Vest đen lịch lãm • Phong thái đĩnh đạc</p>
+        </div>
+
+        <!-- Slide W4 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_white_ring_box.webp" data-title="Kỷ vật trăm năm" data-desc="Hộp nhẫn cưới thiêng liêng đính ước" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_white_ring_box.webp" alt="Kỷ vật trăm năm" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Kỷ vật trăm năm</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Hộp nhẫn cưới thiêng liêng đính ước</p>
+        </div>
+
+        <!-- Slide W5 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_white_hug_waist.webp" data-title="Vòng tay ấm áp" data-desc="Nhìn nhau say đắm trọn yêu thương" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-1 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_white_hug_waist.webp" alt="Vòng tay ấm áp" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Vòng tay ấm áp</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Nhìn nhau say đắm trọn yêu thương</p>
+        </div>
+
+        <!-- Slide W6 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_couple_handinhand.webp" data-title="Nắm chặt bàn tay" data-desc="Cùng đi qua năm tháng bình yên" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_couple_handinhand.webp" alt="Nắm chặt bàn tay" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Nắm chặt bàn tay</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Cùng đi qua năm tháng bình yên</p>
+        </div>
+
+        <!-- Slide W7 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_couple_joy.webp" data-title="Niềm vui vỡ òa" data-desc="Hân hoan chung một mái nhà" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_couple_joy.webp" alt="Niềm vui vỡ òa" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Niềm vui vỡ òa</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Hân hoan chung một mái nhà</p>
+        </div>
+
+        <!-- Slide W8 -->
+        <div onclick="openLightbox(this)" data-full="./assets/wedding_couple_elegance.webp" data-title="Hạnh phúc vẹn tròn" data-desc="Khởi đầu chương mới lứa đôi" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-1 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/wedding_couple_elegance.webp" alt="Hạnh phúc vẹn tròn" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Hạnh phúc vẹn tròn</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Khởi đầu chương mới lứa đôi</p>
+        </div>
+
       </div>
 
-      <!-- Polaroid R3: Groom Solo Red Backdrop -->
-      <div class="polaroid-card rounded-md -rotate-2 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_groom_solo.webp" alt="Chú rể Duy Tân" class="w-full h-full object-cover">
+      <!-- Track 3: Kỷ Niệm Dạm Ngõ (6 Slides) -->
+      <div id="album-damngo-track" class="album-slider-track hidden flex gap-5 sm:gap-7 overflow-x-auto snap-x snap-mandatory py-7 px-4 no-scrollbar scroll-smooth">
+        
+        <!-- Slide D1 -->
+        <div onclick="openLightbox(this)" data-full="./assets/groom_duytan.jpg" data-title="Chú rể Duy Tân" data-desc="Kỹ sư công nghệ • Trưởng Nam • Gia Lai" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/groom_duytan.jpg" alt="Chú rể Lê Duy Tân" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Chú rể Duy Tân</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Kỹ sư công nghệ • Trưởng Nam • Gia Lai</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Chú rể Duy Tân</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Lịch lãm phong độ • Rạng rỡ ngày vui</p>
-      </div>
 
-      <!-- Polaroid R4: Sweet Nose Touch / Gaze -->
-      <div class="polaroid-card rounded-md rotate-1 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_nose_touch.webp" alt="Ánh Mắt Hẹn Ước" class="w-full h-full object-cover">
+        <!-- Slide D2 -->
+        <div onclick="openLightbox(this)" data-full="./assets/bride_khanhchi.jpg" data-title="Cô dâu Khánh Chi" data-desc="Duyên dáng, phúc hậu • Ái Nữ • Hà Nội" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Cô dâu Khánh Chi</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Duyên dáng, phúc hậu • Ái Nữ • Hà Nội</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Ánh mắt hẹn ước</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Tựa trán chạm mũi • Ngọt ngào tình duyên</p>
-      </div>
 
-      <!-- Polaroid R5: Hand Kiss Noble Promise -->
-      <div class="polaroid-card rounded-md -rotate-1 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_handkiss.webp" alt="Nụ Hôn Bàn Tay" class="w-full h-full object-cover">
+        <!-- Slide D3 -->
+        <div onclick="openLightbox(this)" data-full="./assets/couple_full.jpg" data-title="Duy Tân 囍 Khánh Chi" data-desc="Lễ Dạm Ngõ 16.09.2026" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-1 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/couple_full.jpg" alt="Bảng Chào Dạm Ngõ" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Duy Tân 囍 Khánh Chi</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Lễ Dạm Ngõ 16.09.2026</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Nụ hôn bàn tay</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Lời thề trân trọng • Che chở một đời</p>
-      </div>
 
-      <!-- Polaroid R6: Hand in Hand Red -->
-      <div class="polaroid-card rounded-md rotate-2 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_couple_handinhand.webp" alt="Nắm Chặt Bàn Tay" class="w-full h-full object-cover">
+        <!-- Slide D4 -->
+        <div onclick="openLightbox(this)" data-full="./assets/gallery_1.jpg" data-title="Sính lễ dạm ngõ" data-desc="Nghi thức gia tiên trang trọng" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-1 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/gallery_1.jpg" alt="Tráp Lễ" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Sính lễ dạm ngõ</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Nghi thức gia tiên trang trọng</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Nắm chặt bàn tay</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Cùng nhau đi qua bốn mùa bình yên</p>
-      </div>
 
-      <!-- Polaroid R7: Playful Gen-Z Pose -->
-      <div class="polaroid-card rounded-md -rotate-2 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_playful_pose.webp" alt="Nụ Cười Hỷ Sự" class="w-full h-full object-cover">
+        <!-- Slide D5 -->
+        <div onclick="openLightbox(this)" data-full="./assets/gallery_2.jpg" data-title="Gia đình hai họ" data-desc="Sum họp ấm cúng thân tình" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md -rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/gallery_2.jpg" alt="Gia Đình" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Gia đình hai họ</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Sum họp ấm cúng thân tình</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Nụ cười hỷ sự</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Tinh nghịch vui tươi • Rạng rỡ thanh xuân</p>
-      </div>
 
-      <!-- Polaroid R8: Couple Romantic Sánh Bước -->
-      <div class="polaroid-card rounded-md rotate-1 border border-rose-200">
-        <div class="washi-tape" style="background: linear-gradient(135deg, rgba(244,63,94,0.7) 0%, rgba(225,29,72,0.85) 40%, rgba(254,205,211,0.9) 60%, rgba(190,18,60,0.75) 100%);"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-rose-50 mb-3 rounded-xs">
-          <img src="./assets/wedding_red_couple_romantic.webp" alt="Sánh Bước Chung Đôi" class="w-full h-full object-cover">
+        <!-- Slide D6 -->
+        <div onclick="openLightbox(this)" data-full="./assets/gallery_3.jpg" data-title="Nụ cười đính ước" data-desc="Hạnh phúc vẹn tròn chung đôi" class="polaroid-card snap-center shrink-0 w-[265px] sm:w-[305px] rounded-md rotate-2 transition duration-300 cursor-pointer select-none">
+          <div class="washi-tape"></div>
+          <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
+            <img src="./assets/gallery_3.jpg" alt="Nụ cười ngày vui" class="w-full h-full object-cover pointer-events-none">
+          </div>
+          <p class="font-script text-2xl text-center text-stone-800">Nụ cười đính ước</p>
+          <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Hạnh phúc vẹn tròn chung đôi</p>
         </div>
-        <p class="font-script text-2xl text-center text-rose-950">Sánh bước chung đôi</p>
-        <p class="text-[10px] text-center text-rose-700 font-sans mt-0.5">Ấm áp nghĩa tình phu thê trọn kiếp</p>
+
       </div>
 
     </div>
 
-    <!-- 2. OFFICIAL STUDIO WEDDING ALBUM (8 POLAROIDS) -->
-    <div id="album-wedding-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-      
-      <!-- Polaroid W1: Classic Couple Portrait -->
-      <div class="polaroid-card rounded-md -rotate-1">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_couple_classic.webp" alt="Duy Tân 囍 Khánh Chi" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Duy Tân 囍 Khánh Chi</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Sánh bước trọn đời • 16-17.01.2027</p>
-      </div>
-
-      <!-- Polaroid W2: Solo Bride Full -->
-      <div class="polaroid-card rounded-md rotate-1">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_bride_solo.webp" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Cô dâu Khánh Chi</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Rạng rỡ trong tà váy cưới trắng</p>
-      </div>
-
-      <!-- Polaroid W3: Solo Groom White Studio -->
-      <div class="polaroid-card rounded-md -rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_white_groom_solo.webp" alt="Chú rể Duy Tân" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Chú rể Duy Tân</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Vest đen lịch lãm • Phong thái đĩnh đạc</p>
-      </div>
-
-      <!-- Polaroid W4: Ring Box Moment -->
-      <div class="polaroid-card rounded-md rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_white_ring_box.webp" alt="Kỷ vật trăm năm" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Kỷ vật trăm năm</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Hộp nhẫn cưới thiêng liêng đính ước</p>
-      </div>
-
-      <!-- Polaroid W5: Romantic Waist Hug -->
-      <div class="polaroid-card rounded-md -rotate-1">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_white_hug_waist.webp" alt="Vòng tay ấm áp" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Vòng tay ấm áp</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Nhìn nhau say đắm trọn yêu thương</p>
-      </div>
-
-      <!-- Polaroid W6: Hand in Hand -->
-      <div class="polaroid-card rounded-md rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_couple_handinhand.webp" alt="Nắm chặt bàn tay" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Nắm chặt bàn tay</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Cùng đi qua năm tháng bình yên</p>
-      </div>
-
-      <!-- Polaroid W7: Joyful Celebration -->
-      <div class="polaroid-card rounded-md -rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_couple_joy.webp" alt="Niềm vui vỡ òa" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Niềm vui vỡ òa</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Hân hoan chung một mái nhà</p>
-      </div>
-
-      <!-- Polaroid W8: Elegant Couple -->
-      <div class="polaroid-card rounded-md rotate-1">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/wedding_couple_elegance.webp" alt="Hạnh phúc vẹn tròn" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Hạnh phúc vẹn tròn</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Khởi đầu chương mới lứa đôi</p>
-      </div>
-
+    <!-- Slide Indicators & Dots -->
+    <div class="mt-4 flex flex-col items-center gap-2.5 select-none">
+      <div id="slide-dots" class="flex items-center gap-2"></div>
+      <p class="text-[11px] text-stone-400 font-sans italic flex items-center gap-1.5">
+        <span>✦</span> Vuốt ngang hoặc bấm mũi tên • Nhấn vào ảnh để xem toàn màn hình <span>✦</span>
+      </p>
     </div>
 
-    <!-- 2. MEMORABLE ENGAGEMENT CEREMONY ALBUM (6 POLAROIDS) -->
-    <div id="album-damngo-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10">
-      
-      <!-- Polaroid 1: Groom Duy Tân -->
-      <div class="polaroid-card rounded-md -rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/groom_duytan.jpg" alt="Chú rể Lê Duy Tân" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Chú rể Duy Tân</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Kỹ sư công nghệ • Trưởng Nam • Gia Lai</p>
-      </div>
-
-      <!-- Polaroid 2: Bride Khánh Chi -->
-      <div class="polaroid-card rounded-md rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/bride_khanhchi.jpg" alt="Cô dâu Đinh Khánh Chi" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Cô dâu Khánh Chi</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Duyên dáng, phúc hậu • Ái Nữ • Hà Nội</p>
-      </div>
-
-      <!-- Polaroid 3: Full Couple Standing -->
-      <div class="polaroid-card rounded-md -rotate-1">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/couple_full.jpg" alt="Bảng Chào Dạm Ngõ" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Duy Tân 囍 Khánh Chi</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Lễ Dạm Ngõ 16.09.2026</p>
-      </div>
-
-      <!-- Polaroid 4: Tráp Sính Lễ -->
-      <div class="polaroid-card rounded-md rotate-1">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/gallery_1.jpg" alt="Tráp Lễ" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Sính lễ dạm ngõ</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Nghi thức gia tiên trang trọng</p>
-      </div>
-
-      <!-- Polaroid 5: Gia Đình Hai Họ -->
-      <div class="polaroid-card rounded-md -rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/gallery_2.jpg" alt="Gia Đình" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Gia đình hai họ</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Sum họp ấm cúng thân tình</p>
-      </div>
-
-      <!-- Polaroid 6: Nụ Cười Ngày Vui -->
-      <div class="polaroid-card rounded-md rotate-2">
-        <div class="washi-tape"></div>
-        <div class="aspect-[4/5] overflow-hidden bg-stone-100 mb-3 rounded-xs">
-          <img src="./assets/gallery_3.jpg" alt="Nụ cười ngày vui" class="w-full h-full object-cover">
-        </div>
-        <p class="font-script text-2xl text-center text-stone-800">Nụ cười đính ước</p>
-        <p class="text-[10px] text-center text-stone-500 font-sans mt-0.5">Hạnh phúc vẹn tròn chung đôi</p>
-      </div>
-
-    </div>
   </section>
 
+  <!-- LIGHTBOX MODAL TOÀN MÀN HÌNH -->
+  <div id="photo-lightbox" class="fixed inset-0 z-[120] hidden items-center justify-center bg-stone-950/90 backdrop-blur-md p-4 transition-all duration-300" onclick="closeLightbox()">
+    <div class="relative max-w-2xl w-full flex flex-col items-center gap-3 animate-in fade-in zoom-in-95 duration-200" onclick="event.stopPropagation()">
+      <button onclick="closeLightbox()" aria-label="Đóng ảnh" class="absolute -top-12 right-0 sm:-right-2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition text-lg font-bold border border-white/30 active:scale-95 cursor-pointer">
+        ✕
+      </button>
+      <div class="p-3 sm:p-4 bg-white rounded-3xl shadow-2xl border border-amber-300/80 max-h-[85vh] flex flex-col items-center">
+        <img id="lightbox-img" src="" alt="Ảnh cưới" class="max-h-[66vh] w-auto object-contain rounded-2xl shadow-inner">
+        <div class="text-center pt-3 pb-1 space-y-0.5">
+          <p id="lightbox-title" class="font-script text-2xl sm:text-3xl text-stone-900"></p>
+          <p id="lightbox-desc" class="text-xs text-stone-500 font-sans font-medium"></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <!-- ============================================================== -->
   <!-- 5. EVENT DETAILS & LOCATIONS (THỜI GIAN & ĐỊA ĐIỂM)           -->
   <!-- ============================================================== -->
   <section id="event-details" class="py-16 px-4 max-w-4xl mx-auto">
@@ -1476,40 +1522,177 @@
       vid.play().catch(() => {});
     }
 
-    // Polaroid Album Switcher (Red Concept vs White Studio vs Dam Ngo)
+    // ==========================================
+    // POLAROID CAROUSEL SLIDE & LIGHTBOX CONTROLS
+    // ==========================================
+    let currentAlbumType = 'red';
+
+    function getActiveTrack() {
+      if (currentAlbumType === 'red') return document.getElementById('album-red-track');
+      if (currentAlbumType === 'wedding') return document.getElementById('album-wedding-track');
+      return document.getElementById('album-damngo-track');
+    }
+
+    function slideAlbum(dir) {
+      const track = getActiveTrack();
+      if (!track) return;
+      const card = track.querySelector('.polaroid-card');
+      const step = card ? (card.offsetWidth + 24) : 320;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
+    }
+    window.slideAlbum = slideAlbum;
+
+    function renderSlideDots() {
+      const track = getActiveTrack();
+      const dotsContainer = document.getElementById('slide-dots');
+      if (!track || !dotsContainer) return;
+
+      const cards = track.querySelectorAll('.polaroid-card');
+      const total = cards.length;
+      dotsContainer.innerHTML = '';
+
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('button');
+        dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === 0 ? 'w-6 bg-amber-600' : 'bg-stone-300 hover:bg-stone-400'}`;
+        dot.setAttribute('aria-label', `Xem ảnh ${i + 1}`);
+        dot.onclick = () => {
+          const card = cards[i];
+          if (card) card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        };
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function updateActiveDot() {
+      const track = getActiveTrack();
+      const dotsContainer = document.getElementById('slide-dots');
+      if (!track || !dotsContainer) return;
+
+      const cards = Array.from(track.querySelectorAll('.polaroid-card'));
+      const dots = Array.from(dotsContainer.children);
+      const trackRect = track.getBoundingClientRect();
+      const trackCenter = trackRect.left + trackRect.width / 2;
+
+      let closestIdx = 0;
+      let minDistance = Infinity;
+
+      cards.forEach((card, idx) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const dist = Math.abs(trackCenter - cardCenter);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestIdx = idx;
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        if (idx === closestIdx) {
+          dot.className = currentAlbumType === 'red' 
+            ? 'w-6 h-2.5 rounded-full bg-rose-700 transition-all duration-300' 
+            : currentAlbumType === 'wedding'
+            ? 'w-6 h-2.5 rounded-full bg-amber-600 transition-all duration-300'
+            : 'w-6 h-2.5 rounded-full bg-emerald-700 transition-all duration-300';
+        } else {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-stone-300 hover:bg-stone-400 transition-all duration-300';
+        }
+      });
+    }
+
+    // Attach scroll listeners to all tracks for smooth dot syncing
+    ['album-red-track', 'album-wedding-track', 'album-damngo-track'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('scroll', () => {
+          requestAnimationFrame(updateActiveDot);
+        }, { passive: true });
+      }
+    });
+
+    // Polaroid Album Switcher
     function switchAlbum(type) {
-      const gridRed = document.getElementById('album-red-grid');
-      const gridWedding = document.getElementById('album-wedding-grid');
-      const gridDamngo = document.getElementById('album-damngo-grid');
+      currentAlbumType = type;
+      const trackRed = document.getElementById('album-red-track');
+      const trackWedding = document.getElementById('album-wedding-track');
+      const trackDamngo = document.getElementById('album-damngo-track');
       const btnRed = document.getElementById('btn-tab-red');
       const btnWedding = document.getElementById('btn-tab-wedding');
       const btnDamngo = document.getElementById('btn-tab-damngo');
-      if (!gridRed || !gridWedding || !gridDamngo) return;
+      if (!trackRed || !trackWedding || !trackDamngo) return;
 
-      const activeRedClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-rose-700 hover:bg-rose-800 text-white shadow-md flex items-center gap-2 border border-rose-600 active:scale-98';
-      const activeWeddingClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-amber-600 hover:bg-amber-700 text-white shadow-md flex items-center gap-2 border border-amber-500 active:scale-98';
-      const activeDamngoClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-emerald-700 hover:bg-emerald-800 text-white shadow-md flex items-center gap-2 border border-emerald-600 active:scale-98';
-      const inactiveClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-white/90 hover:bg-stone-100 text-stone-700 flex items-center gap-2 border border-stone-300 shadow-2xs active:scale-98';
+      const activeRedClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-rose-700 hover:bg-rose-800 text-white shadow-md flex items-center gap-2 border border-rose-600 active:scale-98 cursor-pointer';
+      const activeWeddingClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-amber-600 hover:bg-amber-700 text-white shadow-md flex items-center gap-2 border border-amber-500 active:scale-98 cursor-pointer';
+      const activeDamngoClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-emerald-700 hover:bg-emerald-800 text-white shadow-md flex items-center gap-2 border border-emerald-600 active:scale-98 cursor-pointer';
+      const inactiveClass = 'px-5 py-2.5 rounded-full text-xs font-bold transition duration-200 bg-white/90 hover:bg-stone-100 text-stone-700 flex items-center gap-2 border border-stone-300 shadow-2xs active:scale-98 cursor-pointer';
 
-      gridRed.classList.add('hidden');
-      gridWedding.classList.add('hidden');
-      gridDamngo.classList.add('hidden');
+      trackRed.classList.add('hidden');
+      trackWedding.classList.add('hidden');
+      trackDamngo.classList.add('hidden');
       btnRed.className = inactiveClass;
       btnWedding.className = inactiveClass;
       btnDamngo.className = inactiveClass;
 
+      let activeTrack = null;
       if (type === 'red') {
-        gridRed.classList.remove('hidden');
+        trackRed.classList.remove('hidden');
         btnRed.className = activeRedClass;
+        activeTrack = trackRed;
       } else if (type === 'wedding') {
-        gridWedding.classList.remove('hidden');
+        trackWedding.classList.remove('hidden');
         btnWedding.className = activeWeddingClass;
+        activeTrack = trackWedding;
       } else {
-        gridDamngo.classList.remove('hidden');
+        trackDamngo.classList.remove('hidden');
         btnDamngo.className = activeDamngoClass;
+        activeTrack = trackDamngo;
       }
+
+      if (activeTrack) activeTrack.scrollTo({ left: 0, behavior: 'instant' });
+      renderSlideDots();
+      updateActiveDot();
     }
     window.switchAlbum = switchAlbum;
+
+    // Lightbox Handlers
+    function openLightbox(el) {
+      const modal = document.getElementById('photo-lightbox');
+      const img = document.getElementById('lightbox-img');
+      const title = document.getElementById('lightbox-title');
+      const desc = document.getElementById('lightbox-desc');
+      if (!modal || !img) return;
+
+      const fullSrc = el.getAttribute('data-full') || el.querySelector('img')?.src;
+      const titleText = el.getAttribute('data-title') || el.querySelector('p.font-script')?.innerText || '';
+      const descText = el.getAttribute('data-desc') || el.querySelector('p.font-sans')?.innerText || '';
+
+      img.src = fullSrc;
+      if (title) title.innerText = titleText;
+      if (desc) desc.innerText = descText;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      const modal = document.getElementById('photo-lightbox');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+    }
+    window.openLightbox = openLightbox;
+    window.closeLightbox = closeLightbox;
+
+    // Initialize dots on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSlideDots();
+      updateActiveDot();
+    });
+    window.addEventListener('load', () => {
+      renderSlideDots();
+      updateActiveDot();
+    });
   </script>
 
 </body>
