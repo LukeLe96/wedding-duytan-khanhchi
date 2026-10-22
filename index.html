@@ -817,9 +817,11 @@
         </div>
 
         <div id="wishes-list" class="space-y-3 max-h-60 overflow-y-auto pr-1">
-          <!-- Wishes will be loaded via JS -->
-          <div class="text-center py-6 text-stone-400 text-xs italic">
-            Đang tải lời chúc...
+          <!-- Sổ lưu bút đang mở -->
+          <div class="text-center py-7 px-4 rounded-2xl bg-amber-50/50 border border-dashed border-amber-300/60 space-y-1.5">
+            <div class="text-2xl">💌</div>
+            <p class="text-xs font-bold text-stone-700">Sổ lưu bút đang mở để đón nhận những lời chúc đầu tiên</p>
+            <p class="text-[11px] text-stone-500 font-serif italic">Hãy là người đầu tiên gửi lời chúc mừng đến Tân &amp; Chi ở mẫu phản hồi phía trên nhé! ✨</p>
           </div>
         </div>
       </div>
@@ -829,55 +831,115 @@
 
 
   <!-- ============================================================== -->
-  <!-- 7. WISHING BOX VIETQR (HỘP MỪNG CƯỚI TỪ XA)                   -->
+  <!-- 7. TÂM SỰ MỎNG & HỘP MỪNG CƯỚI TỪ XA                            -->
   <!-- ============================================================== -->
-  <section id="wishing-box" class="py-16 px-4 max-w-3xl mx-auto text-center">
-    <div class="mb-10 space-y-1">
-      <span class="text-[10px] uppercase tracking-widest font-bold text-amber-700">MỪNG CƯỚI TỪ XA</span>
-      <h3 class="font-display text-3xl font-bold text-stone-900">Hộp Quà Chúc Phúc</h3>
-      <p class="text-xs text-stone-500">Dành cho Quý khách ở xa muốn gửi lời chúc mừng hạnh phúc</p>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      
-      <!-- Groom QR -->
-      <div class="p-6 bg-white/95 backdrop-blur-md rounded-[28px] border border-amber-300/70 shadow-xs hover:shadow-md transition space-y-4">
-        <span class="px-3.5 py-1 rounded-full bg-stone-900 text-amber-300 text-[10px] font-bold uppercase tracking-wider inline-block">
-          CHÚ RỂ: LÊ DUY TÂN
-        </span>
-        <div class="w-48 h-48 mx-auto bg-white p-3 rounded-2xl border border-stone-200 shadow-2xs">
-          <img src="https://api.vietqr.io/image/970422-0000112233440-compact2.jpg?amount=0&addInfo=MUNG%20CUOI%20DUY%20TAN&accountName=LE%20DUY%20TAN" alt="QR Duy Tân" class="w-full h-full object-contain">
-        </div>
-        <div class="text-xs text-stone-600 space-y-0.5">
-          <p class="font-bold text-stone-900 text-sm">MBBank Quân Đội</p>
-          <p class="font-mono text-sm font-extrabold text-amber-900">0000112233440</p>
-          <p class="text-[11px] text-stone-500 font-medium">CHỦ TK: LE DUY TAN</p>
-        </div>
-        <button onclick="copyAccount('0000112233440')" class="w-full py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-200 active:scale-98">
-          <span>📋 Sao Chép Số Tài Khoản</span>
-        </button>
+  <section id="wishing-box" class="py-16 px-4 max-w-2xl mx-auto text-center">
+    <div class="p-8 sm:p-12 rounded-[36px] bg-gradient-to-b from-white/95 via-[#FDFBF7] to-amber-50/60 border border-amber-300/80 shadow-polaroid space-y-6 relative overflow-hidden">
+      <!-- Decorative Stamp / Monogram -->
+      <div class="w-14 h-14 mx-auto rounded-full bg-gradient-to-tr from-amber-200 via-amber-100 to-white border border-amber-300 shadow-xs flex items-center justify-center text-2xl select-none">
+        💌
       </div>
 
-      <!-- Bride QR -->
-      <div class="p-6 bg-white/95 backdrop-blur-md rounded-[28px] border border-amber-300/70 shadow-xs hover:shadow-md transition space-y-4">
-        <span class="px-3.5 py-1 rounded-full bg-amber-500 text-stone-950 text-[10px] font-bold uppercase tracking-wider inline-block">
-          CÔ DÂU: ĐINH KHÁNH CHI
+      <div class="space-y-1.5">
+        <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] text-amber-800 uppercase block">
+          ✦ TÂM SỰ MỎNG CỦA TÂN &amp; CHI ✦
         </span>
-        <div class="w-48 h-48 mx-auto bg-white p-3 rounded-2xl border border-stone-200 shadow-2xs overflow-hidden">
-          <img src="./assets/qr_bride_square.jpg" alt="QR Khánh Chi" class="w-full h-full object-contain">
-        </div>
-        <div class="text-xs text-stone-600 space-y-0.5">
-          <p class="font-bold text-stone-900 text-sm">LPBank (Lộc Phát Việt Nam)</p>
-          <p class="font-mono text-sm font-extrabold text-amber-900">15093012892256</p>
-          <p class="text-[11px] text-stone-500 font-medium">CHỦ TK: DINH KHANH CHI</p>
-        </div>
-        <button onclick="copyAccount('15093012892256')" class="w-full py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-200 active:scale-98">
-          <span>📋 Sao Chép Số Tài Khoản</span>
-        </button>
+        <h3 class="font-display text-2xl sm:text-3xl font-bold text-stone-900">
+          Gửi Chút Tình Cảm Từ Phương Xa
+        </h3>
       </div>
 
+      <div class="space-y-3 text-xs sm:text-sm text-stone-600 font-serif italic leading-relaxed max-w-lg mx-auto">
+        <p>
+          "Với chúng mình, sự hiện diện và lời chúc phúc của mọi người chính là món quà cưới trân quý nhất."
+        </p>
+        <p class="text-stone-500 text-[12px] sm:text-[13px] not-italic font-sans leading-normal">
+          Nếu vì khoảng cách địa lý hay công việc bận rộn mà bạn không thể về chung vui trực tiếp cùng hai đứa, chỉ cần một lời nhắn gửi hay chút tình cảm từ phương xa cũng đã khiến ngày vui của chúng mình thêm vẹn tròn và ấm áp vô cùng.
+        </p>
+      </div>
+
+      <div class="pt-3 space-y-2">
+        <button onclick="openGiftModal()" class="px-7 py-3.5 rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-xs uppercase tracking-wider shadow-lg transition flex items-center justify-center gap-2 mx-auto border border-amber-400/40 active:scale-98">
+          <span>✉️ Gửi Món Quà Chúc Phúc Từ Xa</span>
+          <span>✦</span>
+        </button>
+        <p class="text-[11px] text-stone-400 font-sans">
+          (Dành riêng cho bạn bè &amp; người thân ở xa không thể tham dự)
+        </p>
+      </div>
     </div>
   </section>
+
+  <!-- POPUP MODAL HỘP MỪNG CƯỚI (CHỈ MỞ KHI CLICK NÚT) -->
+  <div id="gift-modal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 bg-stone-950/75 backdrop-blur-md transition-all duration-300">
+    <div class="relative w-full max-w-lg rounded-[32px] bg-[#FFFAF3] border border-amber-300/90 shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300">
+      
+      <!-- Close Button -->
+      <button onclick="closeGiftModal()" aria-label="Đóng popup" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-stone-200/70 hover:bg-stone-300 text-stone-700 flex items-center justify-center transition text-sm font-bold border border-stone-300/80 active:scale-95">
+        ✕
+      </button>
+
+      <!-- Modal Header -->
+      <div class="text-center space-y-1.5 pt-1">
+        <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-amber-800">✦ HỘP MỪNG CƯỚI TRỰC TUYẾN ✦</span>
+        <h4 class="font-display text-2xl sm:text-3xl font-bold text-stone-900">Món Quà Chúc Phúc</h4>
+        <p class="text-xs text-stone-600 font-serif italic max-w-sm mx-auto">
+          Tân &amp; Chi xin chân thành cảm ơn tấm lòng và tình cảm yêu thương của Quý khách!
+        </p>
+      </div>
+
+      <!-- 2 QR Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+        <!-- Groom Card -->
+        <div class="p-4 bg-white rounded-2xl border border-amber-200/90 shadow-xs space-y-3">
+          <span class="px-3 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-bold uppercase tracking-wider inline-block">
+            CHÚ RỂ: LÊ DUY TÂN
+          </span>
+          <div class="w-36 h-36 mx-auto bg-white p-2 rounded-xl border border-stone-200 shadow-2xs">
+            <img src="https://api.vietqr.io/image/970422-0000112233440-compact2.jpg?amount=0&addInfo=MUNG%20CUOI%20DUY%20TAN&accountName=LE%20DUY%20TAN" alt="QR Duy Tân" class="w-full h-full object-contain">
+          </div>
+          <div class="text-xs text-stone-600 space-y-0.5">
+            <p class="font-bold text-stone-900 text-xs">MBBank Quân Đội</p>
+            <p class="font-mono text-sm font-extrabold text-amber-900">0000112233440</p>
+            <p class="text-[10px] text-stone-500 font-medium">CHỦ TK: LE DUY TAN</p>
+          </div>
+          <button onclick="copyAccount('0000112233440', 'Chú rể Duy Tân')" class="w-full py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-200 active:scale-98">
+            <span>📋 Sao Chép Số TK</span>
+          </button>
+        </div>
+
+        <!-- Bride Card -->
+        <div class="p-4 bg-white rounded-2xl border border-amber-200/90 shadow-xs space-y-3">
+          <span class="px-3 py-0.5 rounded-full bg-rose-700 text-white text-[10px] font-bold uppercase tracking-wider inline-block">
+            CÔ DÂU: ĐINH KHÁNH CHI
+          </span>
+          <div class="w-36 h-36 mx-auto bg-white p-2 rounded-xl border border-stone-200 shadow-2xs overflow-hidden">
+            <img src="./assets/qr_bride_square.jpg" alt="QR Khánh Chi" class="w-full h-full object-contain">
+          </div>
+          <div class="text-xs text-stone-600 space-y-0.5">
+            <p class="font-bold text-stone-900 text-xs">LPBank (Lộc Phát VN)</p>
+            <p class="font-mono text-sm font-extrabold text-rose-900">15093012892256</p>
+            <p class="text-[10px] text-stone-500 font-medium">CHỦ TK: DINH KHANH CHI</p>
+          </div>
+          <button onclick="copyAccount('15093012892256', 'Cô dâu Khánh Chi')" class="w-full py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-900 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-rose-200 active:scale-98">
+            <span>📋 Sao Chép Số TK</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Footer Note -->
+      <div class="text-center pt-1 border-t border-amber-200/60">
+        <p class="text-[11px] text-stone-500 font-serif italic">
+          Mọi lời chúc và tình cảm của Quý khách sẽ luôn là hành trang quý giá cho mái ấm nhỏ của chúng mình! 💐
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-notify" class="fixed top-6 left-1/2 -translate-x-1/2 z-[110] hidden px-5 py-2.5 rounded-full bg-stone-900/95 text-amber-200 text-xs font-semibold shadow-2xl border border-amber-400/50 backdrop-blur-md transition-all duration-300">
+    <span id="toast-text"></span>
+  </div>
 
 
   <!-- FOOTER -->
@@ -1010,10 +1072,58 @@
       if (!isPlaying) tryPlayAudio();
     });
 
-    // 3. Copy Account Helper
-    function copyAccount(acc) {
+    // Toast notification helper
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast-notify');
+      const text = document.getElementById('toast-text');
+      if (!toast || !text) return;
+      text.innerText = msg;
+      toast.classList.remove('hidden');
+      toast.style.opacity = '1';
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 2500);
+    }
+    window.showToast = showToast;
+
+    // Gift Modal Handlers
+    function openGiftModal() {
+      const modal = document.getElementById('gift-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    function closeGiftModal() {
+      const modal = document.getElementById('gift-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+    }
+    window.openGiftModal = openGiftModal;
+    window.closeGiftModal = closeGiftModal;
+
+    // Close on click outside or Esc
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('gift-modal');
+      if (modal && e.target === modal) {
+        closeGiftModal();
+      }
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeGiftModal();
+    });
+
+    // 3. Copy Account Helper with Toast
+    function copyAccount(acc, owner) {
       navigator.clipboard.writeText(acc);
-      alert('Đã sao chép số tài khoản: ' + acc);
+      showToast(`Đã sao chép STK của ${owner || 'chủ tài khoản'}! ✨`);
     }
 
     // 4. Add to Google Calendar
@@ -1104,7 +1214,14 @@
         countEl.innerText = wishes.length;
 
         if (wishes.length === 0) {
-          container.innerHTML = '<div class="text-center py-6 text-stone-400 text-xs italic">Chưa có lời chúc nào. Hãy là người đầu tiên gửi lời chúc đến Tân &amp; Chi nhé! ✨</div>';
+          countEl.innerText = '0';
+          container.innerHTML = `
+            <div class="text-center py-7 px-4 rounded-2xl bg-amber-50/50 border border-dashed border-amber-300/60 space-y-1.5">
+              <div class="text-2xl">💌</div>
+              <p class="text-xs font-bold text-stone-700">Sổ lưu bút đang mở để đón nhận những lời chúc đầu tiên</p>
+              <p class="text-[11px] text-stone-500 font-serif italic">Hãy là người đầu tiên gửi lời chúc mừng đến Tân &amp; Chi ở mẫu phản hồi phía trên nhé! ✨</p>
+            </div>
+          `;
           return;
         }
 
