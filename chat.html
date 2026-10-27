@@ -160,10 +160,72 @@
       animation: pxBurst 0.9s steps(8) both;
     }
 
+    /* Zipline & Dash Across Screen */
+    .px-cable {
+      position: fixed;
+      transform-origin: 0 0;
+      pointer-events: none;
+      border-top: 1.5px dashed #D4AF37;
+      opacity: 0.85;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+      z-index: 61;
+      transition: opacity 0.3s ease-out;
+    }
+    .px-zipline-rider {
+      position: fixed;
+      z-index: 62;
+      pointer-events: none;
+      transition: transform 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transform-origin: 50% 0;
+    }
+    @keyframes pxRunBob {
+      0% { transform: translateY(0) rotate(-4deg); }
+      50% { transform: translateY(-4px) rotate(4deg); }
+      100% { transform: translateY(0) rotate(-4deg); }
+    }
+    .px-runner {
+      position: fixed;
+      z-index: 62;
+      pointer-events: none;
+      transition: left 3.4s linear;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .px-runner-body {
+      display: inline-flex;
+      align-items: flex-end;
+      animation: pxRunBob 0.22s steps(2) infinite alternate;
+    }
+    .px-bubble {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1.5px solid #D4AF37;
+      border-radius: 9999px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #8B1E2D;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin-bottom: 3px;
+      animation: pxBreathe 1s ease-in-out infinite;
+    }
+    .px-trail-drop {
+      position: fixed;
+      pointer-events: none;
+      z-index: 61;
+      font-size: 11px;
+      animation: pxFloat 1.2s ease-out forwards;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .px-typing .px-art,
-      .px-mascot.is-bouncing .px-art { animation: none; }
-      .px-typing .px-heart { display: none; }
+      .px-mascot.is-bouncing .px-art,
+      .px-runner-body { animation: none; }
+      .px-typing .px-heart,
+      .px-cable,
+      .px-zipline-rider,
+      .px-runner { display: none !important; }
     }
   </style>
 </head>
@@ -607,14 +669,19 @@
       scrollToBottom();
     }
 
-    // Header pixel mascot: bounce + burst of pixel hearts
+    // Header pixel mascot: bounce + burst of pixel hearts + Zipline & Dash stunt
+    let isZiplineActive = false;
+
     function celebrateMascot() {
       const mascot = document.getElementById('px-mascot');
+      if (!mascot) return;
       mascot.classList.remove('is-bouncing');
       void mascot.offsetWidth; // restart animation on rapid taps
       mascot.classList.add('is-bouncing');
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      
+      // 1. Initial heart burst around mascot
       const HEART_COUNT = 6;
       for (let i = 0; i < HEART_COUNT; i++) {
         const spread = (i / (HEART_COUNT - 1)) * 2 - 1; // -1 → 1
@@ -628,6 +695,135 @@
         heart.addEventListener('animationend', () => heart.remove(), { once: true });
         mascot.appendChild(heart);
       }
+
+      // 2. Launch epic Zipline Down & Dash Across Bottom
+      launchZiplineRun();
+    }
+
+    function launchZiplineRun() {
+      if (isZiplineActive) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      isZiplineActive = true;
+
+      const mascot = document.getElementById('px-mascot');
+      if (!mascot) { isZiplineActive = false; return; }
+      const r = mascot.getBoundingClientRect();
+      const startX = r.left + r.width / 2;
+      const startY = r.top + r.height / 2;
+
+      // Target landing: bottom-left above chat input
+      const landX = 25;
+      const landY = window.innerHeight - 95;
+
+      mascot.style.transition = 'opacity 0.3s ease';
+      mascot.style.opacity = '0.35';
+
+      // 1. Create Cable Line
+      const cable = document.createElement('div');
+      cable.className = 'px-cable';
+      const dx = landX - startX;
+      const dy = landY - startY;
+      const dist = Math.hypot(dx, dy);
+      const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+      cable.style.left = `${startX}px`;
+      cable.style.top = `${startY}px`;
+      cable.style.width = `${dist}px`;
+      cable.style.transform = `rotate(${angle}deg)`;
+      document.body.appendChild(cable);
+
+      // 2. Create Zipline Couple
+      const rider = document.createElement('div');
+      rider.className = 'px-zipline-rider';
+      rider.innerHTML = `
+        <div style="transform: rotate(${Math.round(angle - 180)}deg);">
+          <div style="width: 2px; height: 8px; background: #D4AF37; margin: 0 auto; border-radius: 1px;"></div>
+          <div class="px-couple" style="margin-top: -2px;">
+            <svg class="px-art px-groom" width="22" height="29" aria-hidden="true"><use href="#px-groom"/></svg>
+            <svg class="px-art px-bride" width="22" height="29" aria-hidden="true"><use href="#px-bride"/></svg>
+          </div>
+        </div>
+      `;
+      rider.style.left = `${startX - 18}px`;
+      rider.style.top = `${startY}px`;
+      rider.style.transform = 'translate3d(0, 0, 0)';
+      document.body.appendChild(rider);
+
+      // Trigger zipline slide
+      requestAnimationFrame(() => {
+        rider.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+      });
+
+      // Spawn spark trail while sliding
+      const trailTimer = setInterval(() => {
+        const curR = rider.getBoundingClientRect();
+        const drop = document.createElement('div');
+        drop.className = 'px-trail-drop';
+        drop.innerHTML = Math.random() > 0.5 ? '✨' : '💖';
+        drop.style.left = `${curR.left + 10}px`;
+        drop.style.top = `${curR.top + 10}px`;
+        document.body.appendChild(drop);
+        setTimeout(() => drop.remove(), 1200);
+      }, 140);
+
+      // 3. Touchdown & Dash across screen
+      setTimeout(() => {
+        clearInterval(trailTimer);
+        cable.style.opacity = '0';
+        setTimeout(() => cable.remove(), 350);
+        rider.remove();
+
+        // Landing mini celebration
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 15,
+            spread: 45,
+            origin: { x: landX / window.innerWidth, y: landY / window.innerHeight },
+            colors: ['#D4AF37', '#8B1E2D', '#FFB6C1']
+          });
+        }
+
+        // 4. Create Runner Couple
+        const runner = document.createElement('div');
+        runner.className = 'px-runner';
+        runner.innerHTML = `
+          <div class="px-bubble">Tân &amp; Chi tới đây! 🌸</div>
+          <div class="px-runner-body">
+            <svg class="px-art px-groom" width="24" height="32" aria-hidden="true"><use href="#px-groom"/></svg>
+            <svg class="px-art px-bride" width="24" height="32" aria-hidden="true"><use href="#px-bride"/></svg>
+          </div>
+        `;
+        runner.style.left = `${landX}px`;
+        runner.style.top = `${landY}px`;
+        document.body.appendChild(runner);
+
+        // Runner footsteps trail
+        const runTrailTimer = setInterval(() => {
+          const runR = runner.getBoundingClientRect();
+          if (runR.left > window.innerWidth) return;
+          const drop = document.createElement('div');
+          drop.className = 'px-trail-drop';
+          drop.innerHTML = Math.random() > 0.5 ? '🌸' : '💕';
+          drop.style.left = `${runR.left + 15}px`;
+          drop.style.top = `${runR.top + 15}px`;
+          document.body.appendChild(drop);
+          setTimeout(() => drop.remove(), 1200);
+        }, 220);
+
+        // Run across screen to right
+        requestAnimationFrame(() => {
+          runner.style.left = `${window.innerWidth + 80}px`;
+        });
+
+        // 5. Cleanup when run completes
+        setTimeout(() => {
+          clearInterval(runTrailTimer);
+          runner.remove();
+          mascot.style.opacity = '1';
+          isZiplineActive = false;
+        }, 3600);
+
+      }, 1150);
     }
 
     // Show/hide typing
