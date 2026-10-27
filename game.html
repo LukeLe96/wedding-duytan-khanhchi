@@ -176,6 +176,7 @@
       width: 100%;
       height: 100%;
       background: #FED7AA;
+      cursor: pointer;
     }
     canvas {
       display: block;
@@ -226,239 +227,128 @@
       font-weight: 800;
     }
 
-    /* Sky Dialogue Widget (2 characters bantering in the sky) */
-    .sky-talk-widget {
+    /* ============================================================== */
+    /* SKY CHAT MESSAGES STREAM (TIN NHẮN TRÊN TRỜI DẠNG CHAT BUBBLE)  */
+    /* ============================================================== */
+    #sky-chat-stream {
       position: absolute;
-      top: 44px;
-      left: 8px;
-      right: 8px;
+      top: 48px;
+      left: 10px;
+      right: 10px;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 7px;
       pointer-events: none;
       z-index: 12;
-      animation: floatSkyWidget 3s ease-in-out infinite;
+      max-height: 140px;
     }
-    @keyframes floatSkyWidget {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
-    .sky-avatar-box {
-      width: 44px;
+    .sky-msg-row {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      flex-shrink: 0;
-      transition: all 0.25s ease;
-      opacity: 0.65;
-      transform: scale(0.92);
+      gap: 8px;
+      max-width: 88%;
+      animation: skyMsgIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .sky-avatar-box.is-speaking {
-      opacity: 1;
-      transform: scale(1.12);
-      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.75));
+    @keyframes skyMsgIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .sky-avatar-svg {
+    .sky-msg-row.left {
+      align-self: flex-start;
+    }
+    .sky-msg-row.right {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+    .sky-msg-avatar {
       width: 32px;
-      height: 42px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(30, 14, 20, 0.95);
+      border: 1.5px solid #D4AF37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .sky-msg-avatar svg {
+      width: 20px;
+      height: 26px;
       image-rendering: pixelated;
     }
-    .sky-actor-label {
+    .sky-msg-bubble {
+      padding: 7px 11px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .sky-msg-row.left .sky-msg-bubble {
+      background: rgba(28, 14, 20, 0.94);
+      border: 1px solid rgba(212, 175, 55, 0.7);
+      border-top-left-radius: 3px;
+    }
+    .sky-msg-row.right .sky-msg-bubble {
+      background: rgba(42, 16, 26, 0.94);
+      border: 1px solid rgba(244, 114, 182, 0.7);
+      border-top-right-radius: 3px;
+    }
+    .sky-msg-author {
       font-size: 9px;
       font-weight: 800;
-      color: #F9E29D;
-      background: rgba(20, 10, 14, 0.85);
-      border: 1px solid #D4AF37;
-      padding: 1px 6px;
-      border-radius: 10px;
-    }
-    .sky-bubble-cloud {
-      flex: 1;
-      background: rgba(22, 10, 15, 0.94);
-      border: 1.5px solid #D4AF37;
-      border-radius: 14px;
-      padding: 6px 11px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 0 10px rgba(212, 175, 55, 0.15);
-      transition: all 0.25s ease;
-      min-height: 48px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .sky-bubble-cloud.speak-right {
-      border-color: #F472B6;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 0 10px rgba(244, 114, 182, 0.2);
-    }
-    .sky-speaker-title {
-      font-size: 9.5px;
-      font-weight: 800;
-      color: #FCD34D;
-      display: flex;
-      align-items: center;
-      gap: 4px;
       margin-bottom: 2px;
     }
-    .sky-bubble-cloud.speak-right .sky-speaker-title {
-      color: #F472B6;
-      justify-content: flex-end;
+    .sky-msg-row.left .sky-msg-author {
+      color: #FCD34D;
     }
-    .sky-dialogue-text {
+    .sky-msg-row.right .sky-msg-author {
+      color: #F472B6;
+      text-align: right;
+    }
+    .sky-msg-text {
       font-size: 11.5px;
       font-weight: 600;
+      line-height: 1.4;
       color: #FFF;
-      line-height: 1.35;
     }
-    .sky-bubble-cloud.speak-right .sky-dialogue-text {
+    .sky-msg-row.right .sky-msg-text {
+      color: #FCE7F3;
       text-align: right;
     }
 
-    /* Player Controls Bar (Mobile Two Big Buttons: RUN & JUMP) */
-    .controls-bar {
+    /* Jump Button */
+    .jump-btn-wrap {
       position: absolute;
-      bottom: 16px;
-      left: 14px;
-      right: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      bottom: 20px;
+      right: 16px;
       z-index: 15;
-      pointer-events: auto;
-    }
-    .btn-ctrl {
-      border-radius: 20px;
-      color: #FFF;
-      font-size: 12px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      outline: none;
-      -webkit-tap-highlight-color: transparent;
-      transition: all 0.08s;
-      padding: 14px 22px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-    }
-    .btn-run {
-      background: radial-gradient(circle at 35% 35%, #059669, #065F46);
-      border: 2.5px solid #6EE7B7;
-      min-width: 125px;
-      letter-spacing: 0.5px;
-    }
-    .btn-run.is-active, .btn-run:active {
-      transform: scale(0.93);
-      background: #047857;
-      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.6);
     }
     .btn-jump {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #E11D48, #8B1E2D);
-      border: 2.5px solid #F9E29D;
-      min-width: 125px;
-      letter-spacing: 0.5px;
-    }
-    .btn-jump:active {
-      transform: scale(0.93);
-      background: #8B1E2D;
-      box-shadow: 0 2px 10px rgba(225, 29, 72, 0.6);
-    }
-    .btn-ctrl span {
-      font-size: 16px;
-      line-height: 1;
-    }
-
-    /* Checkpoint Modal (Điểm Dừng Mỗi Chặng) */
-    #checkpoint-modal {
-      position: absolute;
-      inset: 0;
-      background: rgba(18, 9, 13, 0.94);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      z-index: 35;
+      border: 3px solid #F9E29D;
+      color: #FFF;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 8px 25px rgba(225, 29, 72, 0.65), inset 0 2px 4px rgba(255,255,255,0.4);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      text-align: center;
-      transition: opacity 0.25s ease;
-    }
-    #checkpoint-modal.hidden {
-      display: none;
-    }
-    .checkpoint-badge {
-      font-size: 11px;
-      font-weight: 800;
-      color: #D4AF37;
-      background: #251218;
-      border: 1px solid #D4AF37;
-      padding: 3px 12px;
-      border-radius: 14px;
-      margin-bottom: 8px;
-      letter-spacing: 0.5px;
-    }
-    .checkpoint-card {
-      background: linear-gradient(155deg, #2A131C, #180B10);
-      border: 2px solid #D4AF37;
-      border-radius: 18px;
-      padding: 18px 16px;
-      width: 100%;
-      max-width: 320px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(212, 175, 55, 0.15);
-      margin-bottom: 14px;
-      text-align: left;
-    }
-    .checkpoint-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: #FFF;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-    .checkpoint-item-reward {
-      background: rgba(212, 175, 55, 0.15);
-      border: 1px solid #D4AF37;
-      border-radius: 10px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-      font-size: 12px;
-      color: #FCD34D;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .checkpoint-desc {
-      font-size: 12px;
-      color: #FCE7F3;
-      line-height: 1.55;
-      margin-bottom: 10px;
-    }
-    .checkpoint-next-hook {
-      border-top: 1px dashed rgba(212, 175, 55, 0.3);
-      padding-top: 8px;
-      font-size: 11px;
-      color: #FEF08A;
-      font-style: italic;
-    }
-    .btn-resume {
-      width: 100%;
-      background: linear-gradient(135deg, #D4AF37, #AA820A);
-      color: #1A0D04;
-      border: 2px solid #FFF;
-      border-radius: 25px;
-      padding: 12px 20px;
-      font-size: 13px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
-      transition: all 0.15s;
+      transition: transform 0.08s;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .btn-resume:active {
-      transform: scale(0.96);
+    .btn-jump:active {
+      transform: scale(0.91);
+      background: #8B1E2D;
+    }
+    .btn-jump span {
+      font-size: 18px;
+      line-height: 1;
+      margin-bottom: 2px;
     }
 
     /* Cover Screen */
@@ -705,67 +595,26 @@
             <span class="hud-hearts" id="hud-hearts">💖 HẠNH PHÚC</span>
           </div>
           <div class="hud-box">
-            <div class="hud-stage-dist font-heading" id="hud-stage-dist">0m / 75m</div>
+            <div class="hud-stage-dist font-heading" id="hud-stage-dist">0m / 880m</div>
             <div class="hud-score font-pixel" id="hud-score">00000</div>
           </div>
         </div>
 
-        <!-- Sky Talk Widget (2 characters talking in the sky while running!) -->
-        <div id="sky-talk-widget" class="sky-talk-widget">
-          <div class="sky-avatar-box is-speaking" id="sky-groom-box">
-            <svg viewBox="0 0 12 16" class="sky-avatar-svg"><use href="#px-groom"/></svg>
-            <span class="sky-actor-label">Tân</span>
-          </div>
-          <div class="sky-bubble-cloud" id="sky-bubble-cloud">
-            <div class="sky-speaker-title">
-              <span id="sky-speaker-icon">🤵‍♂️</span> <span id="sky-speaker-name">Tân</span>
-            </div>
-            <div class="sky-dialogue-text" id="sky-dialogue-text">
-              ...
-            </div>
-          </div>
-          <div class="sky-avatar-box" id="sky-bride-box">
-            <svg viewBox="0 0 12 16" class="sky-avatar-svg"><use href="#px-bride"/></svg>
-            <span class="sky-actor-label">Chi</span>
-          </div>
+        <!-- Sky Chat Messages Stream (Tin Nhắn Trên Trời Giữa Tân & Chi) -->
+        <div id="sky-chat-stream">
+          <!-- Dynamically populated floating chat message bubbles -->
         </div>
 
-        <!-- Player Controls Bar (Mobile Two Big Touch Buttons: RUN & JUMP) -->
-        <div class="controls-bar" id="controls-bar">
-          <button id="btn-run" class="btn-ctrl btn-run font-heading"
-                  ontouchstart="handleRunTouchStart(event)"
-                  ontouchend="handleRunTouchEnd(event)"
-                  onmousedown="handleRunTouchStart(event)"
-                  onmouseup="handleRunTouchEnd(event)">
-            <span>▶▶</span> CHẠY
-          </button>
-          <button id="btn-jump" class="btn-ctrl btn-jump font-heading" onclick="handleJumpAction(event)">
-            <span>▲</span> NHẢY
+        <!-- Jump Button -->
+        <div class="jump-btn-wrap" id="jump-btn-wrap">
+          <button id="btn-jump" class="btn-jump" onclick="handleJumpAction(event)">
+            <span>▲</span>
+            JUMP
           </button>
         </div>
       </div>
 
-      <!-- 2. Checkpoint Modal (Điểm dừng chân mỗi chặng) -->
-      <div id="checkpoint-modal" class="hidden">
-        <div class="checkpoint-badge font-heading" id="cp-badge">📍 ĐIỂM DỪNG CHẶNG 1</div>
-        <div class="checkpoint-card">
-          <div class="checkpoint-title font-heading" id="cp-title">Quán Cà Phê Phố Cổ Hà Nội</div>
-          <div class="checkpoint-item-reward font-heading" id="cp-reward">
-            <span>🎁</span> <span id="cp-reward-text">Đã có số Zalo 'Chi ❤️ Hà Nội'</span>
-          </div>
-          <div class="checkpoint-desc" id="cp-desc">
-            Chàng kỹ sư Gia Lai đã làm quen thành công với nàng thơ Hà Nội!
-          </div>
-          <div class="checkpoint-next-hook" id="cp-hook">
-            👉 Chặng tiếp theo: 01:15 sáng, chuông Zalo rung lên thâu đêm...
-          </div>
-        </div>
-        <button class="btn-resume font-heading" id="btn-resume-journey" onclick="resumeNextChapter()">
-          ▶ TIẾP TỤC: CHẠY SANG CHẶNG 2 ➔
-        </button>
-      </div>
-
-      <!-- 3. Cover Screen -->
+      <!-- Cover Screen -->
       <div id="cover-screen">
         <div class="cover-emblem">囍</div>
         <div class="cover-title font-heading">
@@ -773,16 +622,16 @@
           <span style="font-size:13px; color:#FCD34D;">LÊ DUY TÂN &amp; ĐINH KHÁNH CHI</span>
         </div>
         <div class="cover-subtitle">
-          Tự tay điều khiển chú rể chạy vượt 6 chặng tình yêu • 16-17.01.2027
+          Vừa nhảy Mario vừa ngắm Tân &amp; Chi nhắn tin trên trời • 16-17.01.2027
         </div>
 
         <div class="cover-summary">
-          <div class="summary-item"><span>☕</span> 1. Gặp nhau phố cổ Hà Nội ➔ Dừng chân xin Zalo</div>
-          <div class="summary-item"><span>💬</span> 2. Nhắn tin 2h sáng ➔ Dừng chân hẹn hò Hồ Tây</div>
-          <div class="summary-item"><span>✈️</span> 3. Yêu xa 1.100km ➔ Dừng chân đón ở Nội Bài</div>
-          <div class="summary-item"><span>🥺</span> 4. Giận dỗi vu vơ ➔ Dừng chân dỗ trà sữa &amp; hoa</div>
-          <div class="summary-item"><span>🍵</span> 5. Ra mắt gia đình ➔ Dừng chân Lễ Dạm Ngõ 16.09</div>
-          <div class="summary-item"><span>💒</span> 6. Cổng cưới hoàng gia ➔ Mở thiệp cưới Đại Hỷ!</div>
+          <div class="summary-item"><span>☕</span> 1. Gặp gỡ ở phố cổ Hà Nội • Nhường ổ điện xin số Zalo</div>
+          <div class="summary-item"><span>💬</span> 2. Nhắn tin Zalo 01:15 sáng • Hẹn hò dạo phố Hồ Tây</div>
+          <div class="summary-item"><span>✈️</span> 3. Thử thách 1.100km • Bay Pleiku ra Hà Nội gặp Chi</div>
+          <div class="summary-item"><span>🥺</span> 4. Giận dỗi vu vơ • Dỗ nàng bằng trà sữa &amp; hoa hồng</div>
+          <div class="summary-item"><span>🍵</span> 5. Về ra mắt gia đình • Lễ Dạm Ngõ 16.09.2026 ấm cúng</div>
+          <div class="summary-item"><span>💒</span> 6. Cổng cưới hoàng gia • Trao tấm thiệp cưới Đại Hỷ!</div>
         </div>
 
         <button class="btn-main font-heading" onclick="startAdventureFromCover()">
@@ -794,7 +643,7 @@
         </a>
       </div>
 
-      <!-- 4. Victory Final Card -->
+      <!-- Victory Final Card -->
       <div id="victory-modal" class="hidden">
         <div class="cover-emblem" style="margin-bottom:8px;">囍</div>
         <div class="hero-title font-heading" style="color:#F9E29D; font-size:17px; margin-bottom:4px;">
@@ -914,23 +763,20 @@
     }
 
     // ==============================================================
-    // 2. 6 CHAPTERS SCRIPT & CHECKPOINT DATA
+    // 2. 6 CHAPTERS SCRIPT & SKY CHAT MESSAGES
     // ==============================================================
     const CHAPTERS = [
       {
         id: 0,
-        targetDist: 70,
-        badge: "📍 ĐIỂM DỪNG CHẶNG 1",
-        title: "Quán Cà Phê Phố Cổ Hà Nội",
-        rewardText: "Số Zalo 'Chi ❤️ Hà Nội' 📱",
-        desc: "Chàng kỹ sư Gia Lai đã nhường ổ điện thành công và xin được số Zalo của nàng thơ Hà Nội!",
-        nextHook: "👉 Chặng tiếp theo: 01:15 sáng, hai chiếc điện thoại sáng đèn nhắn tin thâu đêm...",
-        btnText: "▶ TIẾP TỤC: CHẠY SANG CHẶNG 2 ➔",
+        startDist: 0,
+        endDist: 140,
+        badge: "HỒI 1 • HÀ NỘI THU 2024",
+        title: "Ly Cà Phê Định Mệnh",
         skyColors: ['#FBCFE8', '#FED7AA', '#FFFBEB'],
         skyDialogues: [
           { speaker: "Chi", side: "right", text: "Anh ơi, cho em mượn ổ cắm điện laptop nhé! 😊" },
-          { speaker: "Tân", side: "left", text: "Còn chứ em! Pin anh còn 80%, đủ đợi em về nè! ☕" },
-          { speaker: "Chi", side: "right", text: "Haha anh khéo ghê, cho em xin số Zalo nha! 💬" },
+          { speaker: "Tân", side: "left", text: "Còn chứ em! Pin anh còn 80%, đủ ngồi đợi em về nè! ☕" },
+          { speaker: "Chi", side: "right", text: "Haha anh khéo ghê! Cho em xin số Zalo nha! 💬" },
           { speaker: "Tân", side: "left", text: "Lưu danh bạ 'Chi ❤️ Hà Nội' rồi, chạy tiếp thôi! 🏃‍♂️" }
         ],
         itemEmoji: "☕",
@@ -938,13 +784,10 @@
       },
       {
         id: 1,
-        targetDist: 75,
-        badge: "📍 ĐIỂM DỪNG CHẶNG 2",
-        title: "Đêm Muộn Hồ Tây 02:00 Sáng",
-        rewardText: "Chiếc xe máy dạo Hồ Tây 🛵",
-        desc: "Hai người nhắn tin quên cả giấc ngủ, và nàng đã đồng ý buổi hẹn hò đầu tiên!",
-        nextHook: "👉 Chặng tiếp theo: Thử thách 1.100km yêu xa giữa Pleiku và thủ đô Hà Nội...",
-        btnText: "▶ TIẾP TỤC: CHẠY SANG CHẶNG 3 ➔",
+        startDist: 140,
+        endDist: 280,
+        badge: "HỒI 2 • NHỮNG ĐÊM KHÔNG NGỦ",
+        title: "Nhắn Tin Thâu Đêm 2h Sáng",
         skyColors: ['#DDD6FE', '#FDE68A', '#FEF3C7'],
         skyDialogues: [
           { speaker: "Chi", side: "right", text: "01:15 sáng rồi, Tân chưa ngủ à? Mai đi làm sớm đó! 😴" },
@@ -957,13 +800,10 @@
       },
       {
         id: 2,
-        targetDist: 80,
-        badge: "📍 ĐIỂM DỪNG CHẶNG 3",
-        title: "Sân Bay Quốc Tế Nội Bài",
-        rewardText: "Chuyến bay hạ cánh Nội Bài 🛬",
-        desc: "Không quản 1.100km, Tân đã xách balo bay từ Pleiku ra Hà Nội gặp người thương!",
-        nextHook: "👉 Chặng tiếp theo: Tin nhắn 'Đã xem' suốt 3 tiếng... Tình hình cấp báo!",
-        btnText: "▶ TIẾP TỤC: CHẠY SANG CHẶNG 4 ➔",
+        startDist: 280,
+        endDist: 440,
+        badge: "HỒI 3 • THỬ THÁCH 1.100KM",
+        title: "Yêu Xa Gia Lai ✈️ Hà Nội",
         skyColors: ['#93C5FD', '#BAE6FD', '#F0F9FF'],
         skyDialogues: [
           { speaker: "Chi", side: "right", text: "Hôm nay Hà Nội mưa lạnh, ước gì có anh dạo phố cùng em... 🌧️" },
@@ -976,13 +816,10 @@
       },
       {
         id: 3,
-        targetDist: 75,
-        badge: "📍 ĐIỂM DỪNG CHẶNG 4",
-        title: "Trước Cửa Nhà Chi Tại Hà Nội",
-        rewardText: "Chi mỉm cười: 'Hết dỗi rồi nè!' 💕",
-        desc: "Ly trà sữa ít đá 70% đường và bó hoa hồng đã làm tan chảy cơn dỗi hờn vu vơ!",
-        nextHook: "👉 Chặng tiếp theo: Ngày trọng đại 16.09.2026 — Gia đình hai bên gặp mặt Dạm Ngõ!",
-        btnText: "▶ TIẾP TỤC: CHẠY SANG CHẶNG 5 ➔",
+        startDist: 440,
+        endDist: 600,
+        badge: "HỒI 4 • GIA VỊ TÌNH YÊU",
+        title: "Đã Xem, Không Trả Lời",
         skyColors: ['#F472B6', '#FBCFE8', '#FFF1F2'],
         skyDialogues: [
           { speaker: "Chi", side: "right", text: "Hôm qua anh bảo bận họp, xong online cả tối không nhắn em! 😤" },
@@ -991,17 +828,14 @@
           { speaker: "Chi", side: "right", text: "...Trà sữa ngon đấy, hoa cũng xinh. Lần này tha cho anh ngốc nhé! ❤️" }
         ],
         itemEmoji: "🧋",
-        blockReward: "Bó hoa hồng & Trà sữa làm lành 💐"
+        blockReward: "Trà sữa trân châu làm lành 🧋"
       },
       {
         id: 4,
-        targetDist: 80,
-        badge: "📍 ĐIỂM DỪNG CHẶNG 5",
-        title: "Lễ Dạm Ngõ Ấm Cúng 16.09.2026",
-        rewardText: "Hai bên gia đình chúc phúc! 👨‍👩‍👧‍👦",
-        desc: "Khay trầu cau dâng lên bàn thờ gia tiên, ba mẹ hai bên mỉm cười chúc phúc cho đôi trẻ!",
-        nextHook: "👉 Chặng cuối cùng: Tiến về Cổng Cưới Hoàng Gia đón cô dâu về chung một nhà!",
-        btnText: "▶ TIẾP TỤC: CHẠY VỀ CỔNG CƯỚI ➔",
+        startDist: 600,
+        endDist: 750,
+        badge: "HỒI 5 • DẠM NGÕ 16.09.2026",
+        title: "Đưa Nàng Về Ra Mắt & Dạm Ngõ",
         skyColors: ['#FDE047', '#FEF08A', '#FFFDF0'],
         skyDialogues: [
           { speaker: "Tân", side: "left", text: "Chi ơi cà vạt anh có lệch không? Tập câu chào 50 lần mà run quá! 💓" },
@@ -1014,13 +848,10 @@
       },
       {
         id: 5,
-        targetDist: 60,
-        badge: "📍 ĐẠI HỶ 16-17.01.2027",
-        title: "Cổng Cưới Hoàng Gia",
-        rewardText: "Nhẫn Cưới Kim Cương Trọn Đời 💍",
-        desc: "Tân & Chi chính thức về chung một nhà trong tiếng vỗ tay chúc phúc của muôn người!",
-        nextHook: "💌 Mở tấm Thiệp Cưới Đại Hỷ trao tận tay quý quan khách!",
-        btnText: "💌 MỞ THIỆP CƯỚI ĐẠI HỶ",
+        startDist: 750,
+        endDist: 880,
+        badge: "HỒI 6 • ĐẠI HỶ 16-17.01.2027",
+        title: "Rước Nàng Về Dinh & Trao Thiệp",
         skyColors: ['#FB7185', '#FECDD3', '#FFF1F2'],
         skyDialogues: [
           { speaker: "Tân", side: "left", text: "Chi ơi, em nhớ hôm mượn ổ cắm điện của anh ở quán cà phê không? ☕" },
@@ -1041,11 +872,14 @@
     const canvasWrap = document.getElementById('canvas-wrap');
 
     let currentChapterIdx = 0;
-    let stageDistance = 0;
+    let distance = 0;
+    const GOAL_DISTANCE = 880;
     let score = 0;
-    let isHoldingRun = false;
     let isPlaying = false;
-    let currentSkyText = '';
+
+    // Chat Feed state in sky
+    let chatHistory = [];
+    let lastRenderedText = '';
 
     let width = 390;
     let height = 550;
@@ -1066,7 +900,7 @@
       invincibleTimer: 0
     };
 
-    let gameSpeed = 3.8;
+    let gameSpeed = 3.6;
     let bgScroll = 0;
     let blocks = [];
     let items = [];
@@ -1081,7 +915,7 @@
       height = canvasWrap.clientHeight;
       canvas.width = width;
       canvas.height = height;
-      groundY = height - 76;
+      groundY = height - 68;
       if (player && player.y > groundY - player.height) {
         player.y = groundY - player.height;
       }
@@ -1089,29 +923,19 @@
     window.addEventListener('resize', resizeCanvas);
 
     // ==========================================
-    // 4. FLOW CONTROLLER: COVER ➔ RUNNER ➔ CHECKPOINTS
+    // 4. FLOW CONTROLLER: CONTINUOUS RUNNER
     // ==========================================
     function startAdventureFromCover() {
       initAudio();
       document.getElementById('cover-screen').classList.add('hidden');
-      document.getElementById('checkpoint-modal').classList.add('hidden');
       document.getElementById('victory-modal').classList.add('hidden');
-      score = 0;
-      currentChapterIdx = 0;
-      startStage(0);
-    }
 
-    function userSelectChapter(idx) {
-      initAudio();
-      currentChapterIdx = idx;
-      startStage(idx);
-    }
-
-    function startStage(chapIdx) {
-      currentChapterIdx = chapIdx;
-      stageDistance = 0;
-      isHoldingRun = false;
       isPlaying = true;
+      distance = 0;
+      currentChapterIdx = 0;
+      score = 0;
+      gameSpeed = 3.6;
+      bgScroll = 0;
       spawnTimer = 0;
 
       player.x = 60;
@@ -1128,67 +952,69 @@
       popups = [];
       finishArch = null;
 
-      updateStepper(currentChapterIdx);
+      chatHistory = [];
+      lastRenderedText = '';
+
+      updateStepper(0);
       updateHUD();
 
-      // Show Sky Talk Widget
-      document.getElementById('sky-talk-widget').style.display = 'flex';
-      currentSkyText = '';
-      updateSkyTalkWidget(CHAPTERS[currentChapterIdx].skyDialogues[0]);
+      // Push first chat message to sky!
+      pushSkyChatMessage(CHAPTERS[0].skyDialogues[0]);
 
       sfxMilestone();
     }
 
-    function resumeNextChapter() {
+    function userSelectChapter(idx) {
       initAudio();
-      document.getElementById('checkpoint-modal').classList.add('hidden');
-      if (currentChapterIdx < 5) {
-        startStage(currentChapterIdx + 1);
-      } else {
-        triggerVictory();
-      }
+      // Jump distance directly to start of that chapter
+      distance = CHAPTERS[idx].startDist;
+      currentChapterIdx = idx;
+      updateStepper(idx);
+      chatHistory = [];
+      lastRenderedText = '';
+      pushSkyChatMessage(CHAPTERS[idx].skyDialogues[0]);
+      sfxMilestone();
     }
 
-    function reachCheckpoint() {
-      isPlaying = false;
-      isHoldingRun = false;
-      document.getElementById('btn-run').classList.remove('is-active');
+    function pushSkyChatMessage(msg) {
+      if (!msg) return;
+      if (lastRenderedText === msg.text) return;
+      lastRenderedText = msg.text;
 
-      const chap = CHAPTERS[currentChapterIdx];
-
-      if (currentChapterIdx === 5) {
-        // Last Chapter 6 reached wedding arch!
-        triggerVictory();
-        return;
+      // Add to history (keep max 2 latest messages on sky so it doesn't crowd)
+      chatHistory.push(msg);
+      if (chatHistory.length > 2) {
+        chatHistory.shift();
       }
 
-      sfxWin();
+      renderSkyChatStream();
+    }
 
-      // Confetti burst for checkpoint
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 45,
-          spread: 55,
-          origin: { y: 0.6 },
-          colors: ['#D4AF37', '#10B981', '#F43F5E']
-        });
-      }
-
-      // Show Checkpoint Modal
-      const modal = document.getElementById('checkpoint-modal');
-      document.getElementById('cp-badge').innerText = chap.badge;
-      document.getElementById('cp-title').innerText = chap.title;
-      document.getElementById('cp-reward-text').innerText = chap.rewardText;
-      document.getElementById('cp-desc').innerText = chap.desc;
-      document.getElementById('cp-hook').innerText = chap.nextHook;
-      document.getElementById('btn-resume-journey').innerText = chap.btnText;
-
-      modal.classList.remove('hidden');
+    function renderSkyChatStream() {
+      const container = document.getElementById('sky-chat-stream');
+      let html = '';
+      chatHistory.forEach((msg, idx) => {
+        const isRight = msg.side === 'right';
+        const isLatest = idx === chatHistory.length - 1;
+        html += `
+          <div class="sky-msg-row ${isRight ? 'right' : 'left'}" style="${!isLatest ? 'opacity: 0.65; transform: scale(0.95);' : ''}">
+            <div class="sky-msg-avatar">
+              <svg viewBox="0 0 12 16">
+                <use href="${isRight ? '#px-bride' : '#px-groom'}"/>
+              </svg>
+            </div>
+            <div class="sky-msg-bubble">
+              <div class="sky-msg-author">${isRight ? 'Chi 👰‍♀️' : 'Tân 🤵‍♂️'}</div>
+              <div class="sky-msg-text">${msg.text}</div>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
     }
 
     function triggerVictory() {
       isPlaying = false;
-      isHoldingRun = false;
       updateStepper(5);
       sfxWin();
 
@@ -1215,57 +1041,10 @@
 
     function updateHUD() {
       document.getElementById('hud-score').innerText = String(score).padStart(5, '0');
-      const chap = CHAPTERS[currentChapterIdx];
-      const curDist = Math.min(chap.targetDist, Math.floor(stageDistance));
-      document.getElementById('hud-stage-dist').innerText = `${curDist}m / ${chap.targetDist}m`;
+      document.getElementById('hud-stage-dist').innerText = `${Math.min(880, Math.floor(distance))}m / 880m`;
     }
 
-    function updateSkyTalkWidget(dlg) {
-      if (!dlg) return;
-      if (currentSkyText === dlg.text) return;
-      currentSkyText = dlg.text;
-
-      const groomBox = document.getElementById('sky-groom-box');
-      const brideBox = document.getElementById('sky-bride-box');
-      const cloud = document.getElementById('sky-bubble-cloud');
-      const icon = document.getElementById('sky-speaker-icon');
-      const name = document.getElementById('sky-speaker-name');
-      const text = document.getElementById('sky-dialogue-text');
-
-      groomBox.classList.remove('is-speaking');
-      brideBox.classList.remove('is-speaking');
-      cloud.classList.remove('speak-right');
-
-      if (dlg.side === 'right') {
-        brideBox.classList.add('is-speaking');
-        cloud.classList.add('speak-right');
-        icon.innerText = '👰‍♀️';
-        name.innerText = 'Chi';
-      } else {
-        groomBox.classList.add('is-speaking');
-        icon.innerText = '🤵‍♂️';
-        name.innerText = 'Tân';
-      }
-      text.innerText = dlg.text;
-    }
-
-    // ==========================================
-    // 5. PLAYER CONTROLS (RUN & JUMP)
-    // ==========================================
-    function handleRunTouchStart(e) {
-      if (e) e.preventDefault();
-      initAudio();
-      if (!isPlaying) return;
-      isHoldingRun = true;
-      document.getElementById('btn-run').classList.add('is-active');
-    }
-
-    function handleRunTouchEnd(e) {
-      if (e) e.preventDefault();
-      isHoldingRun = false;
-      document.getElementById('btn-run').classList.remove('is-active');
-    }
-
+    // Controls
     function handleJumpAction(e) {
       if (e) {
         e.preventDefault();
@@ -1284,7 +1063,7 @@
           particles.push({
             x: player.x + player.width/2,
             y: player.y + player.height,
-            vx: (Math.random() - 0.5) * 3 - (isHoldingRun ? gameSpeed * 0.4 : 0),
+            vx: (Math.random() - 0.5) * 3 - gameSpeed * 0.4,
             vy: Math.random() * -2,
             life: 18,
             color: '#FFFFFF'
@@ -1293,55 +1072,38 @@
       }
     }
 
-    // Keyboard support
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'ArrowRight' || e.code === 'KeyD') {
-        isHoldingRun = true;
-        document.getElementById('btn-run').classList.add('is-active');
-      }
       if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
         handleJumpAction(e);
       }
     });
 
-    window.addEventListener('keyup', (e) => {
-      if (e.code === 'ArrowRight' || e.code === 'KeyD') {
-        isHoldingRun = false;
-        document.getElementById('btn-run').classList.remove('is-active');
-      }
-    });
-
-    // Touch left half of canvas to run, right half to jump
     canvasWrap.addEventListener('touchstart', (e) => {
-      if (e.target.closest('#controls-bar') || e.target.closest('.top-bar')) return;
-      const touch = e.touches[0];
-      if (touch.clientX < window.innerWidth * 0.5) {
-        handleRunTouchStart(e);
-      } else {
-        handleJumpAction(e);
-      }
+      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar')) return;
+      handleJumpAction(e);
     }, { passive: false });
 
-    canvasWrap.addEventListener('touchend', (e) => {
-      if (e.target.closest('#controls-bar')) return;
-      handleRunTouchEnd(e);
+    canvasWrap.addEventListener('mousedown', (e) => {
+      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar')) return;
+      handleJumpAction(e);
     });
 
     // ==========================================
-    // 6. STAGE RUNNER ENGINE
+    // 5. STAGE RUNNER ENGINE (SEAMLESS RUNNING)
     // ==========================================
     function spawnStageElements() {
-      const chap = CHAPTERS[currentChapterIdx];
-      if (stageDistance >= chap.targetDist && !finishArch) {
+      if (distance >= GOAL_DISTANCE && !finishArch) {
         finishArch = {
-          x: width + 50,
+          x: width + 60,
           y: groundY
         };
         return;
       }
-      if (stageDistance >= chap.targetDist) return;
+      if (distance >= GOAL_DISTANCE) return;
 
+      const chap = CHAPTERS[currentChapterIdx];
       spawnTimer++;
+
       if (spawnTimer % 75 === 0) {
         const rand = Math.random();
         if (rand < 0.45) {
@@ -1375,27 +1137,45 @@
     function update() {
       if (!isPlaying) return;
 
-      const chap = CHAPTERS[currentChapterIdx];
+      distance += (gameSpeed * 0.05);
+      bgScroll += gameSpeed;
 
-      // Move forward only when player is holding RUN button
-      if (isHoldingRun) {
-        stageDistance += (gameSpeed * 0.05);
-        bgScroll += gameSpeed;
-
-        player.runTimer++;
-        if (player.runTimer % 6 === 0) {
-          player.runFrame = (player.runFrame + 1) % 3;
+      // Determine chapter based on distance
+      let chapIdx = 0;
+      for (let i = 0; i < CHAPTERS.length; i++) {
+        if (distance >= CHAPTERS[i].startDist && distance < CHAPTERS[i].endDist) {
+          chapIdx = i;
+          break;
         }
-
-        spawnStageElements();
-      } else {
-        // Player stands idle
-        player.runFrame = 0;
+      }
+      if (distance >= CHAPTERS[CHAPTERS.length - 1].endDist) {
+        chapIdx = CHAPTERS.length - 1;
       }
 
+      if (chapIdx !== currentChapterIdx) {
+        currentChapterIdx = chapIdx;
+        updateStepper(currentChapterIdx);
+        sfxMilestone();
+      }
+
+      const chap = CHAPTERS[currentChapterIdx];
+
+      // Update Sky Chat Messages based on progress inside this chapter!
+      const progressInChapter = (distance - chap.startDist) / (chap.endDist - chap.startDist);
+      const skyDlgs = chap.skyDialogues;
+      if (skyDlgs && skyDlgs.length > 0) {
+        const dlgIdx = Math.min(skyDlgs.length - 1, Math.max(0, Math.floor(progressInChapter * skyDlgs.length)));
+        pushSkyChatMessage(skyDlgs[dlgIdx]);
+      }
+
+      // Player animation
+      player.runTimer++;
+      if (player.runTimer % 6 === 0) {
+        player.runFrame = (player.runFrame + 1) % 3;
+      }
       if (player.invincibleTimer > 0) player.invincibleTimer--;
 
-      // Gravity & Jump Physics
+      // Physics
       player.vy += player.gravity;
       player.y += player.vy;
       if (player.y >= groundY - player.height) {
@@ -1405,127 +1185,116 @@
         player.jumpsRemaining = 2;
       }
 
-      // Update Sky Dialogue according to progress in stage
-      const progressInStage = stageDistance / chap.targetDist;
-      const skyDlgs = chap.skyDialogues;
-      if (skyDlgs && skyDlgs.length > 0) {
-        const dlgIdx = Math.min(skyDlgs.length - 1, Math.max(0, Math.floor(progressInStage * skyDlgs.length)));
-        updateSkyTalkWidget(skyDlgs[dlgIdx]);
-      }
+      spawnStageElements();
 
-      // Checkpoint Flag / Arch reached!
+      // Check Finish Arch at 880m
       if (finishArch) {
-        if (isHoldingRun) finishArch.x -= gameSpeed;
-        if (player.x >= finishArch.x + 15) {
-          reachCheckpoint();
+        finishArch.x -= gameSpeed;
+        if (player.x >= finishArch.x + 20) {
+          triggerVictory();
           return;
         }
       }
 
-      // Move world items when running
-      if (isHoldingRun) {
-        // Blocks
-        for (let i = blocks.length - 1; i >= 0; i--) {
-          const b = blocks[i];
-          b.x -= gameSpeed;
-          if (b.bumpY < 0) {
-            b.bumpY += 1.5;
-            if (b.bumpY > 0) b.bumpY = 0;
-          }
-
-          // Hit block from bottom
-          if (!b.hit && player.vy < 0) {
-            if (
-              player.x + player.width > b.x &&
-              player.x < b.x + b.width &&
-              player.y <= b.y + b.height &&
-              player.y >= b.y + b.height - 14
-            ) {
-              b.hit = true;
-              b.bumpY = -8;
-              player.vy = 1;
-              sfxBump();
-              score += 200;
-              sfxCoin();
-
-              popups.push({
-                x: b.x + b.width/2,
-                y: b.y - 12,
-                text: b.rewardText || '+200 囍',
-                color: '#FCD34D',
-                vy: -2,
-                life: 45
-              });
-            }
-          }
-          if (b.x + b.width < -40) blocks.splice(i, 1);
+      // Blocks
+      for (let i = blocks.length - 1; i >= 0; i--) {
+        const b = blocks[i];
+        b.x -= gameSpeed;
+        if (b.bumpY < 0) {
+          b.bumpY += 1.5;
+          if (b.bumpY > 0) b.bumpY = 0;
         }
 
-        // Items
-        for (let i = items.length - 1; i >= 0; i--) {
-          const it = items[i];
-          it.x -= gameSpeed;
+        if (!b.hit && player.vy < 0) {
           if (
-            player.x + player.width > it.x &&
-            player.x < it.x + it.size &&
-            player.y + player.height > it.y &&
-            player.y < it.y + it.size
+            player.x + player.width > b.x &&
+            player.x < b.x + b.width &&
+            player.y <= b.y + b.height &&
+            player.y >= b.y + b.height - 14
           ) {
-            items.splice(i, 1);
-            score += 100;
-            sfxCoin();
-            popups.push({
-              x: it.x,
-              y: it.y,
-              text: `+100 ${it.emoji}`,
-              color: '#F9E29D',
-              vy: -2,
-              life: 30
-            });
-            continue;
-          }
-          if (it.x + it.size < -40) items.splice(i, 1);
-        }
-
-        // Obstacles (NO GAME OVER! Just playful bump & small hop!)
-        for (let i = obstacles.length - 1; i >= 0; i--) {
-          const o = obstacles[i];
-          o.x -= gameSpeed;
-
-          if (
-            player.invincibleTimer <= 0 &&
-            player.x + player.width - 6 > o.x &&
-            player.x + 6 < o.x + o.width &&
-            player.y + player.height > o.y + 6 &&
-            player.y < o.y + o.height
-          ) {
-            // Playful stumble: Hop up slightly & blink, NEVER DIE!
-            player.invincibleTimer = 55;
-            player.vy = -6; // cute hop
+            b.hit = true;
+            b.bumpY = -8;
+            player.vy = 1;
             sfxBump();
+            score += 200;
+            sfxCoin();
 
             popups.push({
-              x: player.x + player.width/2,
-              y: player.y - 15,
-              text: 'Vấp nhẹ nè! 🙈',
+              x: b.x + b.width/2,
+              y: b.y - 12,
+              text: b.rewardText || '+200 囍',
               color: '#FCD34D',
-              vy: -1.5,
-              life: 35
+              vy: -2,
+              life: 45
             });
-
-            for (let p = 0; p < 5; p++) {
-              particles.push({
-                x: player.x + player.width/2,
-                y: player.y + player.height/2,
-                vx: (Math.random() - 0.5) * 4,
-                vy: (Math.random() - 0.5) * 4,
-                life: 20,
-                color: '#FCD34D'
-              });
-            }
           }
-          if (o.x + o.width < -40) obstacles.splice(i, 1);
         }
+        if (b.x + b.width < -40) blocks.splice(i, 1);
+      }
+
+      // Items
+      for (let i = items.length - 1; i >= 0; i--) {
+        const it = items[i];
+        it.x -= gameSpeed;
+        if (
+          player.x + player.width > it.x &&
+          player.x < it.x + it.size &&
+          player.y + player.height > it.y &&
+          player.y < it.y + it.size
+        ) {
+          items.splice(i, 1);
+          score += 100;
+          sfxCoin();
+          popups.push({
+            x: it.x,
+            y: it.y,
+            text: `+100 ${it.emoji}`,
+            color: '#F9E29D',
+            vy: -2,
+            life: 30
+          });
+          continue;
+        }
+        if (it.x + it.size < -40) items.splice(i, 1);
+      }
+
+      // Obstacles (Playful hop - NEVER DIE)
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const o = obstacles[i];
+        o.x -= gameSpeed;
+
+        if (
+          player.invincibleTimer <= 0 &&
+          player.x + player.width - 6 > o.x &&
+          player.x + 6 < o.x + o.width &&
+          player.y + player.height > o.y + 6 &&
+          player.y < o.y + o.height
+        ) {
+          player.invincibleTimer = 55;
+          player.vy = -6; // cute hop
+          sfxBump();
+
+          popups.push({
+            x: player.x + player.width/2,
+            y: player.y - 15,
+            text: 'Vấp nhẹ nè! 🙈',
+            color: '#FCD34D',
+            vy: -1.5,
+            life: 35
+          });
+
+          for (let p = 0; p < 5; p++) {
+            particles.push({
+              x: player.x + player.width/2,
+              y: player.y + player.height/2,
+              vx: (Math.random() - 0.5) * 4,
+              vy: (Math.random() - 0.5) * 4,
+              life: 20,
+              color: '#FCD34D'
+            });
+          }
+        }
+        if (o.x + o.width < -40) obstacles.splice(i, 1);
       }
 
       // Popups & Particles
@@ -1547,7 +1316,7 @@
     }
 
     // ==========================================
-    // 7. RENDER LOOP
+    // 6. RENDER LOOP
     // ==========================================
     function draw() {
       ctx.clearRect(0, 0, width, height);
@@ -1601,7 +1370,7 @@
 
       // Checkpoint Flag / Wedding Arch
       if (finishArch) {
-        drawStageArch(ctx, finishArch.x, finishArch.y, currentChapterIdx === 5);
+        drawStageArch(ctx, finishArch.x, finishArch.y, true);
       }
 
       // Blocks
@@ -1642,10 +1411,12 @@
       });
 
       // Player (Chú rể Duy Tân)
-      const isBlinking = player.invincibleTimer > 0 && Math.floor(player.invincibleTimer / 4) % 2 === 0;
-      if (!isBlinking) {
-        const frame = player.isGrounded ? player.runFrame : 1;
-        drawPixelGroom(ctx, player.x, player.y, 2.5, frame);
+      if (isPlaying) {
+        const isBlinking = player.invincibleTimer > 0 && Math.floor(player.invincibleTimer / 4) % 2 === 0;
+        if (!isBlinking) {
+          const frame = player.isGrounded ? player.runFrame : 1;
+          drawPixelGroom(ctx, player.x, player.y, 2.5, frame);
+        }
       }
 
       // Particles
@@ -1793,42 +1564,25 @@
       ctx.save();
       ctx.translate(x, y - h);
 
-      if (isFinal) {
-        // Grand Royal Wedding Arch with Bride
-        ctx.fillStyle = '#D4AF37';
-        ctx.fillRect(10, 20, 14, h - 20);
-        ctx.fillRect(w - 24, 20, 14, h - 20);
+      // Grand Royal Wedding Arch with Bride
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillRect(10, 20, 14, h - 20);
+      ctx.fillRect(w - 24, 20, 14, h - 20);
 
-        ctx.beginPath();
-        ctx.arc(w/2, 45, 45, Math.PI, 0);
-        ctx.lineWidth = 12;
-        ctx.strokeStyle = '#D4AF37';
-        ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(w/2, 45, 45, Math.PI, 0);
+      ctx.lineWidth = 12;
+      ctx.strokeStyle = '#D4AF37';
+      ctx.stroke();
 
-        ctx.fillStyle = '#8B1E2D';
-        ctx.fillRect(w/2 - 24, 6, 48, 24);
-        ctx.fillStyle = '#F9E29D';
-        ctx.font = "bold 15px 'Be Vietnam Pro', sans-serif";
-        ctx.textAlign = 'center';
-        ctx.fillText("囍", w/2, 23);
+      ctx.fillStyle = '#8B1E2D';
+      ctx.fillRect(w/2 - 24, 6, 48, 24);
+      ctx.fillStyle = '#F9E29D';
+      ctx.font = "bold 15px 'Be Vietnam Pro', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.fillText("囍", w/2, 23);
 
-        drawPixelBride(ctx, w/2 - 14, h - 40, 2.4);
-      } else {
-        // Milestone Checkpoint Flag
-        ctx.fillStyle = '#D4AF37';
-        ctx.fillRect(20, 30, 8, h - 30);
-
-        ctx.fillStyle = '#E11D48';
-        ctx.beginPath();
-        ctx.moveTo(28, 30);
-        ctx.lineTo(85, 48);
-        ctx.lineTo(28, 66);
-        ctx.fill();
-
-        ctx.fillStyle = '#FFF';
-        ctx.font = "bold 10px 'Be Vietnam Pro', sans-serif";
-        ctx.fillText("ĐÍCH", 34, 52);
-      }
+      drawPixelBride(ctx, w/2 - 14, h - 40, 2.4);
 
       ctx.restore();
     }
