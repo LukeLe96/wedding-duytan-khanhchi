@@ -104,43 +104,36 @@
 <body class="h-full flex flex-col overflow-hidden text-stone-800 antialiased select-none">
 
   <!-- ============================================================== -->
-  <!-- 1. CHAT TOP HEADER BAR                                         -->
+  <!-- 1. CHAT TOP HEADER BAR (COMPACT)                            -->
   <!-- ============================================================== -->
-  <header class="flex-none bg-white/90 backdrop-blur-md border-b border-stone-200/80 px-4 py-3 z-30 shadow-xs">
+  <header class="flex-none bg-white/95 backdrop-blur-md border-b border-stone-200/80 px-3 py-2 z-30 shadow-2xs">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       
-      <!-- Left: Avatar & Status -->
-      <div class="flex items-center gap-3">
+      <!-- Left: Compact Avatar & Couple Names -->
+      <div class="flex items-center gap-2.5">
         <div class="relative shrink-0">
-          <img src="./assets/couple_hero.jpg" alt="Duy Tân & Khánh Chi" class="w-11 h-11 rounded-full object-cover object-center ring-2 ring-gold/40 shadow-xs">
-          <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
+          <img src="./assets/couple_hero.jpg" alt="Duy Tân & Khánh Chi" class="w-8 h-8 rounded-full object-cover object-center ring-1 ring-gold/50 shadow-2xs">
+          <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white"></span>
         </div>
-        <div class="leading-tight">
-          <div class="flex items-center gap-1.5">
-            <h1 class="font-display font-bold text-stone-900 text-base sm:text-lg">Duy Tân &amp; Khánh Chi</h1>
-            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-ruby text-white text-[10px]" title="Cặp đôi chính thức">✓</span>
+        <div class="leading-none">
+          <div class="flex items-center gap-1">
+            <h1 class="font-display font-bold text-stone-900 text-sm sm:text-base">Duy Tân &amp; Khánh Chi</h1>
+            <span class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-ruby text-white text-[9px]" title="Cặp đôi chính thức">✓</span>
           </div>
-          <p id="chat-header-status" class="text-xs text-stone-500 flex items-center gap-1.5">
+          <p id="chat-header-status" class="text-[10px] text-stone-500 flex items-center gap-1 mt-0.5">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Lời ngỏ chung đôi • Đang chuẩn bị ngày cưới ✨</span>
+            <span>Lời ngỏ chung đôi • 16-17.01.2027 ✨</span>
           </p>
         </div>
       </div>
 
-      <!-- Right: Action Buttons (Audio + Switch to Web) -->
-      <div class="flex items-center gap-2">
-        <!-- Audio Button -->
-        <button id="audio-toggle-btn" onclick="toggleAudio()" aria-label="Bật/Tắt nhạc" class="p-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 transition flex items-center justify-center border border-stone-200 active:scale-95 cursor-pointer">
-          <div id="vinyl-icon" class="w-5 h-5 rounded-full bg-stone-900 border border-gold flex items-center justify-center animate-spin-slow anim-paused">
+      <!-- Right: Compact Music Button (No 'Trang web' button) -->
+      <div class="flex items-center">
+        <button id="audio-toggle-btn" onclick="toggleAudio()" aria-label="Bật/Tắt nhạc" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 transition flex items-center justify-center border border-stone-200 active:scale-95 cursor-pointer shadow-2xs" title="Bật/Tắt nhạc Một Nhà">
+          <div id="vinyl-icon" class="w-4.5 h-4.5 rounded-full bg-stone-900 border border-gold flex items-center justify-center animate-spin-slow anim-paused">
             <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
           </div>
         </button>
-
-        <!-- View Full Website Link -->
-        <a href="/" class="text-xs font-semibold px-3 py-1.5 rounded-full bg-ruby-light text-ruby border border-ruby/20 hover:bg-ruby hover:text-white transition active:scale-95 shadow-2xs flex items-center gap-1">
-          <span>Trang web</span>
-          <span class="text-xs">↗</span>
-        </a>
       </div>
 
     </div>
@@ -192,28 +185,48 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- 4. CHAT INPUT BAR                                              -->
+  <!-- 4. CHAT INPUT BAR (WITH VOICE MICROPHONE)                   -->
   <!-- ============================================================== -->
-  <footer class="flex-none bg-white border-t border-stone-200 px-4 py-3 z-30">
+  <footer class="flex-none bg-white border-t border-stone-200 px-3 py-2 z-30">
     <div class="max-w-2xl mx-auto">
-      <form id="chat-form" onsubmit="handleFormSubmit(event)" class="flex items-center gap-2">
+      <form id="chat-form" onsubmit="handleFormSubmit(event)" class="flex items-center gap-1.5 sm:gap-2">
+        
+        <!-- Voice Input Microphone Button -->
+        <button 
+          id="chat-mic-btn" 
+          type="button" 
+          onclick="toggleVoiceRecognition()" 
+          aria-label="Nói để nhắn tin"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center transition shadow-2xs active:scale-90 shrink-0 cursor-pointer border border-stone-200 relative group"
+          title="Nhấn để nói tiếng Việt 🎙️"
+        >
+          <span id="mic-pulse-ring" class="hidden absolute inset-0 rounded-full bg-red-500/30 animate-ping"></span>
+          <svg id="mic-icon-svg" class="w-4 h-4 text-stone-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4 0h8M12 3a3 3 0 00-3 3v5a3 3 0 006 0V6a3 3 0 00-3-3z"/>
+          </svg>
+        </button>
+
+        <!-- Text Input Field -->
         <input 
           id="chat-input" 
           type="text" 
           autocomplete="off"
-          placeholder="Nhắn gửi điều gì đó cho Tân & Chi nhé..." 
-          class="flex-1 bg-stone-50 border border-stone-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-ruby focus:bg-white transition text-stone-900 placeholder:text-stone-400"
+          placeholder="Nhắn gửi hoặc nhấn micro để nói..." 
+          class="flex-1 bg-stone-50 border border-stone-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-ruby focus:bg-white transition text-stone-900 placeholder:text-stone-400"
         />
+
+        <!-- Send Button -->
         <button 
           id="chat-send-btn" 
           type="submit" 
           aria-label="Gửi tin nhắn"
-          class="w-10 h-10 rounded-full bg-ruby hover:bg-ruby-dark text-white flex items-center justify-center transition shadow-xs active:scale-90 shrink-0 cursor-pointer"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-ruby hover:bg-ruby-dark text-white flex items-center justify-center transition shadow-xs active:scale-90 shrink-0 cursor-pointer"
         >
           <svg class="w-4 h-4 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
           </svg>
         </button>
+
       </form>
     </div>
   </footer>
@@ -316,7 +329,52 @@
     }
 
     // Add message bubble
-    function addMessage(html, sender = 'bot') {
+    let currentPlayingVoiceAudio = null;
+
+    function playVoiceAudio(audioUrl, btnEl) {
+      if (!audioUrl) return;
+
+      if (currentPlayingVoiceAudio && !currentPlayingVoiceAudio.paused) {
+        currentPlayingVoiceAudio.pause();
+        document.querySelectorAll('.voice-play-btn').forEach(b => {
+          b.classList.remove('bg-ruby', 'text-white');
+          b.querySelector('.voice-btn-label').innerText = 'Nghe giọng đọc';
+        });
+        if (currentPlayingVoiceAudio.src === audioUrl) {
+          currentPlayingVoiceAudio = null;
+          return;
+        }
+      }
+
+      const audio = new Audio(audioUrl);
+      currentPlayingVoiceAudio = audio;
+
+      if (btnEl) {
+        btnEl.classList.add('bg-ruby', 'text-white');
+        const lbl = btnEl.querySelector('.voice-btn-label');
+        if (lbl) lbl.innerText = 'Đang phát...';
+      }
+
+      audio.play().catch(e => {
+        console.log('Voice audio play failed:', e);
+        if (btnEl) {
+          btnEl.classList.remove('bg-ruby', 'text-white');
+          const lbl = btnEl.querySelector('.voice-btn-label');
+          if (lbl) lbl.innerText = 'Nghe giọng đọc';
+        }
+      });
+
+      audio.onended = () => {
+        if (btnEl) {
+          btnEl.classList.remove('bg-ruby', 'text-white');
+          const lbl = btnEl.querySelector('.voice-btn-label');
+          if (lbl) lbl.innerText = 'Nghe giọng đọc';
+        }
+        currentPlayingVoiceAudio = null;
+      };
+    }
+
+    function addMessage(html, sender = 'bot', audioUrl = '') {
       const msgDiv = document.createElement('div');
       msgDiv.className = `flex items-end gap-2.5 bubble-animate ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
 
@@ -332,15 +390,31 @@
           </div>
         `;
       } else {
+        const voiceButtonHtml = audioUrl ? `
+          <div class="pt-1">
+            <button onclick="playVoiceAudio('${audioUrl}', this)" class="voice-play-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ruby-light/80 hover:bg-ruby hover:text-white text-ruby border border-ruby/30 text-[11px] font-semibold transition active:scale-95 cursor-pointer shadow-2xs">
+              <span>🔊</span>
+              <span class="voice-btn-label">Nghe giọng đọc</span>
+            </button>
+          </div>
+        ` : '';
+
         msgDiv.innerHTML = `
           <img src="./assets/couple_hero.jpg" alt="Avatar" class="w-8 h-8 rounded-full object-cover shrink-0 ring-1 ring-gold/40 shadow-xs mb-1">
           <div class="max-w-[90%] sm:max-w-[80%] space-y-1">
             <div class="bg-white border border-stone-200/90 text-stone-800 px-4 py-3 rounded-2xl rounded-bl-xs text-sm shadow-xs space-y-2">
               ${html}
+              ${voiceButtonHtml}
             </div>
             <div class="text-[10px] text-stone-400 pl-1">${timeStr} • Tân &amp; Chi</div>
           </div>
         `;
+
+        // Auto play voice if provided
+        if (audioUrl) {
+          const btn = msgDiv.querySelector('.voice-play-btn');
+          setTimeout(() => playVoiceAudio(audioUrl, btn), 300);
+        }
       }
 
       chatContainer.appendChild(msgDiv);
@@ -571,7 +645,7 @@
     async function queryAiApi(userMsg) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 9000);
+        const timeoutId = setTimeout(() => controller.abort(), 18000);
 
         const res = await fetch('/api/chat', {
           method: 'POST',
@@ -588,7 +662,7 @@
         if (res.ok) {
           const data = await res.json();
           if (data && data.reply) {
-            return data.reply.trim();
+            return { reply: data.reply.trim(), audio_url: data.audio_url || '' };
           }
         }
       } catch (e) {
@@ -647,7 +721,7 @@
         confetti({ particleCount: 65, spread: 70, origin: { y: 0.8 } });
       }
 
-      const aiReply = await queryAiApi(rawText);
+      const aiData = await queryAiApi(rawText);
       setTyping(false);
 
       // Detect if user is asking for specific rich cards
@@ -662,10 +736,13 @@
         attachedCard = `<div class="pt-2">${cardSchedule()}</div>`;
       }
 
-      if (aiReply) {
-        chatHistory.push({ role: 'assistant', content: aiReply });
+      if (aiData && aiData.reply) {
+        const replyText = aiData.reply;
+        const audioUrl = aiData.audio_url || '';
+        chatHistory.push({ role: 'assistant', content: replyText });
+        
         // Format markdown-like newlines into paragraphs
-        const formattedReply = aiReply
+        const formattedReply = replyText
           .split(/\n\n+/)
           .map(p => `<p class="text-xs leading-relaxed text-stone-700">${p.replace(/\n/g, '<br>')}</p>`)
           .join('');
@@ -675,7 +752,7 @@
             ${formattedReply}
             ${attachedCard}
           </div>
-        `, 'bot');
+        `, 'bot', audioUrl);
       } else {
         // Fallback response if AI API is temporarily unavailable
         botReply(`
@@ -938,6 +1015,94 @@
         }, 500);
 
       }, 700);
+    }
+
+
+    // -------------------------------------------------------------
+    // SPEECH RECOGNITION (STT) ENGINE (MICROPHONE VOICE INPUT)
+    // -------------------------------------------------------------
+    let speechRecognizer = null;
+    let isSpeechRecording = false;
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return null;
+
+      const recog = new SpeechRecognition();
+      recog.lang = 'vi-VN';
+      recog.continuous = false;
+      recog.interimResults = false;
+
+      recog.onstart = () => {
+        isSpeechRecording = true;
+        updateMicUI(true);
+        showToast('Đang lắng nghe giọng nói của bạn... 🎙️');
+      };
+
+      recog.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        if (transcript) {
+          chatInput.value = transcript;
+          showToast(`Nhận diện: "${transcript}" ✨`);
+          handleFormSubmit(new Event('submit'));
+        }
+      };
+
+      recog.onerror = (event) => {
+        console.log('Speech recognition error:', event.error);
+        isSpeechRecording = false;
+        updateMicUI(false);
+        if (event.error === 'not-allowed') {
+          showToast('Vui lòng cho phép quyền truy cập Micro trên trình duyệt');
+        } else if (event.error !== 'no-speech') {
+          showToast('Không bắt được giọng nói, bạn thử lại nhé');
+        }
+      };
+
+      recog.onend = () => {
+        isSpeechRecording = false;
+        updateMicUI(false);
+      };
+
+      return recog;
+    }
+
+    function updateMicUI(recording) {
+      const micBtn = document.getElementById('chat-mic-btn');
+      const micRing = document.getElementById('mic-pulse-ring');
+      const micSvg = document.getElementById('mic-icon-svg');
+
+      if (recording) {
+        micBtn.classList.add('bg-red-50', 'border-red-400');
+        micRing.classList.remove('hidden');
+        micSvg.classList.add('text-red-600');
+      } else {
+        micBtn.classList.remove('bg-red-50', 'border-red-400');
+        micRing.classList.add('hidden');
+        micSvg.classList.remove('text-red-600');
+      }
+    }
+
+    function toggleVoiceRecognition() {
+      if (!speechRecognizer) {
+        speechRecognizer = initSpeechRecognition();
+      }
+
+      if (!speechRecognizer) {
+        showToast('Trình duyệt chưa hỗ trợ nhận diện giọng nói trực tiếp, bạn gõ chữ giúp tụi mình nhé!');
+        chatInput.focus();
+        return;
+      }
+
+      if (isSpeechRecording) {
+        speechRecognizer.stop();
+      } else {
+        try {
+          speechRecognizer.start();
+        } catch (e) {
+          console.log('Speech recog start error:', e);
+        }
+      }
     }
 
     document.addEventListener('DOMContentLoaded', initChat);
