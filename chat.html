@@ -249,7 +249,13 @@
   </div>
 
   <!-- Audio Element -->
+  <!-- Background Music Player -->
   <audio id="wedding-audio" loop preload="none">
+    <source src="./assets/mot_nha_dalab.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- Dedicated Voice TTS Player for Mobile (playsinline, high priority) -->
+  <audio id="voice-tts-audio" playsinline preload="auto"></audio>
     <source src="./assets/mot_nha_dalab.mp3" type="audio/mp3">
   </audio>
 
@@ -330,51 +336,120 @@
 
     // Add message bubble
     let currentPlayingVoiceAudio = null;
+    let audioContextUnlocked = false;
 
-    function playVoiceAudio(audioUrl, btnEl) {
-      if (!audioUrl) return;
+    function playVoiceAudio(btnEl) {
+      if (!btnEl) return;
+      const audioUrl = btnEl.getAttribute('data-audio') || '';
+      const textToSpeak = btnEl.getAttribute('data-text') || '';
+      const voicePlayer = document.getElementById('voice-tts-audio');
 
-      if (currentPlayingVoiceAudio && !currentPlayingVoiceAudio.paused) {
-        currentPlayingVoiceAudio.pause();
-        document.querySelectorAll('.voice-play-btn').forEach(b => {
-          b.classList.remove('bg-ruby', 'text-white');
-          b.querySelector('.voice-btn-label').innerText = 'Nghe giọng đọc';
-        });
-        if (currentPlayingVoiceAudio.src === audioUrl) {
-          currentPlayingVoiceAudio = null;
-          return;
-        }
-      }
-
-      const audio = new Audio(audioUrl);
-      currentPlayingVoiceAudio = audio;
-
-      if (btnEl) {
-        btnEl.classList.add('bg-ruby', 'text-white');
+      // 1. If currently playing this audio, pause it
+      if (voicePlayer && !voicePlayer.paused && voicePlayer.dataset.currentAudio === audioUrl) {
+        voicePlayer.pause();
+        btnEl.classList.remove('bg-ruby', 'text-white');
+        btnEl.classList.add('bg-ruby-light/90', 'text-ruby');
         const lbl = btnEl.querySelector('.voice-btn-label');
-        if (lbl) lbl.innerText = 'Đang phát...';
+        if (lbl) lbl.innerText = 'Nghe lại';
+        const icon = btnEl.querySelector('.voice-btn-icon');
+        if (icon) icon.innerText = '▶';
+        return;
       }
 
-      audio.play().catch(e => {
-        console.log('Voice audio play failed:', e);
-        if (btnEl) {
-          btnEl.classList.remove('bg-ruby', 'text-white');
-          const lbl = btnEl.querySelector('.voice-btn-label');
-          if (lbl) lbl.innerText = 'Nghe giọng đọc';
-        }
+      // 2. Stop any other playing voices
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (voicePlayer) {
+        voicePlayer.pause();
+      }
+
+      document.querySelectorAll('.voice-play-btn').forEach(b => {
+        b.classList.remove('bg-ruby', 'text-white');
+        b.classList.add('bg-ruby-light/90', 'text-ruby');
+        const lbl = b.querySelector('.voice-btn-label');
+        if (lbl) lbl.innerText = 'Nghe giọng đọc';
+        const icon = b.querySelector('.voice-btn-icon');
+        if (icon) icon.innerText = '🔊';
       });
 
-      audio.onended = () => {
-        if (btnEl) {
-          btnEl.classList.remove('bg-ruby', 'text-white');
-          const lbl = btnEl.querySelector('.voice-btn-label');
-          if (lbl) lbl.innerText = 'Nghe giọng đọc';
+      // 3. Mark current button as playing
+      btnEl.classList.remove('bg-ruby-light/90', 'text-ruby');
+      btnEl.classList.add('bg-ruby', 'text-white');
+      const lbl = btnEl.querySelector('.voice-btn-label');
+      if (lbl) lbl.innerText = 'Đang phát...';
+      const icon = btnEl.querySelector('.voice-btn-icon');
+      if (icon) icon.innerText = '⏸';
+
+      // 4. Play MP3 via HTML5 Audio with background music ducking
+      const bgAudio = document.getElementById('wedding-audio');
+      if (bgAudio && !bgAudio.paused) {
+        bgAudio.pause();
+        window._wasBgAudioPlaying = true;
+      }
+
+      const resetBtn = () => {
+        btnEl.classList.remove('bg-ruby', 'text-white');
+        btnEl.classList.add('bg-ruby-light/90', 'text-ruby');
+        if (lbl) lbl.innerText = 'Nghe lại';
+        if (icon) icon.innerText = '↺';
+        if (window._wasBgAudioPlaying && bgAudio) {
+          bgAudio.play().catch(() => {});
+          window._wasBgAudioPlaying = false;
         }
-        currentPlayingVoiceAudio = null;
       };
+
+      if (audioUrl && voicePlayer) {
+        voicePlayer.src = audioUrl;
+        voicePlayer.dataset.currentAudio = audioUrl;
+        try { voicePlayer.load(); } catch (e) {}
+        voicePlayer.currentTime = 0;
+
+        voicePlayer.play().then(() => {
+          console.log('In-house CapCut voice playing:', audioUrl);
+        }).catch(err => {
+          console.log('Server audio blocked, using speech fallback:', err);
+          speakWebSpeech(textToSpeak, resetBtn);
+        });
+
+        voicePlayer.onended = resetBtn;
+        voicePlayer.onerror = () => {
+          console.log('Audio file load error, using speech fallback');
+          speakWebSpeech(textToSpeak, resetBtn);
+        };
+      } else {
+        speakWebSpeech(textToSpeak, resetBtn);
+      }
     }
 
-    function addMessage(html, sender = 'bot', audioUrl = '') {
+    function speakWebSpeech(text, onEndCallback) {
+      if (!('speechSynthesis' in window) || !text) {
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+      try {
+        window.speechSynthesis.cancel();
+        // Remove markdown and emojis
+        const clean = text.replace(/[*#_>~`•]/g, '').replace(/[\uD800-\uDFFF]./g, '').trim();
+        const utter = new SpeechSynthesisUtterance(clean);
+        utter.lang = 'vi-VN';
+        utter.rate = 1.0;
+        utter.pitch = 1.0;
+
+        const voices = window.speechSynthesis.getVoices();
+        const viVoice = voices.find(v => v.lang.startsWith('vi') || v.lang.includes('VN'));
+        if (viVoice) utter.voice = viVoice;
+
+        utter.onend = onEndCallback;
+        utter.onerror = onEndCallback;
+        window.speechSynthesis.speak(utter);
+      } catch (e) {
+        console.log('Web speech error:', e);
+        if (onEndCallback) onEndCallback();
+      }
+    }
+
+    function addMessage(html, sender = 'bot', audioUrl = '', rawText = '') {
       const msgDiv = document.createElement('div');
       msgDiv.className = `flex items-end gap-2.5 bubble-animate ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
 
@@ -390,10 +465,11 @@
           </div>
         `;
       } else {
-        const voiceButtonHtml = audioUrl ? `
-          <div class="pt-1">
-            <button onclick="playVoiceAudio('${audioUrl}', this)" class="voice-play-btn inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ruby-light/80 hover:bg-ruby hover:text-white text-ruby border border-ruby/30 text-[11px] font-semibold transition active:scale-95 cursor-pointer shadow-2xs">
-              <span>🔊</span>
+        const textForVoice = rawText ? rawText.replace(/"/g, '&quot;') : '';
+        const voiceButtonHtml = (audioUrl || textForVoice) ? `
+          <div class="pt-1.5">
+            <button onclick="playVoiceAudio(this)" data-audio="${audioUrl}" data-text="${textForVoice}" class="voice-play-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-ruby-light/90 hover:bg-ruby hover:text-white text-ruby border border-ruby/30 text-xs font-bold transition active:scale-95 cursor-pointer shadow-xs">
+              <span class="voice-btn-icon text-xs">🔊</span>
               <span class="voice-btn-label">Nghe giọng đọc</span>
             </button>
           </div>
@@ -409,12 +485,6 @@
             <div class="text-[10px] text-stone-400 pl-1">${timeStr} • Tân &amp; Chi</div>
           </div>
         `;
-
-        // Auto play voice if provided
-        if (audioUrl) {
-          const btn = msgDiv.querySelector('.voice-play-btn');
-          setTimeout(() => playVoiceAudio(audioUrl, btn), 300);
-        }
       }
 
       chatContainer.appendChild(msgDiv);
@@ -432,11 +502,11 @@
     }
 
     // Simulate bot reply with typing delay
-    function botReply(html, delay = 700) {
+    function botReply(html, delay = 700, audioUrl = '', rawText = '') {
       setTyping(true);
       setTimeout(() => {
         setTyping(false);
-        addMessage(html, 'bot');
+        addMessage(html, 'bot', audioUrl, rawText);
       }, delay);
     }
 
@@ -752,7 +822,7 @@
             ${formattedReply}
             ${attachedCard}
           </div>
-        `, 'bot', audioUrl);
+        `, 'bot', audioUrl, replyText);
       } else {
         // Fallback response if AI API is temporarily unavailable
         botReply(`
@@ -998,7 +1068,15 @@
           `;
         }
 
-        addMessage(welcomeText, 'bot');
+        const welcomeAudio = elder 
+          ? '/voices/welcome_elder_linh.mp3' 
+          : '/voices/welcome_friend_linh.mp3';
+
+        const cleanWelcomeText = elder
+          ? `Dạ, chúng con kính chào ${guestName || 'Gia đình mình'} ạ! Chúng con là Lê Duy Tân và Đinh Khánh Chi. Thật hạnh phúc cho hai cháu khi được gửi lời mời trân trọng nhất đến ${guestRel ? guestRel + ' cùng toàn thể gia đình' : (guestName || 'gia đình mình')} về chung vui ngày đại hỷ của hai cháu ạ!`
+          : `Chào bạn thân thương! Tụi mình là Lê Duy Tân và Đinh Khánh Chi. Cảm ơn bạn đã ghé thăm góc nhỏ của hai đứa. Ngày vui của chúng mình sẽ trọn vẹn và ấm áp hơn rất nhiều khi có sự chúc phúc và đồng hành của bạn.`;
+
+        addMessage(welcomeText, 'bot', welcomeAudio, cleanWelcomeText);
 
         // Follow up with Invitation Card
         setTimeout(() => {
@@ -1019,53 +1097,12 @@
 
 
     // -------------------------------------------------------------
-    // SPEECH RECOGNITION (STT) ENGINE (MICROPHONE VOICE INPUT)
+    // IN-HOUSE SPEECH RECOGNITION (STT) VIA /api/stt & WEB SPEECH
     // -------------------------------------------------------------
-    let speechRecognizer = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
     let isSpeechRecording = false;
-
-    function initSpeechRecognition() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) return null;
-
-      const recog = new SpeechRecognition();
-      recog.lang = 'vi-VN';
-      recog.continuous = false;
-      recog.interimResults = false;
-
-      recog.onstart = () => {
-        isSpeechRecording = true;
-        updateMicUI(true);
-        showToast('Đang lắng nghe giọng nói của bạn... 🎙️');
-      };
-
-      recog.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript) {
-          chatInput.value = transcript;
-          showToast(`Nhận diện: "${transcript}" ✨`);
-          handleFormSubmit(new Event('submit'));
-        }
-      };
-
-      recog.onerror = (event) => {
-        console.log('Speech recognition error:', event.error);
-        isSpeechRecording = false;
-        updateMicUI(false);
-        if (event.error === 'not-allowed') {
-          showToast('Vui lòng cho phép quyền truy cập Micro trên trình duyệt');
-        } else if (event.error !== 'no-speech') {
-          showToast('Không bắt được giọng nói, bạn thử lại nhé');
-        }
-      };
-
-      recog.onend = () => {
-        isSpeechRecording = false;
-        updateMicUI(false);
-      };
-
-      return recog;
-    }
+    let speechRecognizer = null;
 
     function updateMicUI(recording) {
       const micBtn = document.getElementById('chat-mic-btn');
@@ -1083,26 +1120,123 @@
       }
     }
 
-    function toggleVoiceRecognition() {
-      if (!speechRecognizer) {
-        speechRecognizer = initSpeechRecognition();
-      }
-
-      if (!speechRecognizer) {
-        showToast('Trình duyệt chưa hỗ trợ nhận diện giọng nói trực tiếp, bạn gõ chữ giúp tụi mình nhé!');
-        chatInput.focus();
+    async function toggleVoiceRecognition() {
+      // 1. If currently recording, stop it
+      if (isSpeechRecording) {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        } else if (speechRecognizer) {
+          speechRecognizer.stop();
+        }
+        isSpeechRecording = false;
+        updateMicUI(false);
         return;
       }
 
-      if (isSpeechRecording) {
-        speechRecognizer.stop();
-      } else {
+      // 2. Try in-house MediaRecorder -> /api/stt (Deepgram Nova-3 Tiếng Việt)
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         try {
-          speechRecognizer.start();
-        } catch (e) {
-          console.log('Speech recog start error:', e);
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          audioChunks = [];
+          
+          let mimeType = 'audio/webm';
+          if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+            mimeType = 'audio/webm;codecs=opus';
+          } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+            mimeType = 'audio/mp4';
+          }
+
+          mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+          
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) audioChunks.push(e.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            isSpeechRecording = false;
+            updateMicUI(false);
+            stream.getTracks().forEach(t => t.stop());
+
+            if (audioChunks.length === 0) return;
+            showToast('Đang nhận diện giọng nói... ✨');
+            const audioBlob = new Blob(audioChunks, { type: mimeType });
+
+            try {
+              const res = await fetch('/api/stt', {
+                method: 'POST',
+                headers: { 'Content-Type': mimeType },
+                body: audioBlob
+              });
+              if (res.ok) {
+                const data = await res.json();
+                if (data && data.transcript && data.transcript.trim()) {
+                  chatInput.value = data.transcript.trim();
+                  showToast(`Nhận diện: "${data.transcript.trim()}" ✨`);
+                  handleFormSubmit(new Event('submit'));
+                  return;
+                }
+              }
+            } catch (err) {
+              console.log('In-house STT error:', err);
+            }
+            showToast('Không nghe rõ, bạn thử nói lại hoặc gõ chữ nhé!');
+          };
+
+          mediaRecorder.start();
+          isSpeechRecording = true;
+          updateMicUI(true);
+          showToast('Đang lắng nghe... Hãy nói điều gì đó nha 🎙️');
+          return;
+        } catch (err) {
+          console.log('MediaRecorder mic error, falling back to Web Speech:', err);
         }
       }
+
+      // 3. Fallback to browser SpeechRecognition
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        if (!speechRecognizer) {
+          speechRecognizer = new SpeechRecognition();
+          speechRecognizer.lang = 'vi-VN';
+          speechRecognizer.continuous = false;
+          speechRecognizer.interimResults = false;
+
+          speechRecognizer.onstart = () => {
+            isSpeechRecording = true;
+            updateMicUI(true);
+            showToast('Đang lắng nghe giọng nói của bạn... 🎙️');
+          };
+
+          speechRecognizer.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            if (transcript) {
+              chatInput.value = transcript;
+              showToast(`Nhận diện: "${transcript}" ✨`);
+              handleFormSubmit(new Event('submit'));
+            }
+          };
+
+          speechRecognizer.onerror = () => {
+            isSpeechRecording = false;
+            updateMicUI(false);
+          };
+
+          speechRecognizer.onend = () => {
+            isSpeechRecording = false;
+            updateMicUI(false);
+          };
+        }
+
+        try {
+          speechRecognizer.start();
+          return;
+        } catch (e) {
+          console.log('SpeechRecognizer error:', e);
+        }
+      }
+
+      showToast('Vui lòng cho phép quyền Micro hoặc gõ chữ giúp tụi mình nhé!');
+      chatInput.focus();
     }
 
     document.addEventListener('DOMContentLoaded', initChat);

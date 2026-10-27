@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Wedding AI Chat & CapCut TTS Microservice for wedding.tahi.vn
-Powered by gemini-3.8-flash via CLIProxy & CapCut Vietnamese TTS API
+Wedding AI Chat & In-House TTS Microservice for wedding.tahi.vn
+Powered by gemini-3.8-flash via CLIProxy & CapCut Vietnamese TTS API (Ban Mai / Mai)
 """
 
+import hashlib
 import json
 import logging
 import os
@@ -18,11 +19,15 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger("wedding_chat_ai")
 
 PORT = 8082
+DEEPGRAM_KEY = "cb375ac97ec487fb10a64240c42cf68fec8967ac"
+CARTESIA_API_KEY = os.environ.get("CARTESIA_API_KEY", "") or "sk_car_4G8hzLuum2EH2bUGSBCjQ5"
+CARTESIA_VOICE_LINH = "935a9060-373c-49e4-b078-f4ea6326987a"
 CLIPROXY_URL = "http://127.0.0.1:8317/v1/chat/completions"
 CLIPROXY_KEY = "cpa_P6dmy7mliAIPboi7r2ber2QIYWbTQKajBmhrnuUGvWg"
 GUEST_API_URL = "http://127.0.0.1:8081/api/invite/guest/"
+VOICE_CACHE_DIR = "/var/www/wedding/voices"
 
-# CapCut TTS Package integration
+# CapCut In-House TTS Package integration
 CAPCUT_DIR = "/opt/weddingcheck/capcut_tts"
 if os.path.exists(CAPCUT_DIR) and CAPCUT_DIR not in sys.path:
     sys.path.insert(0, CAPCUT_DIR)
@@ -30,17 +35,22 @@ if os.path.exists(CAPCUT_DIR) and CAPCUT_DIR not in sys.path:
 try:
     from capcut_tts_api import CapCutClient
     tts_client = CapCutClient()
-    logger.info("CapCutClient initialized successfully.")
+    logger.info("In-house CapCutClient initialized successfully.")
 except Exception as e:
     tts_client = None
-    logger.warning(f"CapCut TTS client not available: {e}")
+    logger.error(f"In-house CapCut TTS client not available: {e}")
+
+# Supported in-house voices
+# ban_mai: multi_female_yangguangnv_uranus_bigtts (Ban Mai - Podcast, dịu dàng, ấm áp nhất cho thiệp cưới)
+# mai: BV562_streaming (Mai - tự nhiên, trong trẻo)
+DEFAULT_VOICE = "multi_female_yangguangnv_uranus_bigtts"
 
 SYSTEM_PROMPT = """Bạn là sự hiện diện số ấm áp, chân thành và dịu dàng của cặp đôi Lê Duy Tân & Đinh Khánh Chi trên website thiệp cưới chính thức (wedding.tahi.vn).
 Nhiệm vụ của bạn là thay mặt cô dâu và chú rể trò chuyện, đón tiếp, giải đáp thắc mắc và tiếp nhận lời chúc của khách quý một cách ngọt ngào, tinh tế, khiêm nhường và đong đầy tình cảm.
 
 ### 1. NGUYÊN TẮC CỐT LÕI (TONE & VOICE):
 - Văn phong: Nhẹ nhàng, ấm áp, từ tốn, chân phương, mộc mạc và chân thành. Tuyệt đối không văn mẫu sáo rỗng, không dùng từ ngữ hành chính/công nghệ/robot (CẤM các từ: "hệ thống", "trạng thái", "thao tác", "đơn vị", "ghi nhận thành công", "AI trợ lý").
-- Ngắn gọn, súc tích (1–3 đoạn ngắn, khoảng 35–85 từ), định dạng đẹp, dễ đọc trên điện thoại.
+- Ngắn gọn, súc tích (1–3 đoạn ngắn, khoảng 35–80 từ), định dạng đẹp, dễ đọc trên điện thoại.
 - Biểu tượng cảm xúc (Emoji): Sử dụng chừng mực, nhẹ nhàng (🌸, ✨, 💐, 💌, 💍, 🙏, 💕), không lạm dụng quá đà.
 
 ### 2. QUY TẮC XƯNG HÔ (ADAPTIVE RESPECT):
@@ -94,22 +104,87 @@ def clean_for_tts(text: str) -> str:
     t = re.sub(r'\s+', ' ', t).strip()
     return t[:260]
 
-def generate_voice_url(text: str, voice: str = "BV562_streaming") -> str:
+def generate_voice_url(text: str, voice: str = DEFAULT_VOICE) -> str:
     if not tts_client:
         return ""
+
     clean = clean_for_tts(text)
     if not clean:
         return ""
+
+    # Ensure cache directory exists
     try:
-        res = tts_client.generate_speech(texts=clean, voice=voice, wait=True, timeout=8.0)
-        tasks = (res.get("data") or {}).get("tasks") or []
-        if tasks:
-            payload = json.loads(tasks[0].get("payload"))
-            subs = payload.get("audio_subtitles") or []
-            if subs and subs[0].get("speech_url"):
-                return subs[0]["speech_url"]
-    except Exception as e:
-        logger.warning(f"TTS generation error: {e}")
+        os.makedirs(VOICE_CACHE_DIR, exist_ok=True)
+    except Exception:
+        pass
+
+    text_hash = hashlib.md5(f"{clean}_{voice}".encode("utf-8")).hexdigest()
+    cache_filename = f"voice_{text_hash}.mp3"
+    cache_path = os.path.join(VOICE_CACHE_DIR, cache_filename)
+    public_url = f"/voices/{cache_filename}"
+
+    # Return cached audio if already downloaded
+    if os.path.exists(cache_path) and os.path.getsize(cache_path) > 1000:
+        return public_url
+
+    # 1. Cartesia Sonic Engine (Voice Linh - 90ms TTFB)
+    if CARTESIA_API_KEY:
+        try:
+            cart_payload = json.dumps({
+                "model_id": "sonic-3.6",
+                "transcript": clean,
+                "voice": {
+                    "mode": "id",
+                    "id": CARTESIA_VOICE_LINH
+                },
+                "output_format": {
+                    "container": "mp3",
+                    "sample_rate": 44100
+                },
+                "language": "vi"
+            }).encode("utf-8")
+            cart_req = urllib.request.Request(
+                "https://api.cartesia.ai/tts/bytes",
+                data=cart_payload,
+                headers={
+                    "X-API-Key": CARTESIA_API_KEY,
+                    "Cartesia-Version": "2024-06-10",
+                    "Content-Type": "application/json"
+                },
+                method="POST"
+            )
+            with urllib.request.urlopen(cart_req, timeout=8.0) as resp:
+                audio_bytes = resp.read()
+            if audio_bytes and len(audio_bytes) > 1000:
+                with open(cache_path, "wb") as f:
+                    f.write(audio_bytes)
+                logger.info(f"Generated Cartesia Sonic Linh voiceover: {cache_path} ({len(audio_bytes)} bytes)")
+                return public_url
+        except Exception as e:
+            logger.warning(f"Cartesia Sonic Linh error: {e}")
+
+    # 2. In-House CapCut TTS generator (Ban Mai / Mai) fallback
+    if tts_client:
+        for target_voice in [voice, "BV562_streaming"]:
+            try:
+                res = tts_client.generate_speech(texts=clean, voice=target_voice, wait=True, timeout=9.0)
+                tasks = (res.get("data") or {}).get("tasks") or []
+                if tasks:
+                    payload = json.loads(tasks[0].get("payload"))
+                    subs = payload.get("audio_subtitles") or []
+                    if subs and subs[0].get("speech_url"):
+                        remote_url = subs[0]["speech_url"]
+                        req = urllib.request.Request(remote_url, headers={"User-Agent": "Mozilla/5.0"})
+                        with urllib.request.urlopen(req, timeout=9) as resp:
+                            audio_bytes = resp.read()
+                        if audio_bytes and len(audio_bytes) > 1000:
+                            with open(cache_path, "wb") as f:
+                                f.write(audio_bytes)
+                            logger.info(f"Generated in-house voiceover ({target_voice}): {cache_path} ({len(audio_bytes)} bytes)")
+                            return public_url
+            except Exception as e:
+                logger.warning(f"In-house CapCut TTS error with voice {target_voice}: {e}")
+
     return ""
 
 def call_llm(user_msg, guest_info="", history=None):
@@ -170,7 +245,7 @@ class ChatHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(b'{"status": "ok", "service": "wedding-chat-ai", "tts": true}')
+            self.wfile.write(b'{"status": "ok", "service": "wedding-chat-ai", "in_house_tts": true}')
             return
         self.send_response(404)
         self.end_headers()
@@ -199,7 +274,7 @@ class ChatHandler(BaseHTTPRequestHandler):
             guest_info = fetch_guest_info(slug)
             reply = call_llm(user_msg, guest_info=guest_info, history=history)
 
-            # Generate CapCut TTS Voiceover URL
+            # Generate In-House TTS Voiceover URL (Ban Mai voice)
             audio_url = generate_voice_url(reply)
 
             res_body = json.dumps({"reply": reply, "audio_url": audio_url}, ensure_ascii=False).encode("utf-8")
@@ -217,10 +292,42 @@ class ChatHandler(BaseHTTPRequestHandler):
             except Exception:
                 data = {}
             text = data.get("text", "").strip()
-            voice = data.get("voice", "BV562_streaming")
+            voice = data.get("voice", DEFAULT_VOICE)
             audio_url = generate_voice_url(text, voice=voice)
 
             res_body = json.dumps({"audio_url": audio_url}, ensure_ascii=False).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(res_body)
+
+        elif self.path in ["/api/stt", "/api/stt/", "/stt"]:
+            content_length = int(self.headers.get("Content-Length", 0))
+            audio_data = self.rfile.read(content_length)
+            content_type = self.headers.get("Content-Type", "audio/webm")
+
+            transcript = ""
+            try:
+                url = "https://api.deepgram.com/v1/listen?model=nova-3&language=vi&smart_format=true"
+                req = urllib.request.Request(
+                    url,
+                    data=audio_data,
+                    headers={
+                        "Authorization": f"Token {DEEPGRAM_KEY}",
+                        "Content-Type": content_type
+                    },
+                    method="POST"
+                )
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    dg_res = json.loads(resp.read().decode("utf-8"))
+                    channels = (dg_res.get("results") or {}).get("channels") or []
+                    if channels and channels[0].get("alternatives"):
+                        transcript = channels[0]["alternatives"][0].get("transcript", "").strip()
+            except Exception as e:
+                logger.error(f"Deepgram STT API error: {e}")
+
+            res_body = json.dumps({"transcript": transcript}, ensure_ascii=False).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Access-Control-Allow-Origin", "*")
@@ -236,7 +343,7 @@ class ChatHandler(BaseHTTPRequestHandler):
 
 def run():
     server = ThreadingHTTPServer(("127.0.0.1", PORT), ChatHandler)
-    logger.info(f"Wedding AI Chat Server running on http://127.0.0.1:{PORT}")
+    logger.info(f"Wedding AI Chat Server (In-House TTS) running on http://127.0.0.1:{PORT}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
