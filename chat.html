@@ -670,25 +670,26 @@
       scrollToBottom();
     }
 
-    // Header pixel mascot: Acrobatic Stunt (Đi tới góc -> Tuột xuống đáy -> Bắn dây đu lên lại!)
+    // Header pixel mascot: Rectangular Patrol Stunt (Đi hình chữ nhật men theo 4 mép màn hình!)
     let isStuntActive = false;
 
     function celebrateMascot() {
       if (isStuntActive) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      launchAcrobaticStunt();
+      launchRectanglePatrol();
     }
 
-    function launchAcrobaticStunt() {
+    function launchRectanglePatrol() {
       isStuntActive = true;
       const mascot = document.getElementById('px-mascot');
       if (!mascot) { isStuntActive = false; return; }
 
       const r = mascot.getBoundingClientRect();
       const startX = r.left;
-      const startY = r.top;
-      const rightCornerX = window.innerWidth - 44; // Góc trên bên phải
-      const bottomY = window.innerHeight - 95;      // Đáy màn hình trên input bar
+      const topY = r.top;
+      const rightX = window.innerWidth - 44; // Góc trên phải
+      const leftX = 16;                      // Góc dưới/trên trái
+      const bottomY = window.innerHeight - 95; // Mép dưới đáy trên chat bar
 
       // Tạm ẩn mascot gốc trên header
       mascot.style.transition = 'opacity 0.2s ease';
@@ -705,42 +706,43 @@
         </div>
       `;
       actor.style.left = `${startX}px`;
-      actor.style.top = `${startY}px`;
+      actor.style.top = `${topY}px`;
       document.body.appendChild(actor);
 
       const bubble = actor.querySelector('.px-bubble-tag');
       const body = actor.querySelector('.px-actor-body');
 
-      // BƯỚC 1: "Đi tới góc" (Chạy ngang trên Header sang góc phải)
+      // ==========================================
+      // CẠNH 1: [startX, topY] ➔ [rightX, topY] (Chạy ngang mép trên sang góc phải)
+      // ==========================================
       body.classList.add('px-runner-body');
-      actor.style.transition = 'left 0.75s ease-in-out';
+      actor.style.transition = 'left 0.65s ease-in-out';
       requestAnimationFrame(() => {
-        actor.style.left = `${rightCornerX}px`;
+        actor.style.left = `${rightX}px`;
       });
 
-      // BƯỚC 2: "Xong tuột xuống" (Tuột thẳng đứng dọc mép phải xuống đáy)
+      // ==========================================
+      // CẠNH 2: [rightX, topY] ➔ [rightX, bottomY] (Tuột thẳng đứng dọc mép phải)
+      // ==========================================
       setTimeout(() => {
         body.classList.remove('px-runner-body');
 
-        // Thả sợi dây lụa vàng kim dọc mép phải
-        const rope = document.createElement('div');
-        rope.className = 'px-rope-vert';
-        rope.style.left = `${rightCornerX + 16}px`;
-        rope.style.top = `${startY + 10}px`;
-        rope.style.height = `${bottomY - startY + 20}px`;
-        document.body.appendChild(rope);
+        // Thả sợi dây vàng dọc mép phải
+        const ropeRight = document.createElement('div');
+        ropeRight.className = 'px-rope-vert';
+        ropeRight.style.left = `${rightX + 16}px`;
+        ropeRight.style.top = `${topY + 10}px`;
+        ropeRight.style.height = `${bottomY - topY + 20}px`;
+        document.body.appendChild(ropeRight);
 
-        // Tư thế tuột dây
         body.style.transform = 'rotate(8deg)';
         bubble.innerText = 'Tuột xuống nè! 🎢';
         bubble.style.opacity = '1';
 
-        // Tuột thẳng đứng xuống đáy
-        actor.style.transition = 'top 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        actor.style.transition = 'top 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         actor.style.top = `${bottomY}px`;
 
-        // Hạt lấp lánh rơi dọc đường tuột
-        const dropTimer = setInterval(() => {
+        const dropTimerRight = setInterval(() => {
           const curR = actor.getBoundingClientRect();
           const drop = document.createElement('div');
           drop.className = 'px-trail-drop';
@@ -751,79 +753,100 @@
           setTimeout(() => drop.remove(), 1000);
         }, 120);
 
-        // BƯỚC 3: Tiếp đất ở đáy + "Bắn dây xong đu lên"
+        // ==========================================
+        // CẠNH 3: [rightX, bottomY] ➔ [leftX, bottomY] (Chạy ngang qua đáy sang góc trái)
+        // ==========================================
         setTimeout(() => {
-          clearInterval(dropTimer);
-          rope.style.opacity = '0';
-          setTimeout(() => rope.remove(), 250);
-          body.style.transform = 'none';
+          clearInterval(dropTimerRight);
+          ropeRight.style.opacity = '0';
+          setTimeout(() => ropeRight.remove(), 250);
 
-          // Mini confetti tiếp đất
+          body.style.transform = 'scaleX(-1)'; // Quay mặt sang trái
+          body.classList.add('px-runner-body');
+          bubble.innerText = 'Tân & Chi qua đây! 💕';
+
+          // Mini confetti khi tiếp đất góc phải
           if (typeof confetti === 'function') {
             confetti({
-              particleCount: 12,
-              spread: 40,
-              origin: { x: rightCornerX / window.innerWidth, y: bottomY / window.innerHeight },
+              particleCount: 10,
+              spread: 35,
+              origin: { x: rightX / window.innerWidth, y: bottomY / window.innerHeight },
               colors: ['#D4AF37', '#8B1E2D', '#FFB6C1']
             });
           }
 
-          bubble.innerText = 'Bắn dây đu lên! 🚀';
+          actor.style.transition = 'left 1.4s linear';
+          actor.style.left = `${leftX}px`;
 
-          // Bắn dây ngược lên lại Header (startX, startY)
+          // Rớt hoa & tim dọc đường chạy đáy
+          const dropTimerBottom = setInterval(() => {
+            const curR = actor.getBoundingClientRect();
+            if (curR.left < leftX + 10) return;
+            const drop = document.createElement('div');
+            drop.className = 'px-trail-drop';
+            drop.innerHTML = Math.random() > 0.5 ? '🌸' : '💖';
+            drop.style.left = `${curR.left + 10}px`;
+            drop.style.top = `${curR.top + 10}px`;
+            document.body.appendChild(drop);
+            setTimeout(() => drop.remove(), 1200);
+          }, 200);
+
+          // ==========================================
+          // CẠNH 4: [leftX, bottomY] ➔ [leftX, topY] (Bắn dây đu thẳng đứng lên góc trên trái)
+          // ==========================================
           setTimeout(() => {
-            const wire = document.createElement('div');
-            wire.className = 'px-grapple-wire';
-            const dx = startX - rightCornerX;
-            const dy = startY - bottomY;
-            const dist = Math.hypot(dx, dy);
-            const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+            clearInterval(dropTimerBottom);
+            body.classList.remove('px-runner-body');
+            body.style.transform = 'none';
 
-            wire.style.left = `${rightCornerX + 12}px`;
-            wire.style.top = `${bottomY + 10}px`;
-            wire.style.width = '0px';
-            wire.style.transform = `rotate(${angle}deg)`;
-            document.body.appendChild(wire);
+            // Dây leo dọc mép trái
+            const ropeLeft = document.createElement('div');
+            ropeLeft.className = 'px-rope-vert';
+            ropeLeft.style.left = `${leftX + 12}px`;
+            ropeLeft.style.top = `${topY + 10}px`;
+            ropeLeft.style.height = `${bottomY - topY + 20}px`;
+            document.body.appendChild(ropeLeft);
 
-            // Bắn dây vút lên (180ms)
-            requestAnimationFrame(() => {
-              wire.style.transition = 'width 0.18s ease-out';
-              wire.style.width = `${dist}px`;
-            });
+            bubble.innerText = 'Đu lên nè! 🚀';
+            body.style.transform = 'rotate(-8deg)';
 
-            // Sau khi dây chạm Header, hai bạn đu vút lên!
+            actor.style.transition = 'top 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+            actor.style.top = `${topY}px`;
+
+            const dropTimerLeft = setInterval(() => {
+              const curR = actor.getBoundingClientRect();
+              const drop = document.createElement('div');
+              drop.className = 'px-trail-drop';
+              drop.innerHTML = '✨';
+              drop.style.left = `${curR.left + 8}px`;
+              drop.style.top = `${curR.top + 8}px`;
+              document.body.appendChild(drop);
+              setTimeout(() => drop.remove(), 1000);
+            }, 120);
+
+            // ==========================================
+            // KHÉP GÓC: [leftX, topY] ➔ [startX, topY] (Chạy về vị trí ban đầu trên Header)
+            // ==========================================
             setTimeout(() => {
-              bubble.innerText = 'Về đích nè! 💕';
-              body.style.transform = `rotate(${Math.round(angle + 90)}deg)`;
+              clearInterval(dropTimerLeft);
+              ropeLeft.style.opacity = '0';
+              setTimeout(() => ropeLeft.remove(), 250);
 
-              actor.style.transition = 'left 0.65s cubic-bezier(0.16, 1, 0.3, 1), top 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
+              body.style.transform = 'none';
+              body.classList.add('px-runner-body');
+              bubble.innerText = 'Về đích rồi! ✨';
+
+              actor.style.transition = 'left 0.5s ease-out';
               actor.style.left = `${startX}px`;
-              actor.style.top = `${startY}px`;
 
-              // Hạt tim bay theo khi đu lên
-              const upTimer = setInterval(() => {
-                const curR = actor.getBoundingClientRect();
-                const drop = document.createElement('div');
-                drop.className = 'px-trail-drop';
-                drop.innerHTML = Math.random() > 0.5 ? '💖' : '🌸';
-                drop.style.left = `${curR.left + 8}px`;
-                drop.style.top = `${curR.top + 8}px`;
-                document.body.appendChild(drop);
-                setTimeout(() => drop.remove(), 1000);
-              }, 100);
-
-              // BƯỚC 4: Tiếp đất an toàn trên Header & Ăn mừng!
+              // KẾT THÚC: Tiếp đất an toàn tại Mascot Header & Ăn mừng!
               setTimeout(() => {
-                clearInterval(upTimer);
-                wire.remove();
                 actor.remove();
-
-                // Hiện lại mascot ở Header & Nhảy ăn mừng
                 mascot.style.opacity = '1';
                 mascot.classList.add('is-bouncing');
                 setTimeout(() => mascot.classList.remove('is-bouncing'), 700);
 
-                // Burst of hearts on landing
+                // Burst of hearts
                 const HEART_COUNT = 8;
                 for (let i = 0; i < HEART_COUNT; i++) {
                   const spread = (i / (HEART_COUNT - 1)) * 2 - 1;
@@ -839,15 +862,15 @@
                 }
 
                 isStuntActive = false;
-              }, 700);
+              }, 550);
 
-            }, 220);
+            }, 800);
 
-          }, 350);
+          }, 1450);
 
-        }, 900);
+        }, 850);
 
-      }, 800);
+      }, 700);
     }
 
     // Show/hide typing
