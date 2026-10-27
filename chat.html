@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Trò Chuyện Cùng Tân & Chi — Thiệp Cưới Trực Tuyến</title>
+
+  <!-- OpenGraph / Social Sharing Metadata -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wedding.tahi.vn/chat">
+  <meta property="og:title" content="Trò chuyện cùng Duy Tân & Khánh Chi • Thiệp Cưới 2027">
+  <meta property="og:description" content="Trải nghiệm thiệp cưới dạng hội thoại ấm áp của Lê Duy Tân & Đinh Khánh Chi.">
+  <meta property="og:image" content="https://wedding.tahi.vn/assets/couple_hero.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+
+  <!-- Google Fonts: Playfair Display & Be Vietnam Pro & Alex Brush -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap&subset=vietnamese" rel="stylesheet">
+
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ruby: {
+              DEFAULT: '#8B1E2D',
+              deep: '#722F37',
+              dark: '#5A1F27',
+              light: '#FBF3F4'
+            },
+            gold: {
+              DEFAULT: '#C5A059',
+              bright: '#D4AF37',
+              dark: '#86672F',
+              light: '#FBF7EC'
+            }
+          },
+          fontFamily: {
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+            script: ['"Alex Brush"', 'cursive'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: #F8F6F2;
+      background-image: radial-gradient(circle at 15% 20%, rgba(212,175,55,0.035) 0%, transparent 45%),
+                        radial-gradient(circle at 85% 80%, rgba(139,30,45,0.035) 0%, transparent 45%);
+    }
+
+    /* Clean Scrollbars */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Typing Dots Animation */
+    @keyframes typingDot {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+    .typing-dot-1 { animation: typingDot 1.3s infinite 0.0s; }
+    .typing-dot-2 { animation: typingDot 1.3s infinite 0.2s; }
+    .typing-dot-3 { animation: typingDot 1.3s infinite 0.4s; }
+
+    /* Bubble Entry Animation */
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .bubble-animate {
+      animation: bubbleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Spinning Disc */
+    @keyframes spinDisc {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spinDisc 10s linear infinite;
+    }
+    .anim-paused {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden text-stone-800 antialiased select-none">
+
+  <!-- ============================================================== -->
+  <!-- 1. CHAT TOP HEADER BAR                                         -->
+  <!-- ============================================================== -->
+  <header class="flex-none bg-white/90 backdrop-blur-md border-b border-stone-200/80 px-4 py-3 z-30 shadow-xs">
+    <div class="max-w-2xl mx-auto flex items-center justify-between">
+      
+      <!-- Left: Avatar & Status -->
+      <div class="flex items-center gap-3">
+        <div class="relative shrink-0">
+          <img src="./assets/couple_hero.jpg" alt="Duy Tân & Khánh Chi" class="w-11 h-11 rounded-full object-cover object-center ring-2 ring-gold/40 shadow-xs">
+          <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
+        </div>
+        <div class="leading-tight">
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-display font-bold text-stone-900 text-base sm:text-lg">Duy Tân &amp; Khánh Chi</h1>
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-ruby text-white text-[10px]" title="Cặp đôi chính thức">✓</span>
+          </div>
+          <p id="chat-header-status" class="text-xs text-stone-500 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Lời ngỏ chung đôi • Đang chuẩn bị ngày cưới ✨</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Action Buttons (Audio + Switch to Web) -->
+      <div class="flex items-center gap-2">
+        <!-- Audio Button -->
+        <button id="audio-toggle-btn" onclick="toggleAudio()" aria-label="Bật/Tắt nhạc" class="p-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 transition flex items-center justify-center border border-stone-200 active:scale-95 cursor-pointer">
+          <div id="vinyl-icon" class="w-5 h-5 rounded-full bg-stone-900 border border-gold flex items-center justify-center animate-spin-slow anim-paused">
+            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+          </div>
+        </button>
+
+        <!-- View Full Website Link -->
+        <a href="/" class="text-xs font-semibold px-3 py-1.5 rounded-full bg-ruby-light text-ruby border border-ruby/20 hover:bg-ruby hover:text-white transition active:scale-95 shadow-2xs flex items-center gap-1">
+          <span>Trang web</span>
+          <span class="text-xs">↗</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- 2. CHAT STREAM (MESSAGES CONTAINER)                            -->
+  <!-- ============================================================== -->
+  <main id="chat-messages" class="flex-1 overflow-y-auto px-4 py-6 space-y-4 max-w-2xl w-full mx-auto scroll-smooth">
+    <!-- Messages will be injected dynamically -->
+  </main>
+
+  <!-- TYPING INDICATOR (Shown while bot is "typing") -->
+  <div id="typing-indicator" class="hidden px-4 max-w-2xl w-full mx-auto pb-2">
+    <div class="flex items-end gap-2.5">
+      <img src="./assets/couple_hero.jpg" alt="Avatar" class="w-7 h-7 rounded-full object-cover shrink-0 ring-1 ring-gold/40">
+      <div class="bg-white px-4 py-2.5 rounded-2xl rounded-bl-xs border border-stone-200/90 shadow-2xs flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-ruby/70 typing-dot-1"></span>
+        <span class="w-2 h-2 rounded-full bg-ruby/70 typing-dot-2"></span>
+        <span class="w-2 h-2 rounded-full bg-ruby/70 typing-dot-3"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 3. QUICK SUGGESTION CHIPS (GỢI Ý HỎI NHANH)                     -->
+  <!-- ============================================================== -->
+  <div class="flex-none px-4 pt-2 pb-1.5 bg-gradient-to-t from-white via-white/95 to-transparent">
+    <div class="max-w-2xl mx-auto flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs">
+      <button onclick="handleQuickSend('Xem lịch trình hôn lễ 📅')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200/90 font-medium transition active:scale-95 cursor-pointer">
+        📅 Lịch trình &amp; Địa điểm
+      </button>
+      <button onclick="handleQuickSend('Xem ảnh cưới của hai bạn 📸')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200/90 font-medium transition active:scale-95 cursor-pointer">
+        📸 Ngắm ảnh cưới
+      </button>
+      <button onclick="handleQuickSend('Mình muốn xác nhận tham dự cùng hai bạn 💌')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-ruby-light hover:bg-ruby/15 text-ruby border border-ruby/30 font-semibold transition active:scale-95 cursor-pointer">
+        💌 Báo tin tham dự
+      </button>
+      <button onclick="handleQuickSend('Gửi lời chúc mừng đến Tân & Chi ✨')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200/90 font-medium transition active:scale-95 cursor-pointer">
+        ✍️ Gửi lời chúc
+      </button>
+      <button onclick="handleQuickSend('Tâm sự mỏng & Mừng cưới từ xa 🎁')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200/90 font-medium transition active:scale-95 cursor-pointer">
+        🎁 Món quà phương xa
+      </button>
+      <button onclick="handleQuickSend('Kể cho tôi nghe chuyện tình của hai bạn 💍')" class="shrink-0 px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200/90 font-medium transition active:scale-95 cursor-pointer">
+        💍 Chuyện tình đôi mình
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 4. CHAT INPUT BAR                                              -->
+  <!-- ============================================================== -->
+  <footer class="flex-none bg-white border-t border-stone-200 px-4 py-3 z-30">
+    <div class="max-w-2xl mx-auto">
+      <form id="chat-form" onsubmit="handleFormSubmit(event)" class="flex items-center gap-2">
+        <input 
+          id="chat-input" 
+          type="text" 
+          autocomplete="off"
+          placeholder="Nhắn gửi điều gì đó cho Tân & Chi nhé..." 
+          class="flex-1 bg-stone-50 border border-stone-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-ruby focus:bg-white transition text-stone-900 placeholder:text-stone-400"
+        />
+        <button 
+          id="chat-send-btn" 
+          type="submit" 
+          aria-label="Gửi tin nhắn"
+          class="w-10 h-10 rounded-full bg-ruby hover:bg-ruby-dark text-white flex items-center justify-center transition shadow-xs active:scale-90 shrink-0 cursor-pointer"
+        >
+          <svg class="w-4 h-4 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </footer>
+
+  <!-- ============================================================== -->
+  <!-- 5. LIGHTBOX & MODALS                                           -->
+  <!-- ============================================================== -->
+  <!-- Photo Lightbox -->
+  <div id="chat-lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md" onclick="closeChatLightbox()">
+    <div class="relative max-w-xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
+      <button onclick="closeChatLightbox()" class="absolute -top-12 right-0 text-white text-2xl font-bold p-2 active:scale-95 cursor-pointer">✕</button>
+      <img id="lightbox-full-img" src="" alt="Ảnh cưới phóng to" class="max-h-[75vh] w-auto rounded-2xl shadow-2xl object-contain">
+      <p id="lightbox-caption" class="text-white text-xs mt-3 font-serif italic text-center"></p>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-msg" class="fixed top-5 left-1/2 -translate-x-1/2 z-[999] hidden px-5 py-2.5 rounded-full bg-stone-900/90 text-gold-bright text-xs font-bold border border-gold/40 shadow-2xl transition duration-300 pointer-events-none">
+    <span id="toast-text">Thông báo</span>
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="wedding-audio" loop preload="none">
+    <source src="./assets/mot_nha_dalab.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- ============================================================== -->
+  <!-- 6. JAVASCRIPT CONVERSATIONAL ENGINE                           -->
+  <!-- ============================================================== -->
+  <script>
+    // State variables
+    let isPlayingAudio = false;
+    let guestSlug = '';
+    let guestData = null;
+    let rsvpState = { step: null, side: 'groom', name: '', phone: '', attend: true, plusOne: 0, wish: '' };
+
+    const chatContainer = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const chatInput = document.getElementById('chat-input');
+    const audioElement = document.getElementById('wedding-audio');
+
+    // Parse URL parameter ?g=slug
+    function getUrlParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Audio controller
+    function toggleAudio() {
+      const vinyl = document.getElementById('vinyl-icon');
+      if (!isPlayingAudio) {
+        audioElement.play().then(() => {
+          isPlayingAudio = true;
+          vinyl.classList.remove('anim-paused');
+          showToast('Đang phát: Một Nhà • Da LAB ♫');
+        }).catch(err => console.log('Audio autoplay blocked', err));
+      } else {
+        audioElement.pause();
+        isPlayingAudio = false;
+        vinyl.classList.add('anim-paused');
+        showToast('Đã tạm dừng âm nhạc ⏸');
+      }
+    }
+
+    // Toast helper
+    function showToast(text) {
+      const toast = document.getElementById('toast-msg');
+      const toastText = document.getElementById('toast-text');
+      toastText.innerText = text;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    // Copy to clipboard
+    function copySTK(acc, owner) {
+      navigator.clipboard.writeText(acc).then(() => {
+        showToast(`Đã sao chép số tài khoản của ${owner}! ✨`);
+      }).catch(() => {
+        alert('Số tài khoản: ' + acc);
+      });
+    }
+
+    // Lightbox helper
+    function openChatLightbox(src, caption) {
+      document.getElementById('lightbox-full-img').src = src;
+      document.getElementById('lightbox-caption').innerText = caption || '';
+      document.getElementById('chat-lightbox').classList.remove('hidden');
+      document.getElementById('chat-lightbox').classList.add('flex');
+    }
+    function closeChatLightbox() {
+      document.getElementById('chat-lightbox').classList.add('hidden');
+      document.getElementById('chat-lightbox').classList.remove('flex');
+    }
+
+    // Scroll to bottom
+    function scrollToBottom() {
+      setTimeout(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 50);
+    }
+
+    // Add message bubble
+    function addMessage(html, sender = 'bot') {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `flex items-end gap-2.5 bubble-animate ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+
+      const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+      if (sender === 'user') {
+        msgDiv.innerHTML = `
+          <div class="max-w-[85%] sm:max-w-[75%] space-y-1">
+            <div class="bg-gradient-to-r from-ruby to-ruby-dark text-white px-4 py-2.5 rounded-2xl rounded-br-xs text-sm shadow-xs font-medium">
+              ${html}
+            </div>
+            <div class="text-[10px] text-stone-400 text-right pr-1">${timeStr}</div>
+          </div>
+        `;
+      } else {
+        msgDiv.innerHTML = `
+          <img src="./assets/couple_hero.jpg" alt="Avatar" class="w-8 h-8 rounded-full object-cover shrink-0 ring-1 ring-gold/40 shadow-xs mb-1">
+          <div class="max-w-[90%] sm:max-w-[80%] space-y-1">
+            <div class="bg-white border border-stone-200/90 text-stone-800 px-4 py-3 rounded-2xl rounded-bl-xs text-sm shadow-xs space-y-2">
+              ${html}
+            </div>
+            <div class="text-[10px] text-stone-400 pl-1">${timeStr} • Tân &amp; Chi</div>
+          </div>
+        `;
+      }
+
+      chatContainer.appendChild(msgDiv);
+      scrollToBottom();
+    }
+
+    // Show/hide typing
+    function setTyping(isTyping) {
+      if (isTyping) {
+        typingIndicator.classList.remove('hidden');
+        scrollToBottom();
+      } else {
+        typingIndicator.classList.add('hidden');
+      }
+    }
+
+    // Simulate bot reply with typing delay
+    function botReply(html, delay = 700) {
+      setTyping(true);
+      setTimeout(() => {
+        setTyping(false);
+        addMessage(html, 'bot');
+      }, delay);
+    }
+
+    // -------------------------------------------------------------
+    // PERSONA & VOCABULARY HELPERS
+    // -------------------------------------------------------------
+    function decodeUnicode(str) {
+      if (!str) return '';
+      try {
+        return str.replace(/\\u([0-9a-fA-F]{4})/g, (_, code) => String.fromCharCode(parseInt(code, 16)));
+      } catch (e) {
+        return str;
+      }
+    }
+
+    function isElder(name, relation) {
+      const combined = ((name || '') + ' ' + (relation || '')).toLowerCase();
+      return /bác|chú|cô|dì|ông|bà|cụ|thím|dượng|cậu/.test(combined);
+    }
+
+    function getGuestDisplayName() {
+      if (guestData && guestData.name) {
+        return decodeUnicode(guestData.name);
+      }
+      return '';
+    }
+
+    function getRelationshipTitle() {
+      if (guestData && guestData.relation) {
+        return decodeUnicode(guestData.relation);
+      }
+      return '';
+    }
+
+    // -------------------------------------------------------------
+    // RICH CONTENT CARDS TEMPLATES
+    // -------------------------------------------------------------
+    function cardInvitation(guest) {
+      const guestName = guest ? decodeUnicode(guest.name) : 'Quý Khách';
+      const guestRel = guest && guest.relation ? decodeUnicode(guest.relation) : '';
+      const guestMsg = guest && guest.personal_message ? decodeUnicode(guest.personal_message) : '';
+      const sideText = guest && guest.side === 'bride' ? 'Khách Quý Nhà Gái' : 'Khách Quý Nhà Trai';
+      const relText = guestRel ? `• ${guestRel}` : '';
+
+      return `
+        <div class="rounded-2xl bg-gradient-to-br from-[#722F37] via-ruby to-stone-900 text-white p-4 space-y-3 border border-gold/40 shadow-md">
+          <div class="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest text-gold-bright">
+            <span>✦ THIỆP MỜI TRÂN TRỌNG ✦</span>
+            <span>16 &amp; 17.01.2027</span>
+          </div>
+          <div class="border-t border-b border-gold/30 py-2.5 text-center space-y-1">
+            <p class="text-xs text-stone-200 italic font-serif">Kính mời:</p>
+            <h4 class="font-display text-xl font-bold text-white tracking-wide">${guestName}</h4>
+            <span class="inline-block px-2.5 py-0.5 rounded-full bg-gold/20 text-gold-bright text-[10px] font-bold uppercase border border-gold/30">
+              ${sideText} ${relText}
+            </span>
+            ${guestMsg ? `
+              <p class="text-xs text-gold-light italic font-serif pt-2 mt-1 border-t border-gold/20 leading-relaxed text-center">
+                "${guestMsg}"
+              </p>
+            ` : ''}
+          </div>
+          <p class="text-xs text-rose-100 leading-relaxed font-light text-center">
+            Về chung vui Lễ Vu Quy &amp; Tiệc Cưới của <strong>Lê Duy Tân &amp; Đinh Khánh Chi</strong> tại Tư Gia Nhà Gái.
+          </p>
+        </div>
+      `;
+    }
+
+    function cardSchedule() {
+      const elder = isElder(getGuestDisplayName(), getRelationshipTitle());
+      const polite = elder ? 'gia đình mình ạ' : 'bạn nha';
+      return `
+        <div class="space-y-2.5">
+          <p class="font-bold text-stone-900 text-sm">📅 Lịch Trình Hôn Lễ Tại Tư Gia Nhà Gái:</p>
+          
+          <!-- Day 1 -->
+          <div class="p-3 rounded-xl bg-stone-900 text-white border border-gold/30 space-y-1">
+            <div class="flex justify-between items-center text-[10px] font-bold text-gold-bright uppercase">
+              <span>NGÀY 1 • TIỆC NHÓM HỌ</span>
+              <span class="bg-stone-800 px-2 py-0.5 rounded">09 Th. Chạp</span>
+            </div>
+            <p class="font-display text-base font-bold text-white">17:00 Thứ Bảy, 16/01/2027</p>
+            <p class="text-[11px] text-stone-300">Bữa cơm thân mật cùng họ hàng, bà con và người thân dựng rạp ấm cúng.</p>
+          </div>
+
+          <!-- Day 2 -->
+          <div class="p-3 rounded-xl bg-ruby text-white border border-gold-bright/40 space-y-1">
+            <div class="flex justify-between items-center text-[10px] font-bold text-gold-bright uppercase">
+              <span>NGÀY 2 • LỄ VU QUY &amp; KHAI TIỆC</span>
+              <span class="bg-ruby-dark px-2 py-0.5 rounded">10 Th. Chạp</span>
+            </div>
+            <p class="font-display text-base font-bold text-white">10:30 Chủ Nhật, 17/01/2027</p>
+            <p class="text-[11px] text-rose-100">Nghi thức hôn lễ chính thức đón dâu và nâng ly khai tiệc chúc mừng hạnh phúc.</p>
+          </div>
+
+          <p class="text-xs text-stone-600 font-serif italic pt-0.5">
+            Mọi sự chuẩn bị đón tiếp đều được gia đình hai bên chuẩn bị chu đáo nhất để đón ${polite}!
+          </p>
+
+          <div class="pt-1 flex gap-2">
+            <button onclick="handleQuickSend('Chỉ đường đến nhà gái 📍')" class="flex-1 py-1.5 px-3 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition border border-stone-200 text-center cursor-pointer">
+              📍 Địa điểm &amp; Đỗ xe
+            </button>
+            <button onclick="handleQuickSend('Mình muốn xác nhận tham dự cùng hai bạn 💌')" class="flex-1 py-1.5 px-3 rounded-lg bg-ruby text-white text-xs font-bold transition text-center shadow-xs cursor-pointer">
+              💌 Báo tin tham dự
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function cardGallery() {
+      return `
+        <div class="space-y-2">
+          <p class="font-bold text-stone-900 text-sm">📸 Những Khoảnh Khắc Hạnh Phúc Của Tân &amp; Chi:</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="rounded-xl overflow-hidden cursor-pointer group relative aspect-[4/5]" onclick="openChatLightbox('./assets/wedding_red_couple_hysu.webp', 'Duy Tân 囍 Khánh Chi • Nhà Có Hỷ')">
+              <img src="./assets/wedding_red_couple_hysu.webp" alt="Ảnh cưới" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <span class="absolute bottom-1 left-1 right-1 text-[9px] bg-black/60 backdrop-blur-xs text-white px-1.5 py-0.5 rounded text-center truncate">Tân 囍 Chi</span>
+            </div>
+            <div class="rounded-xl overflow-hidden cursor-pointer group relative aspect-[4/5]" onclick="openChatLightbox('./assets/wedding_red_bride_solo.webp', 'Cô dâu Khánh Chi • Duyên dáng áo dài')">
+              <img src="./assets/wedding_red_bride_solo.webp" alt="Cô dâu" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <span class="absolute bottom-1 left-1 right-1 text-[9px] bg-black/60 backdrop-blur-xs text-white px-1.5 py-0.5 rounded text-center truncate">Cô dâu Chi</span>
+            </div>
+            <div class="rounded-xl overflow-hidden cursor-pointer group relative aspect-[4/5]" onclick="openChatLightbox('./assets/wedding_red_handkiss.webp', 'Nụ hôn ước hẹn trăm năm')">
+              <img src="./assets/wedding_red_handkiss.webp" alt="Ước hẹn" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <span class="absolute bottom-1 left-1 right-1 text-[9px] bg-black/60 backdrop-blur-xs text-white px-1.5 py-0.5 rounded text-center truncate">Ước hẹn</span>
+            </div>
+            <div class="rounded-xl overflow-hidden cursor-pointer group relative aspect-[4/5]" onclick="openChatLightbox('./assets/wedding_couple_classic.webp', 'Studio Váy Cưới • Hạnh phúc vẹn tròn')">
+              <img src="./assets/wedding_couple_classic.webp" alt="Studio" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <span class="absolute bottom-1 left-1 right-1 text-[9px] bg-black/60 backdrop-blur-xs text-white px-1.5 py-0.5 rounded text-center truncate">Studio Trắng</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-stone-500 italic text-center pt-1">Chạm vào ảnh để ngắm nhìn toàn màn hình bạn nhé ✨</p>
+        </div>
+      `;
+    }
+
+    function cardGift() {
+      return `
+        <div class="space-y-3">
+          <div class="p-3.5 rounded-2xl bg-gradient-to-b from-amber-50/70 to-white border border-gold/40 text-stone-800 space-y-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-ruby block">✦ TÂM SỰ MỎNG CỦA TÂN &amp; CHI ✦</span>
+            <p class="text-xs italic font-serif leading-relaxed text-stone-600">
+              "Với chúng mình, sự hiện diện và nụ cười chúc phúc của mọi người chính là món quà cưới vô giá nhất rồi. Nếu vì công việc hay khoảng cách xa xôi mà bạn không thể về chung vui trực tiếp, chút tình cảm gửi gắm từ phương xa cũng khiến ngày vui của hai đứa thêm vẹn tròn ấm áp."
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <!-- Groom STK -->
+            <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-stone-900 uppercase">Chú Rể: LÊ DUY TÂN</span>
+                <p class="font-mono text-xs font-bold text-ruby">MBBank: 0000112233440</p>
+              </div>
+              <button onclick="copySTK('0000112233440', 'Chú rể Duy Tân')" class="px-3 py-1.5 rounded-lg bg-stone-900 text-gold-bright text-xs font-bold hover:bg-stone-800 transition active:scale-95 shadow-2xs cursor-pointer">
+                Sao chép
+              </button>
+            </div>
+
+            <!-- Bride STK -->
+            <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-stone-900 uppercase">Cô Dâu: ĐINH KHÁNH CHI</span>
+                <p class="font-mono text-xs font-bold text-rose-700">LPBank: 15093012892256</p>
+              </div>
+              <button onclick="copySTK('15093012892256', 'Cô dâu Khánh Chi')" class="px-3 py-1.5 rounded-lg bg-ruby text-white text-xs font-bold hover:bg-ruby-dark transition active:scale-95 shadow-2xs cursor-pointer">
+                Sao chép
+              </button>
+            </div>
+          </div>
+          <p class="text-[11px] text-stone-500 text-center font-serif italic">Hai đứa xin chân thành cảm ơn tấm lòng yêu thương của bạn! 💐</p>
+        </div>
+      `;
+    }
+
+    function cardRsvpInteractive() {
+      const elder = isElder(getGuestDisplayName(), getRelationshipTitle());
+      const guestText = elder ? (getRelationshipTitle() || getGuestDisplayName() || 'gia đình mình') : 'bạn';
+
+      return `
+        <div class="space-y-3">
+          <p class="font-bold text-stone-900 text-sm">💌 Lời Báo Tin Tham Dự Hôn Lễ:</p>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            Dạ, để gia đình chuẩn bị cỗ bàn và tiếp đón thật chu đáo, ${guestText} cho Tân &amp; Chi xin lời báo tin trước nhé ạ:
+          </p>
+          
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="startRsvpFlow('yes')" class="py-2.5 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-98">
+              <span>✨ Chắc Chắn Tham Dự</span>
+            </button>
+            <button onclick="startRsvpFlow('no')" class="py-2.5 px-3 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98">
+              <span>💌 Rất Tiếc Mình Bận Mất</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // NATURAL LANGUAGE & INTENT ENGINE (GENTLE PERSONA)
+    // -------------------------------------------------------------
+    function processUserInput(rawText) {
+      const text = rawText.trim().toLowerCase();
+      const elder = isElder(getGuestDisplayName(), getRelationshipTitle());
+      const guestName = getGuestDisplayName();
+
+      // Check if we are in an ongoing RSVP question flow
+      if (rsvpState.step) {
+        handleRsvpStep(rawText);
+        return;
+      }
+
+      // 1. Intent: RSVP / Xác nhận tham dự
+      if (text.includes('rsvp') || text.includes('tham dự') || text.includes('đi ăn cưới') || text.includes('có mặt') || text.includes('tham gia') || text.includes('báo tin')) {
+        botReply(cardRsvpInteractive());
+        return;
+      }
+
+      // 2. Intent: Lịch trình, thời gian, ngày giờ
+      if (text.includes('lịch') || text.includes('ngày') || text.includes('giờ') || text.includes('mấy giờ') || text.includes('khi nào') || text.includes('thời gian')) {
+        const lead = elder 
+          ? `Dạ, chúng con xin kính gửi lịch trình chi tiết hai ngày cưới của hai cháu ạ:` 
+          : `Tân & Chi gửi bạn lịch trình chi tiết hai ngày cưới của chúng mình nhé:`;
+        botReply(`
+          <p class="text-xs text-stone-700 leading-relaxed">${lead}</p>
+          ${cardSchedule()}
+        `);
+        return;
+      }
+
+      // 3. Intent: Địa chỉ, chỉ đường, ở đâu
+      if (text.includes('địa chỉ') || text.includes('ở đâu') || text.includes('đường đi') || text.includes('chỉ đường') || text.includes('vị trí') || text.includes('bản đồ') || text.includes('nhà gái')) {
+        botReply(`
+          <div class="space-y-2">
+            <p class="font-bold text-stone-900 text-sm">📍 Không Gian Hôn Lễ Tại Tư Gia Nhà Gái:</p>
+            <p class="text-xs leading-relaxed text-stone-700">
+              Toàn bộ nghi thức Lễ Vu Quy và Tiệc Cưới ngày <strong>16 &amp; 17 Tháng 1 Năm 2027</strong> đều được gia đình tổ chức ấm cúng tại <strong>Tư Gia Nhà Gái</strong>.
+            </p>
+            <div class="p-3 bg-amber-50/60 rounded-xl border border-gold/30 text-xs space-y-1.5 text-stone-700">
+              <p class="font-semibold text-ruby">🏮 Không gian: Dựng rạp cưới truyền thống thân tình</p>
+              <p class="text-[11px] text-stone-600">Gia đình đã bố trí người đón tiếp, hướng dẫn lối vào và bãi đỗ xe ô tô, xe máy rộng rãi ngay cạnh rạp cưới để mọi người hoàn toàn an tâm khi đến chung vui ạ!</p>
+            </div>
+          </div>
+        `);
+        return;
+      }
+
+      // 4. Intent: Xem ảnh cưới, hình ảnh
+      if (text.includes('ảnh') || text.includes('hình') || text.includes('album') || text.includes('coi ảnh') || text.includes('ngắm')) {
+        botReply(`
+          <p class="text-xs text-stone-700">Tân &amp; Chi xin gửi tặng bạn những bức hình kỷ niệm trong album cưới vừa hoàn thành nhé:</p>
+          ${cardGallery()}
+        `);
+        return;
+      }
+
+      // 5. Intent: Mừng cưới, số tài khoản, quà mừng
+      if (text.includes('mừng cưới') || text.includes('stk') || text.includes('tài khoản') || text.includes('quà') || text.includes('chuyển khoản') || text.includes('phương xa')) {
+        botReply(cardGift());
+        return;
+      }
+
+      // 6. Intent: Lời chúc
+      if (text.includes('chúc') || text.includes('hạnh phúc') || text.includes('trăm năm') || text.includes('bền lâu') || text.includes('vẹn tròn') || text.includes('chúc mừng')) {
+        saveWishToApi(guestName || 'Người bạn thân quý', rawText);
+        confetti({ particleCount: 65, spread: 70, origin: { y: 0.8 } });
+        botReply(`
+          <div class="space-y-2">
+            <p class="text-xs font-bold text-ruby">🌸 Đọc những dòng này mà Tân &amp; Chi thấy xúc động và ấm lòng quá chừng!</p>
+            <p class="text-xs italic font-serif text-stone-700 bg-amber-50/70 p-3 rounded-xl border border-gold/30">
+              "${rawText}"
+            </p>
+            <p class="text-xs leading-relaxed text-stone-600">
+              Lời chúc ý nghĩa của bạn đã được hai đứa nâng niu lưu vào <strong>Sổ Lưu Bút Kỷ Niệm</strong>. Cảm ơn bạn rất nhiều vì tình cảm thân thương này! 💐
+            </p>
+          </div>
+        `);
+        return;
+      }
+
+      // 7. Intent: Chuyện tình yêu
+      if (text.includes('chuyện tình') || text.includes('quen nhau') || text.includes('yêu nhau') || text.includes('câu chuyện') || text.includes('hành trình')) {
+        botReply(`
+          <div class="space-y-2">
+            <p class="font-bold text-stone-900 text-sm">💍 Hành Trình Chung Đôi Của Tân &amp; Chi:</p>
+            <p class="text-xs leading-relaxed text-stone-600">
+              Tụi mình gặp gỡ và thương nhau từ sự đồng điệu mộc mạc — một chàng trai công nghệ miền đất đỏ Gia Lai và một cô gái dịu dàng đất Hà thành.
+            </p>
+            <p class="text-xs leading-relaxed text-stone-600">
+              Sau những tháng ngày cùng sẻ chia và gắn bó, ngày <strong>16.09.2026</strong> vừa qua hai gia đình đã gặp nhau trong buổi Lễ Dạm Ngõ ấm cúng, và ngày <strong>16 - 17.01.2027</strong> tới đây sẽ là khoảnh khắc hai đứa chính thức về chung một mái nhà. Cảm ơn bạn đã luôn quan tâm và chúc phúc cho hành trình này của tụi mình nhé! ✨
+            </p>
+          </div>
+        `);
+        return;
+      }
+
+      // 8. Intent: Trang phục / Dress code
+      if (text.includes('mặc gì') || text.includes('trang phục') || text.includes('dress code') || text.includes('đồ gì') || text.includes('màu gì')) {
+        botReply(`
+          <div class="space-y-2">
+            <p class="font-bold text-stone-900 text-sm">👗 Gợi Ý Về Trang Phục:</p>
+            <p class="text-xs leading-relaxed text-stone-600">
+              Tân &amp; Chi không quy định dress code khắt khe đâu nè! Bạn chỉ cần chọn bộ trang phục lịch sự, thoải mái và tự tin nhất là đẹp nhất rồi.
+            </p>
+            <p class="text-xs leading-relaxed text-stone-500 font-serif italic">
+              (Những gam màu ấm áp, thanh lịch như be, kem, pastel, trắng, xanh nhã nhặn hay đỏ nhung đều rất đẹp và hòa hợp với không khí ngày vui đó ạ ✨)
+            </p>
+          </div>
+        `);
+        return;
+      }
+
+      // 9. Intent: Chỗ để xe / Phương tiện
+      if (text.includes('đỗ xe') || text.includes('gửi xe') || text.includes('ô tô') || text.includes('xe máy') || text.includes('chỗ xe')) {
+        botReply(`
+          <div class="space-y-2">
+            <p class="font-bold text-stone-900 text-sm">🚗 Về Chỗ Gửi Xe:</p>
+            <p class="text-xs leading-relaxed text-stone-600">
+              Dạ có bãi đỗ xe ô tô và xe máy rộng rãi, an toàn ngay sát khu vực dựng rạp tại tư gia nhà gái ạ! Gia đình đã sắp xếp người túc trực đón tiếp và hỗ trợ hướng dẫn đỗ xe chu đáo, bạn hoàn toàn yên tâm nhé.
+            </p>
+          </div>
+        `);
+        return;
+      }
+
+      // 10. Intent: Đồ ăn / Thực đơn chay
+      if (text.includes('chay') || text.includes('thực đơn') || text.includes('món ăn') || text.includes('dị ứng') || text.includes('ăn gì')) {
+        botReply(`
+          <div class="space-y-2">
+            <p class="font-bold text-stone-900 text-sm">🍽️ Thực Đơn Tiệc Cưới:</p>
+            <p class="text-xs leading-relaxed text-stone-600">
+              Tiệc cưới chuẩn bị cỗ bàn truyền thống ấm cúng. Nếu bạn hoặc người thân có nhu cầu dùng món chay thanh tịnh hoặc cần kiêng món gì, bạn cứ nhắn cho tụi mình biết khi xác nhận tham dự để gia đình chuẩn bị chu đáo riêng cho bạn nha! 🥗
+            </p>
+          </div>
+        `);
+        return;
+      }
+
+      // 11. Intent: Lời khen thân thương
+      if (text.includes('đẹp đôi') || text.includes('xịn') || text.includes('dễ thương') || text.includes('đẹp quá') || text.includes('thích quá') || text.includes('tuyệt vời')) {
+        botReply(`
+          <div class="space-y-2">
+            <p class="text-xs leading-relaxed text-stone-700">
+              Ôi nghe bạn nói vậy mà hai đứa vui và ấm lòng suốt cả ngày luôn á! 🥰 Cảm ơn bạn rất nhiều vì sự ngọt ngào này.
+            </p>
+            <p class="text-xs text-stone-500 font-serif italic">Hẹn gặp bạn trong nụ cười ngày cưới nha!</p>
+          </div>
+        `);
+        return;
+      }
+
+      // Default Soft Reply
+      botReply(`
+        <div class="space-y-2">
+          <p class="text-xs text-stone-700 leading-relaxed">
+            Tân &amp; Chi cảm ơn lời nhắn của bạn nhiều nha! Tụi mình luôn ở đây để sẻ chia mọi thông tin về ngày vui cùng bạn.
+          </p>
+          <p class="text-xs text-stone-500 font-serif italic">
+            Bạn có muốn tụi mình gửi thêm thông tin lịch trình, ngắm ảnh hay chỉ đường không nè?
+          </p>
+          <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
+            <button onclick="handleQuickSend('Xem lịch trình hôn lễ 📅')" class="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 font-medium">📅 Lịch trình</button>
+            <button onclick="handleQuickSend('Xem ảnh cưới 📸')" class="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 font-medium">📸 Xem ảnh</button>
+            <button onclick="handleQuickSend('Mình muốn xác nhận tham dự cùng hai bạn 💌')" class="px-2.5 py-1 rounded-full bg-ruby-light text-ruby border border-ruby/20 font-bold">💌 Báo tin tham dự</button>
+          </div>
+        </div>
+      `);
+    }
+
+    // -------------------------------------------------------------
+    // RSVP CONVERSATIONAL FLOW (GENTLE & PERSONALIZED)
+    // -------------------------------------------------------------
+    function startRsvpFlow(attendChoice) {
+      rsvpState.attend = (attendChoice === 'yes');
+      rsvpState.step = 'name';
+      
+      const defaultName = getGuestDisplayName();
+      const elder = isElder(defaultName, getRelationshipTitle());
+
+      if (rsvpState.attend) {
+        addMessage('Tuyệt vời quá! Mình chắc chắn sẽ về chung vui cùng Tân & Chi! ✨', 'user');
+        
+        const replyText = elder
+          ? `Dạ thật quý hóa quá ạ! Chúng con xin phép được lưu lại <strong>Họ và tên của người đại diện</strong> để gia đình chuẩn bị đón tiếp chu đáo nhất ạ:`
+          : `Thật vui quá! Cảm ơn bạn vì đã nhận lời về chung vui cùng hai đứa. Cho Tân & Chi xin <strong>Họ và tên</strong> của bạn nha:`;
+
+        botReply(`
+          <div class="space-y-2">
+            <p class="text-xs leading-relaxed text-stone-700">${replyText}</p>
+            ${defaultName ? `<button onclick="handleQuickSend('${defaultName}')" class="px-3.5 py-1.5 rounded-full bg-gold/20 text-gold-dark border border-gold/40 text-xs font-bold active:scale-95">Dùng tên: ${defaultName}</button>` : ''}
+          </div>
+        `);
+      } else {
+        addMessage('Tiếc quá, hôm đó mình bận mất rồi không về dự trực tiếp được 💌', 'user');
+        
+        const replyText = elder
+          ? `Dạ chúng con rất hiểu và kính chúc gia đình mình luôn dồi dào sức khỏe ạ! Dạ xin cho chúng con ghi lại danh tính để báo lại với bố mẹ hai bên ạ:`
+          : `Tụi mình hiểu mà, bạn đừng ngại nhé! Dù ở xa hay bận rộn không về được, tấm lòng của bạn tụi mình luôn trân quý vô cùng. Bạn cho tụi mình xin họ tên để ghi nhớ lời báo tin nha:`;
+
+        botReply(`
+          <div class="space-y-2">
+            <p class="text-xs leading-relaxed text-stone-700">${replyText}</p>
+            ${defaultName ? `<button onclick="handleQuickSend('${defaultName}')" class="px-3.5 py-1.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200 text-xs font-bold active:scale-95">Dùng tên: ${defaultName}</button>` : ''}
+          </div>
+        `);
+      }
+    }
+
+    function handleRsvpStep(input) {
+      const elder = isElder(getGuestDisplayName(), getRelationshipTitle());
+
+      if (rsvpState.step === 'name') {
+        rsvpState.name = input;
+        rsvpState.step = 'phone';
+        
+        const phonePrompt = elder
+          ? `Dạ chúng con cảm ơn ạ! Xin gửi giúp chúng con <strong>Số điện thoại hoặc Zalo</strong> để tiện gửi thiệp mời và thông tin hướng dẫn đường đi chu đáo ạ:`
+          : `Cảm ơn <strong>${input}</strong> nhiều nha! Bạn nhắn giúp tụi mình <strong>Số điện thoại hoặc Zalo</strong> để tiện gửi tin cập nhật nhé:`;
+
+        botReply(`
+          <p class="text-xs leading-relaxed text-stone-700">${phonePrompt}</p>
+        `);
+      } else if (rsvpState.step === 'phone') {
+        rsvpState.phone = input;
+        
+        if (!rsvpState.attend) {
+          finishRsvp();
+        } else {
+          rsvpState.step = 'plusOne';
+          const plusPrompt = elder
+            ? `Dạ gia đình mình dự định đi mấy người ạ? Để chúng con sắp xếp chỗ ngồi và bàn tiệc thật thoải mái nhất cho cả nhà mình ạ:`
+            : `Dạ ghi nhận SĐT <strong>${input}</strong>! Bạn dự định đi mấy người (có dắt theo người thương hoặc bé nhỏ không nè)?`;
+
+          botReply(`
+            <div class="space-y-2">
+              <p class="text-xs leading-relaxed text-stone-700">${plusPrompt}</p>
+              <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
+                <button onclick="handleQuickSend('Đi 1 mình')" class="px-3 py-1 rounded-full bg-stone-100 hover:bg-stone-200 border border-stone-200">Đi 1 mình</button>
+                <button onclick="handleQuickSend('Đi cùng 1 người (+1)')" class="px-3 py-1 rounded-full bg-stone-100 hover:bg-stone-200 border border-stone-200">Đi cùng 1 người (+1)</button>
+                <button onclick="handleQuickSend('Cả nhà 3-4 người')" class="px-3 py-1 rounded-full bg-stone-100 hover:bg-stone-200 border border-stone-200">Cả nhà 3-4 người</button>
+              </div>
+            </div>
+          `);
+        }
+      } else if (rsvpState.step === 'plusOne') {
+        if (input.includes('1 mình')) rsvpState.plusOne = 0;
+        else if (input.includes('+1') || input.includes('1 người')) rsvpState.plusOne = 1;
+        else rsvpState.plusOne = 2;
+
+        finishRsvp();
+      }
+    }
+
+    async function finishRsvp() {
+      rsvpState.step = null;
+
+      try {
+        await fetch('/api/invite/rsvp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: rsvpState.name,
+            phone: rsvpState.phone,
+            side: rsvpState.side || 'groom',
+            attending: rsvpState.attend,
+            plus_one: rsvpState.plusOne,
+            diet: 'Tiệc mặn tiêu chuẩn',
+            message: `Xác nhận qua Chat AI (${rsvpState.attend ? 'Tham dự' : 'Bận'})`,
+            slug: guestSlug || ''
+          })
+        });
+      } catch (e) {
+        console.log('RSVP api call completed:', e);
+      }
+
+      if (rsvpState.attend) {
+        confetti({ particleCount: 75, spread: 80, origin: { y: 0.7 } });
+        const plusOneLabel = rsvpState.plusOne === 0 ? 'Đi 1 mình' : (rsvpState.plusOne === 1 ? '2 người (Bạn + 1 người thân)' : 'Gia đình (3-4 người)');
+        
+        botReply(`
+          <div class="space-y-2 p-1 text-stone-800">
+            <p class="font-bold text-ruby text-sm flex items-center gap-1.5">
+              <span>💌</span> Lời hẹn đã được Tân &amp; Chi nâng niu lưu lại!
+            </p>
+            <div class="text-xs bg-amber-50/70 p-3 rounded-xl border border-gold/30 space-y-1">
+              <p>• Khách mời: <strong>${rsvpState.name}</strong></p>
+              <p>• SĐT / Zalo: <strong>${rsvpState.phone}</strong></p>
+              <p>• Dự kiến tham dự: <strong>${plusOneLabel}</strong></p>
+              <p>• Lịch hẹn: <strong>Ngày 16 &amp; 17 Tháng 1 Năm 2027 tại Tư Gia Nhà Gái</strong></p>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Cảm ơn bạn rất nhiều! Tụi mình đang đếm từng ngày để được gặp và đón tiếp bạn trong ngày vui ấm áp này.
+            </p>
+            <p class="text-[10px] text-stone-400 italic">Nếu có bất kỳ thay đổi nào, bạn chỉ cần nhắn lại vào khung chat bất cứ lúc nào nhé!</p>
+          </div>
+        `);
+      } else {
+        botReply(`
+          <div class="space-y-2 text-stone-800">
+            <p class="font-bold text-stone-900 text-sm">💌 LỜI NHẮN ĐÃ ĐƯỢC LƯU LẠI</p>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Tân &amp; Chi rất hiểu và cảm ơn <strong>${rsvpState.name}</strong> nhiều lắm! Dù xa xôi hay bận rộn không thể về chung vui trực tiếp, chỉ cần nhận được lời chúc và tình cảm của bạn là hai đứa đã thấy ấm lòng vô cùng rồi. Chúc bạn luôn bình an và nhiều niềm vui nhé! 🌸
+            </p>
+          </div>
+        `);
+      }
+    }
+
+    async function saveWishToApi(name, wishText) {
+      try {
+        await fetch('/api/invite/wish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name,
+            wish: wishText,
+            slug: guestSlug || ''
+          })
+        });
+      } catch (err) {
+        console.log('Wish save error:', err);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // INPUT HANDLING & FORM SUBMISSION
+    // -------------------------------------------------------------
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const val = chatInput.value.trim();
+      if (!val) return;
+
+      addMessage(val, 'user');
+      chatInput.value = '';
+      processUserInput(val);
+    }
+
+    function handleQuickSend(text) {
+      addMessage(text, 'user');
+      processUserInput(text);
+    }
+
+    // -------------------------------------------------------------
+    // INITIALIZATION & WELCOME MESSAGE
+    // -------------------------------------------------------------
+    async function initChat() {
+      guestSlug = getUrlParam('g');
+
+      if (guestSlug) {
+        try {
+          const res = await fetch('/api/invite/guest/' + encodeURIComponent(guestSlug));
+          if (res.ok) {
+            guestData = await res.json();
+            if (guestData && guestData.name) {
+              rsvpState.side = guestData.side || 'groom';
+            }
+          }
+        } catch (e) {
+          console.log('Guest lookup err:', e);
+        }
+      }
+
+      const guestName = getGuestDisplayName();
+      const guestRel = getRelationshipTitle();
+      const elder = isElder(guestName, guestRel);
+
+      // Initial Bot Greetings
+      setTyping(true);
+      setTimeout(() => {
+        setTyping(false);
+
+        let welcomeText = '';
+        if (elder) {
+          welcomeText = `
+            <div class="space-y-2">
+              <p class="text-sm font-semibold text-stone-900">
+                Dạ, chúng con kính chào ${guestName || 'Gia đình mình'} ạ! 🙏
+              </p>
+              <p class="text-xs text-stone-700 leading-relaxed">
+                Chúng con là <strong>Lê Duy Tân &amp; Đinh Khánh Chi</strong>. Thật hạnh phúc cho hai cháu khi được gửi lời mời trân trọng nhất đến ${guestRel ? guestRel + ' cùng toàn thể gia đình' : (guestName || 'gia đình mình')} về chung vui ngày đại hỷ của hai cháu ạ!
+              </p>
+            </div>
+          `;
+        } else {
+          const salutation = guestName ? `Chào ${guestName} thân thương! 🌸` : `Chào bạn thân thương! 🌸`;
+          welcomeText = `
+            <div class="space-y-2">
+              <p class="text-sm font-semibold text-stone-900">
+                ${salutation}
+              </p>
+              <p class="text-xs text-stone-700 leading-relaxed">
+                Tụi mình là <strong>Lê Duy Tân &amp; Đinh Khánh Chi</strong>. Cảm ơn bạn đã ghé thăm góc nhỏ của hai đứa. Ngày vui của chúng mình sẽ trọn vẹn và ấm áp hơn rất nhiều khi có sự chúc phúc và đồng hành của bạn.
+              </p>
+            </div>
+          `;
+        }
+
+        addMessage(welcomeText, 'bot');
+
+        // Follow up with Invitation Card
+        setTimeout(() => {
+          const followPrompt = elder
+            ? `Dạ, ${guestName || 'Gia đình mình'} có thể chạm vào các gợi ý bên dưới hoặc nhắn gửi cho hai cháu bất cứ điều gì cần dặn dò ạ! 💌`
+            : `Bạn có thể nhắn cho tụi mình bất cứ câu hỏi nào, hoặc bấm các gợi ý phía dưới để xem lịch trình, ngắm ảnh cưới hay báo tin tham dự nhé! 💌`;
+
+          botReply(`
+            ${cardInvitation(guestData)}
+            <p class="text-xs text-stone-600 pt-1 font-serif italic">
+              ${followPrompt}
+            </p>
+          `, 600);
+        }, 500);
+
+      }, 700);
+    }
+
+    document.addEventListener('DOMContentLoaded', initChat);
+  </script>
+</body>
+</html>
