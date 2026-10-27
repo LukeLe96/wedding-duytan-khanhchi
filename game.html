@@ -222,6 +222,93 @@
       font-weight: 800;
     }
 
+    /* Sky Dialogue Widget (2 characters bantering in the sky) */
+    .sky-talk-widget {
+      position: absolute;
+      top: 46px;
+      left: 10px;
+      right: 10px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      z-index: 12;
+      animation: floatSkyWidget 3s ease-in-out infinite;
+    }
+    @keyframes floatSkyWidget {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .sky-avatar-box {
+      width: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+      transition: all 0.25s ease;
+      opacity: 0.65;
+      transform: scale(0.92);
+    }
+    .sky-avatar-box.is-speaking {
+      opacity: 1;
+      transform: scale(1.12);
+      filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.75));
+    }
+    .sky-avatar-svg {
+      width: 32px;
+      height: 42px;
+      image-rendering: pixelated;
+    }
+    .sky-actor-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: #F9E29D;
+      background: rgba(20, 10, 14, 0.85);
+      border: 1px solid #D4AF37;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+    .sky-bubble-cloud {
+      flex: 1;
+      background: rgba(22, 10, 15, 0.94);
+      border: 1.5px solid #D4AF37;
+      border-radius: 14px;
+      padding: 6px 11px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 0 10px rgba(212, 175, 55, 0.15);
+      transition: all 0.25s ease;
+      min-height: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .sky-bubble-cloud.speak-right {
+      border-color: #F472B6;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 0 10px rgba(244, 114, 182, 0.2);
+    }
+    .sky-speaker-title {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #FCD34D;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
+    }
+    .sky-bubble-cloud.speak-right .sky-speaker-title {
+      color: #F472B6;
+      justify-content: flex-end;
+    }
+    .sky-dialogue-text {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #FFF;
+      line-height: 1.35;
+    }
+    .sky-bubble-cloud.speak-right .sky-dialogue-text {
+      text-align: right;
+    }
+
     /* Jump Button */
     .jump-btn-wrap {
       position: absolute;
@@ -666,6 +753,26 @@
           </div>
         </div>
 
+        <!-- Sky Talk Widget (2 characters talking in the sky while running!) -->
+        <div id="sky-talk-widget" class="sky-talk-widget">
+          <div class="sky-avatar-box is-speaking" id="sky-groom-box">
+            <svg viewBox="0 0 12 16" class="sky-avatar-svg"><use href="#px-groom"/></svg>
+            <span class="sky-actor-label">Tân</span>
+          </div>
+          <div class="sky-bubble-cloud" id="sky-bubble-cloud">
+            <div class="sky-speaker-title">
+              <span id="sky-speaker-icon">🤵‍♂️</span> <span id="sky-speaker-name">Tân</span>
+            </div>
+            <div class="sky-dialogue-text" id="sky-dialogue-text">
+              ...
+            </div>
+          </div>
+          <div class="sky-avatar-box" id="sky-bride-box">
+            <svg viewBox="0 0 12 16" class="sky-avatar-svg"><use href="#px-bride"/></svg>
+            <span class="sky-actor-label">Chi</span>
+          </div>
+        </div>
+
         <!-- Jump Button -->
         <div class="jump-btn-wrap" id="jump-btn-wrap">
           <button id="btn-jump" class="btn-jump" onclick="handleJumpAction(event)">
@@ -870,6 +977,12 @@
           { speaker: "Tân", avatar: "👨‍💻", side: "left", text: "(Thầm nghĩ: Nụ cười này ngọt hơn cả ly bạc xỉu!) Còn chứ em! Pin anh còn 80%, đủ ngồi đây đến khi nào em về." },
           { speaker: "Chi", avatar: "👩‍💼", side: "right", text: "Haha anh khéo ghê! Cho em xin số Zalo để lỡ mai em lại cần mượn ổ điện nhé!" }
         ],
+        skyDialogues: [
+          { speaker: "Chi", side: "right", text: "Anh ơi, cho em mượn ổ cắm điện laptop nhé! 😊" },
+          { speaker: "Tân", side: "left", text: "Còn chứ em! Pin anh còn 80%, đủ đợi em về nè! ☕" },
+          { speaker: "Chi", side: "right", text: "Haha anh khéo ghê, cho em xin số Zalo nha! 💬" },
+          { speaker: "Tân", side: "left", text: "Sắp tới đích gặp Chi rồi, chạy nhanh thôi! 🏃‍♂️" }
+        ],
         missionTitle: "THỬ THÁCH MÀN 1: CHẠY QUA PHỐ CỔ TÌM NÀNG",
         missionDesc: "Nhảy né vũng nước mưa mùa thu, đập gạch ăn Cà Phê Trứng ☕ & Số Zalo 📱!",
         actionBtnText: "▶ CHẠY VƯỢT THỬ THÁCH MÀN 1 (45m)",
@@ -888,6 +1001,12 @@
           { speaker: "Chi", avatar: "👩‍💼", side: "right", text: "Anh Tân ơi, em đi ngủ đây nè. Mai em còn đi làm sớm." },
           { speaker: "Tân", avatar: "👨‍💻", side: "left", text: "Ừ em ngủ ngon nhé... Mà Chi ngủ có hay mơ không? Để anh xin vào giấc mơ đặt chỗ trước thôi!" },
           { speaker: "Chi", avatar: "👩‍💼", side: "right", text: "Sến quá anh ơi! Nhưng mà... em đang cười nè. Cuối tuần anh qua đón em dạo Hồ Tây nhé? 🛵" }
+        ],
+        skyDialogues: [
+          { speaker: "Chi", side: "right", text: "01:15 sáng rồi, Tân chưa ngủ à? Mai đi làm sớm đó! 😴" },
+          { speaker: "Tân", side: "left", text: "Nhắn với Chi không muốn ngủ luôn, xin đặt chỗ vào giấc mơ nha! ✨" },
+          { speaker: "Chi", side: "right", text: "Sến quá anh ơi! Cuối tuần qua đón em dạo Hồ Tây nhé? 🛵" },
+          { speaker: "Tân", side: "left", text: "Chốt kèo luôn! Anh qua đón Chi đúng giờ! ❤️" }
         ],
         missionTitle: "THỬ THÁCH MÀN 2: LÊN XE QUA ĐÓN CHI HẸN HÒ",
         missionDesc: "Nhảy né cơn buồn ngủ ríu mắt 🥱, thu thập tim tình yêu ❤️ và xe máy 🛵!",
@@ -908,6 +1027,12 @@
           { speaker: "Tân", avatar: "👨‍💻", side: "left", text: "Anh vừa ấn đặt vé xong rồi! Chuyến tối thứ Sáu, bay ra gặp Chi liền!" },
           { speaker: "Chi", avatar: "👩‍💼", side: "right", text: "Hạng vé bay không quan trọng, chỉ cần anh về đây với em thôi!" }
         ],
+        skyDialogues: [
+          { speaker: "Chi", side: "right", text: "Hôm nay Hà Nội mưa lạnh, ước gì có anh dạo phố cùng em... 🌧️" },
+          { speaker: "Tân", side: "left", text: "Gia Lai đang nắng đẹp, anh gói gửi em nhưng hãng bay bảo quá cước! ☀️" },
+          { speaker: "Chi", side: "right", text: "Thế thì anh tự bay ra mang nắng cho em đi chứ! ✈️" },
+          { speaker: "Tân", side: "left", text: "Anh đặt vé rồi, tối thứ 6 bay ra gặp Chi liền! 🛬" }
+        ],
         missionTitle: "THỬ THÁCH MÀN 3: BAY RA HÀ NỘI GẶP NÀNG",
         missionDesc: "Nhảy né Chuyến bay Delay ⏳, đập gạch thu thập Vé máy bay 🎫 & Cà phê Pleiku ☕!",
         actionBtnText: "▶ XÁCH BALO BAY RA HÀ NỘI (50m)",
@@ -918,7 +1043,7 @@
       {
         id: 3,
         badge: "HỒI 4 • GIA VỊ TÌNH YÊU",
-        title: "Đã Xem, Không Trả Lời",
+        title: "Đã Xem, Không TrẢ Lời",
         location: "Trước cửa nhà Chi tại Hà Nội, buổi tối",
         skyColors: ['#F472B6', '#FBCFE8', '#FFF1F2'],
         dialogues: [
@@ -926,6 +1051,12 @@
           { speaker: "Tân", avatar: "👨‍💻", side: "left", text: "Chi ơi, anh xin lỗi! Dù anh chưa biết mình sai gì, nhưng chắc chắn là anh sai rồi!" },
           { speaker: "Chi", avatar: "👩‍💼", side: "right", text: "Hôm qua anh bảo bận họp, xong em thấy anh online cả tối mà không nhắn em một câu!" },
           { speaker: "Tân", avatar: "👨‍💻", side: "left", text: "Anh sai vì để Chi buồn. Anh đang đứng dưới nhà, mang trà sữa trân châu và hoa hồng tạ lỗi nè!" }
+        ],
+        skyDialogues: [
+          { speaker: "Chi", side: "right", text: "Hôm qua anh bảo bận họp, xong online cả tối không nhắn em! 😤" },
+          { speaker: "Tân", side: "left", text: "Anh xin lỗi! Anh đang phân tích nguyên nhân gốc rễ đây ạ! 🥺" },
+          { speaker: "Tân", side: "left", text: "Ting tong! Trà sữa ít đá 70% đường và hoa hồng trước cửa nhà nè! 🧋💐" },
+          { speaker: "Chi", side: "right", text: "...Trà sữa ngon đấy, hoa cũng xinh. Lần này tha cho anh ngốc nhé! ❤️" }
         ],
         missionTitle: "THỬ THÁCH MÀN 4: MANG TRÀ SỮA & HOA TỚI DỖ DÀNH",
         missionDesc: "Nhảy né cơn bão dỗi hờn ⚡, đập gạch ăn Trà sữa trân châu 🧋 và Bó hoa hồng 💐!",
@@ -946,6 +1077,12 @@
           { speaker: "Chi", avatar: "👩‍💼", side: "right", text: "Bình tĩnh nào anh, bố mẹ em quý anh lắm, cứ là chính anh thôi!" },
           { type: "narrator", text: "Khay trầu cau têm cánh phượng đặt lên bàn thờ gia tiên. Bố mẹ hai bên mỉm cười gật đầu chúc phúc viên mãn!" }
         ],
+        skyDialogues: [
+          { speaker: "Tân", side: "left", text: "Chi ơi cà vạt anh có lệch không? Tập câu chào 50 lần mà run quá! 💓" },
+          { speaker: "Chi", side: "right", text: "Bình tĩnh nào, bố mẹ em quý anh lắm, cứ là chính anh thôi! 😊" },
+          { speaker: "Tân", side: "left", text: "Khay trầu cau dâng lên bàn thờ rồi, hai bác mỉm cười chúc phúc kìa! 🍃🍵" },
+          { speaker: "Chi", side: "right", text: "Từ nay anh chính thức là người nhà rồi nhé! 🏡💕" }
+        ],
         missionTitle: "THỬ THÁCH MÀN 5: DÂNG KHAY TRẦU CAU & CHÚC PHÚC",
         missionDesc: "Nhảy né sự hồi hộp 💓, thu thập Mâm trầu cau 🍃, Chén trà 🍵 & Chữ Hỷ 囍!",
         actionBtnText: "▶ CHẠY TIẾN VỀ LỄ CƯỚI (50m)",
@@ -964,6 +1101,12 @@
           { speaker: "Tân", avatar: "🤵‍♂️", side: "left", text: "Chi ơi, em nhớ hôm ở quán cà phê mượn ổ điện của anh không? Giờ anh xin bàn tay của Chi đi cùng anh trọn đời nhé!" },
           { speaker: "Chi", avatar: "👰‍♀️", side: "right", text: "Em đồng ý! Từ nay đi đâu làm gì cũng nhớ về nhà với em nhé anh." },
           { type: "narrator", text: "Hãy chạy chặng nước rút cuối cùng để đón cô dâu và mở tấm Thiệp Cưới Đại Hỷ!" }
+        ],
+        skyDialogues: [
+          { speaker: "Tân", side: "left", text: "Chi ơi, em nhớ hôm mượn ổ cắm điện của anh ở quán cà phê không? ☕" },
+          { speaker: "Chi", side: "right", text: "Nhớ chứ! Mượn cái ổ điện mà giờ trả nợ bằng cả cuộc đời nè! 👰‍♀️" },
+          { speaker: "Tân", side: "left", text: "Anh tính lãi kép mà! Nắm tay anh bước vào cổng cưới nhé! 💍" },
+          { speaker: "Chi", side: "right", text: "Em đồng ý! Về chung một nhà thôi anh ơi! 💒🎉" }
         ],
         missionTitle: "CHẶNG CUỐI CÙNG: RƯỚC NÀNG VỀ DINH",
         missionDesc: "Chạy về Cổng Cưới Hoàng Gia đón cô dâu Khánh Chi và mở thiệp mời!",
@@ -986,6 +1129,7 @@
     let score = 0;
     let hearts = 3;
     let isPlayingStage = false;
+      const stw = document.getElementById('sky-talk-widget'); if (stw) stw.style.display = 'none';
 
     let width = 390;
     let height = 550;
@@ -1051,6 +1195,7 @@
 
     function openStoryModal(chapIdx) {
       isPlayingStage = false;
+      const stw = document.getElementById('sky-talk-widget'); if (stw) stw.style.display = 'none';
       currentChapterIdx = chapIdx;
       updateStepper(currentChapterIdx);
 
@@ -1091,6 +1236,39 @@
       modal.scrollTop = 0;
     }
 
+
+    let currentSkyText = '';
+    function updateSkyTalkWidget(dlg) {
+      if (!dlg) return;
+      if (currentSkyText === dlg.text) return;
+      currentSkyText = dlg.text;
+
+      const widget = document.getElementById('sky-talk-widget');
+      const groomBox = document.getElementById('sky-groom-box');
+      const brideBox = document.getElementById('sky-bride-box');
+      const cloud = document.getElementById('sky-bubble-cloud');
+      const icon = document.getElementById('sky-speaker-icon');
+      const name = document.getElementById('sky-speaker-name');
+      const text = document.getElementById('sky-dialogue-text');
+
+      groomBox.classList.remove('is-speaking');
+      brideBox.classList.remove('is-speaking');
+      cloud.classList.remove('speak-right');
+
+      if (dlg.side === 'right') {
+        brideBox.classList.add('is-speaking');
+        cloud.classList.add('speak-right');
+        icon.innerText = '👰‍♀️';
+        name.innerText = 'Chi';
+      } else {
+        groomBox.classList.add('is-speaking');
+        icon.innerText = '🤵‍♂️';
+        name.innerText = 'Tân';
+      }
+
+      text.innerText = dlg.text;
+    }
+
     function launchCurrentStage() {
       initAudio();
       sfxCoin();
@@ -1098,6 +1276,8 @@
 
       // Start Mario Runner Stage!
       isPlayingStage = true;
+      currentSkyText = '';
+      document.getElementById('sky-talk-widget').style.display = 'flex';
       stageDistance = 0;
       spawnTimer = 0;
 
@@ -1236,6 +1416,14 @@
       bgScroll += gameSpeed;
 
       const chap = CHAPTERS[currentChapterIdx];
+
+      // Update Sky Dialogue of Tân & Chi bantering up in the sky!
+      const progressRatio = Math.min(1, stageDistance / chap.targetMeters);
+      const skyDlgs = chap.skyDialogues;
+      if (skyDlgs && skyDlgs.length > 0) {
+        const dlgIdx = Math.min(skyDlgs.length - 1, Math.floor(progressRatio * skyDlgs.length));
+        updateSkyTalkWidget(skyDlgs[dlgIdx]);
+      }
 
       // Player animation
       player.runTimer++;
@@ -1384,6 +1572,7 @@
 
     function onStageCompleted() {
       isPlayingStage = false;
+      const stw = document.getElementById('sky-talk-widget'); if (stw) stw.style.display = 'none';
       sfxWin();
 
       if (currentChapterIdx === 5) {
@@ -1397,6 +1586,7 @@
 
     function triggerVictory() {
       isPlayingStage = false;
+      const stw = document.getElementById('sky-talk-widget'); if (stw) stw.style.display = 'none';
       updateStepper(5);
       sfxWin();
 
