@@ -181,7 +181,7 @@
     .scene-art-stage {
       position: relative;
       width: 100%;
-      height: 185px;
+      height: 205px;
       background: #251218;
       border-bottom: 2px solid rgba(212, 175, 55, 0.5);
       flex-shrink: 0;
@@ -1059,9 +1059,9 @@
     updateProgressBars();
     requestAnimationFrame(storyTick);
 
-    // ==========================================
-    // 3. ANIMATED PIXEL SCENE RENDERER (CANVAS)
-    // ==========================================
+    // ==============================================================
+    // 3. PURE 16-BIT PIXEL ART SCENE & CHARACTER ANIMATION ENGINE
+    // ==============================================================
     const canvas = document.getElementById('sceneCanvas');
     const ctx = canvas.getContext('2d');
     let sceneTick = 0;
@@ -1069,13 +1069,19 @@
     function resizeSceneCanvas() {
       const parent = canvas.parentElement;
       canvas.width = parent.clientWidth || 390;
-      canvas.height = parent.clientHeight || 185;
+      canvas.height = parent.clientHeight || 205;
     }
     window.addEventListener('resize', resizeSceneCanvas);
 
+    // Pixel Helper Primitives
+    function pxRect(ctx, x, y, w, h, fill) {
+      ctx.fillStyle = fill;
+      ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+    }
+
     function drawPixelGroom(ctx, x, y, scale = 2.5, runFrame = 0) {
       ctx.save();
-      ctx.translate(x, y);
+      ctx.translate(Math.round(x), Math.round(y));
       ctx.scale(scale, scale);
       ctx.fillStyle = '#2B1D16';
       ctx.fillRect(3, 0, 5, 1);
@@ -1116,7 +1122,7 @@
 
     function drawPixelBride(ctx, x, y, scale = 2.5) {
       ctx.save();
-      ctx.translate(x, y);
+      ctx.translate(Math.round(x), Math.round(y));
       ctx.scale(scale, scale);
       ctx.fillStyle = '#D4AF37';
       ctx.fillRect(3, 0, 6, 2);
@@ -1152,235 +1158,661 @@
       ctx.restore();
     }
 
+    // -------------------------------------------------------------
+    // PIXEL ITEM DRAWING ROUTINES (100% CODE PIXEL ART - NO EMOJIS)
+    // -------------------------------------------------------------
+    function drawPixelBoba(ctx, x, y, scale = 1.6) {
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.scale(scale, scale);
+      // Cup lid & straw
+      pxRect(ctx, 4, 0, 2, 4, '#E11D48'); // red straw
+      pxRect(ctx, 1, 3, 8, 2, '#FFFFFF'); // white lid
+      // Transparent cup body
+      pxRect(ctx, 2, 5, 6, 9, '#FDE68A'); // milk tea liquid
+      pxRect(ctx, 1, 5, 1, 9, 'rgba(255,255,255,0.6)'); // glass highlight
+      pxRect(ctx, 8, 5, 1, 9, 'rgba(0,0,0,0.2)'); // glass shadow
+      // Brown sugar drizzle
+      pxRect(ctx, 3, 6, 2, 2, '#78350F');
+      pxRect(ctx, 5, 8, 2, 2, '#78350F');
+      // Tapioca pearls
+      pxRect(ctx, 2, 11, 2, 2, '#1E1B18');
+      pxRect(ctx, 4, 12, 2, 2, '#1E1B18');
+      pxRect(ctx, 6, 11, 2, 2, '#1E1B18');
+      pxRect(ctx, 3, 10, 2, 2, '#1E1B18');
+      ctx.restore();
+    }
+
+    function drawPixelBouquet(ctx, x, y, scale = 1.6) {
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.scale(scale, scale);
+      // Wrapping kraft paper
+      pxRect(ctx, 3, 7, 6, 6, '#D97706');
+      pxRect(ctx, 4, 12, 4, 3, '#B45309');
+      pxRect(ctx, 5, 9, 2, 2, '#FDE047'); // gold ribbon tie
+      // Roses & eucalyptus
+      pxRect(ctx, 2, 3, 3, 3, '#F43F5E'); // pink rose
+      pxRect(ctx, 4, 1, 4, 4, '#E11D48'); // red rose center
+      pxRect(ctx, 7, 3, 3, 3, '#FDA4AF'); // blush rose
+      pxRect(ctx, 3, 5, 3, 3, '#FB7185');
+      pxRect(ctx, 6, 5, 3, 3, '#E11D48');
+      // Green leaves
+      pxRect(ctx, 1, 4, 2, 2, '#15803D');
+      pxRect(ctx, 8, 2, 2, 2, '#16A34A');
+      ctx.restore();
+    }
+
+    function drawPixelAirplane(ctx, x, y, scale = 1.4) {
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.scale(scale, scale);
+      // Fuselage (White airliner)
+      pxRect(ctx, 4, 7, 28, 6, '#FFFFFF');
+      pxRect(ctx, 0, 8, 4, 4, '#F8FAFC'); // cockpit nose
+      pxRect(ctx, 1, 9, 2, 2, '#0284C7'); // windshield glass
+      // Blue airline stripe
+      pxRect(ctx, 3, 10, 29, 1, '#0284C7');
+      // Windows
+      for (let i = 6; i < 26; i += 3) {
+        pxRect(ctx, i, 8, 1.5, 1.5, '#0284C7');
+      }
+      // Wings
+      pxRect(ctx, 12, 12, 10, 3, '#CBD5E1');
+      pxRect(ctx, 14, 15, 6, 2, '#94A3B8');
+      pxRect(ctx, 15, 4, 8, 3, '#CBD5E1'); // top wing
+      // Jet Engines under wing
+      pxRect(ctx, 13, 14, 4, 2, '#475569');
+      // Tail Fin (Gold star & lotus)
+      pxRect(ctx, 28, 1, 6, 7, '#0284C7');
+      pxRect(ctx, 30, 2, 3, 3, '#FCD34D'); // gold star
+      ctx.restore();
+    }
+
+    function drawPixelBetelTray(ctx, x, y, scale = 1.6) {
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.scale(scale, scale);
+      // Red lacquered wooden tray
+      pxRect(ctx, 1, 6, 18, 4, '#8B1E2D');
+      pxRect(ctx, 0, 7, 20, 2, '#D4AF37'); // gold rim
+      pxRect(ctx, 3, 10, 3, 2, '#66101F'); // tray legs
+      pxRect(ctx, 14, 10, 3, 2, '#66101F');
+      // Betel leaves folded into phoenix wings (lá trầu têm cánh phượng)
+      pxRect(ctx, 4, 2, 4, 5, '#15803D');
+      pxRect(ctx, 6, 1, 3, 4, '#16A34A');
+      pxRect(ctx, 9, 2, 4, 5, '#15803D');
+      pxRect(ctx, 11, 1, 3, 4, '#22C55E');
+      // Red areca nuts (quả cau đỏ)
+      pxRect(ctx, 5, 4, 3, 3, '#E11D48');
+      pxRect(ctx, 9, 4, 3, 3, '#E11D48');
+      pxRect(ctx, 13, 4, 3, 3, '#E11D48');
+      // White slaked lime dot
+      pxRect(ctx, 6, 5, 1, 1, '#FFFFFF');
+      pxRect(ctx, 10, 5, 1, 1, '#FFFFFF');
+      ctx.restore();
+    }
+
+    function drawPixelTeaSet(ctx, x, y, scale = 1.5) {
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.scale(scale, scale);
+      // Celadon Teapot
+      pxRect(ctx, 4, 3, 7, 6, '#0D9488');
+      pxRect(ctx, 5, 1, 5, 2, '#14B8A6'); // lid
+      pxRect(ctx, 6, 0, 3, 1, '#D4AF37'); // gold lid knob
+      pxRect(ctx, 2, 4, 2, 3, '#0F766E'); // handle
+      pxRect(ctx, 11, 4, 3, 2, '#14B8A6'); // spout
+      // 2 small porcelain cups
+      pxRect(ctx, 15, 6, 4, 3, '#FFFFFF');
+      pxRect(ctx, 16, 5, 2, 1, '#FDE047'); // green tea inside
+      pxRect(ctx, 20, 6, 4, 3, '#FFFFFF');
+      pxRect(ctx, 21, 5, 2, 1, '#FDE047');
+      ctx.restore();
+    }
+
+    // -------------------------------------------------------------
+    // ANIMATED CHARACTER POSE ROUTINES
+    // -------------------------------------------------------------
+    function drawGroomSeated(ctx, x, y, scale = 2.4) {
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.scale(scale, scale);
+      // Head & Hair
+      pxRect(ctx, 3, 0, 6, 2, '#2B1D16');
+      pxRect(ctx, 2, 2, 8, 2, '#2B1D16');
+      // Face
+      pxRect(ctx, 3, 4, 6, 4, '#F7D4B6');
+      // Glasses with gleam
+      pxRect(ctx, 3, 4, 6, 1, '#1F2937');
+      pxRect(ctx, 4, 5, 2, 1, '#38BDF8');
+      pxRect(ctx, 7, 5, 2, 1, '#38BDF8');
+      // Smile & Blush
+      pxRect(ctx, 3, 6, 1, 1, '#F2A7A7');
+      pxRect(ctx, 8, 6, 1, 1, '#F2A7A7');
+      pxRect(ctx, 5, 7, 2, 1, '#C2410C');
+      // Navy Vest & Tie
+      pxRect(ctx, 2, 8, 8, 4, '#1E2A44');
+      pxRect(ctx, 4, 8, 4, 3, '#FFFFFF');
+      pxRect(ctx, 5, 8, 2, 2, '#B3263A'); // red bowtie
+      // Arms leaning on table
+      pxRect(ctx, 0, 10, 3, 4, '#1E2A44');
+      pxRect(ctx, 2, 12, 4, 2, '#F7D4B6'); // hand on table
+      // Seated legs
+      pxRect(ctx, 2, 12, 7, 4, '#141B2D');
+      ctx.restore();
+    }
+
+    function drawBrideSeated(ctx, x, y, scale = 2.4) {
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.scale(scale, scale);
+      // Yellow headdress / hair pin
+      pxRect(ctx, 3, 0, 6, 2, '#D4AF37');
+      pxRect(ctx, 2, 2, 8, 2, '#2B1D16');
+      // Face
+      pxRect(ctx, 3, 4, 6, 4, '#F7D4B6');
+      // Eyes & Sweet Smile
+      pxRect(ctx, 4, 5, 1, 1, '#1F2937');
+      pxRect(ctx, 7, 5, 1, 1, '#1F2937');
+      pxRect(ctx, 3, 6, 1, 1, '#F472B6'); // rosy blush
+      pxRect(ctx, 8, 6, 1, 1, '#F472B6');
+      pxRect(ctx, 5, 7, 2, 1, '#D9465F');
+      // Red Dress & Gold embroidery
+      pxRect(ctx, 2, 8, 8, 5, '#B3263A');
+      pxRect(ctx, 5, 8, 2, 2, '#D4AF37');
+      // Hands writing note on table
+      pxRect(ctx, 7, 10, 4, 3, '#B3263A'); // arm
+      pxRect(ctx, 6, 12, 3, 2, '#F7D4B6'); // hand holding pen
+      pxRect(ctx, 7, 11, 1, 2, '#F59E0B'); // pen
+      // Seated skirt
+      pxRect(ctx, 2, 13, 8, 4, '#B3263A');
+      ctx.restore();
+    }
+
+    // -------------------------------------------------------------
+    // MAIN MULTI-SCENE RENDER LOOP (100% PURE PIXEL ART)
+    // -------------------------------------------------------------
     function renderSceneLoop() {
       sceneTick++;
       const w = canvas.width || 390;
-      const h = canvas.height || 185;
+      const h = canvas.height || 205;
       ctx.clearRect(0, 0, w, h);
       ctx.textAlign = 'left';
 
       const type = CHAPTERS[currentChapter].sceneType;
 
       if (type === 'cafe') {
-        // Cafe Scene: Sunset peach room with autumn leaves flying
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#FED7AA');
-        grad.addColorStop(1, '#78350F');
-        ctx.fillStyle = grad;
+        // SCENE 1: Quán cà phê mùa thu Hà Nội
+        // Warm interior gradient
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        bgGrad.addColorStop(0, '#78350F');
+        bgGrad.addColorStop(0.5, '#451A03');
+        bgGrad.addColorStop(1, '#270F04');
+        ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Window with autumn tree view
-        ctx.fillStyle = '#FDBA74';
-        ctx.fillRect(w/2 - 60, 20, 120, 80);
-        ctx.strokeStyle = '#451A03';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(w/2 - 60, 20, 120, 80);
-        ctx.beginPath();
-        ctx.moveTo(w/2, 20); ctx.lineTo(w/2, 100);
-        ctx.moveTo(w/2 - 60, 60); ctx.lineTo(w/2 + 60, 60);
-        ctx.stroke();
-
-        // Flying golden leaves
-        for (let i = 0; i < 6; i++) {
-          const lx = (w/2 - 50 + (sceneTick * 0.8 + i * 25) % 100);
-          const ly = 30 + Math.sin((sceneTick + i * 40) * 0.05) * 20;
-          ctx.fillStyle = '#EA580C';
-          ctx.fillRect(lx, ly, 4, 3);
+        // Brick wall texture
+        for (let r = 0; r < 7; r++) {
+          const shift = (r % 2) * 16;
+          for (let c = -1; c < w / 32 + 1; c++) {
+            pxRect(ctx, c * 32 + shift, r * 14, 30, 12, 'rgba(180, 83, 9, 0.15)');
+          }
         }
 
-        // Cafe table & coffee cups
-        ctx.fillStyle = '#451A03';
-        ctx.fillRect(w/2 - 75, h - 50, 150, 14);
-        ctx.fillRect(w/2 - 12, h - 36, 24, 36);
+        // Colonial French window with autumn view
+        const winX = Math.round(w / 2 - 70);
+        const winY = 16;
+        const winW = 140;
+        const winH = 95;
+        // Outside autumn sky & trees through window
+        const outGrad = ctx.createLinearGradient(winX, winY, winX, winY + winH);
+        outGrad.addColorStop(0, '#FEF08A');
+        outGrad.addColorStop(0.6, '#FDBA74');
+        outGrad.addColorStop(1, '#FB923C');
+        ctx.fillStyle = outGrad;
+        ctx.fillRect(winX, winY, winW, winH);
 
-        // Egg coffee cup with rising steam
-        ctx.fillStyle = '#FEF08A';
-        ctx.beginPath();
-        ctx.arc(w/2 - 15, h - 58, 8, 0, Math.PI * 2);
-        ctx.fill();
+        // Hanoi old quarter tiled roof & yellow building in distance
+        pxRect(ctx, winX + 15, winY + 45, 45, 50, '#EAB308');
+        pxRect(ctx, winX + 10, winY + 38, 55, 8, '#B91C1C'); // roof
+        pxRect(ctx, winX + 70, winY + 50, 50, 45, '#F59E0B');
+        pxRect(ctx, winX + 66, winY + 44, 58, 7, '#991B1B');
 
-        // Steam particle
-        const steamY = h - 68 - (sceneTick % 25);
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
-        ctx.fillRect(w/2 - 16, steamY, 3, 3);
-
-        // Laptop on table
-        ctx.fillStyle = '#94A3B8';
-        ctx.fillRect(w/2 + 10, h - 62, 18, 12);
-        ctx.fillStyle = '#38BDF8';
-        ctx.fillRect(w/2 + 12, h - 60, 14, 8);
-
-        // Characters sitting/standing
-        drawPixelGroom(ctx, w/2 - 85, h - 96, 2.5);
-        drawPixelBride(ctx, w/2 + 55, h - 96, 2.5);
-
-      } else if (type === 'chat_night') {
-        // Midnight 01:15 scene with starry sky & glowing phones
-        ctx.fillStyle = '#0B1120';
-        ctx.fillRect(0, 0, w, h);
-
-        // Moon
-        ctx.fillStyle = '#FEF08A';
-        ctx.beginPath();
-        ctx.arc(w - 55, 45, 22, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Twinkling stars
-        for (let i = 0; i < 24; i++) {
-          const blink = (sceneTick + i * 15) % 40 > 20;
-          ctx.fillStyle = blink ? '#FFF' : '#FCD34D';
-          ctx.fillRect((i * 41) % w, (i * 29) % (h - 40), 2, 2);
-        }
-
-        // Glowing phone screens
-        ctx.fillStyle = '#1E293B';
-        ctx.fillRect(55, h - 85, 48, 70);
-        ctx.fillRect(w - 105, h - 85, 48, 70);
-        ctx.fillStyle = '#0284C7';
-        ctx.fillRect(59, h - 81, 40, 54);
-        ctx.fillRect(w - 101, h - 81, 40, 54);
-
-        // Animated hearts floating between phones
-        for (let i = 0; i < 3; i++) {
-          const heartY = (h - 60) - ((sceneTick * 0.8 + i * 40) % 70);
-          const heartX = w/2 - 15 + Math.sin((sceneTick + i * 30) * 0.08) * 25;
-          ctx.font = "18px system-ui";
-          ctx.fillText("❤️", heartX, heartY);
-        }
-
-      } else if (type === 'flight') {
-        // Flight scene: Sky gradient with moving plane
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#0284C7');
-        grad.addColorStop(1, '#BAE6FD');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-
-        // Moving clouds
-        for (let i = 0; i < 3; i++) {
-          const cx = (w - (sceneTick * 0.6 + i * 130) % (w + 100));
-          const cy = 40 + i * 35;
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        // Autumn tree foliage outside
+        for (let i = 0; i < 8; i++) {
+          const fx = winX + 10 + (i * 16);
+          const fy = winY + 15 + Math.sin(i * 1.5) * 8;
+          ctx.fillStyle = i % 2 === 0 ? '#EA580C' : '#F59E0B';
           ctx.beginPath();
-          ctx.arc(cx, cy, 20, 0, Math.PI * 2);
-          ctx.arc(cx + 18, cy - 8, 24, 0, Math.PI * 2);
-          ctx.arc(cx + 38, cy, 18, 0, Math.PI * 2);
+          ctx.arc(fx, fy, 14, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // Airplane with slight hover bobbing
-        const planeY = h/2 - 20 + Math.sin(sceneTick * 0.08) * 6;
-        ctx.font = "38px system-ui";
-        ctx.fillText("✈️", w/2 - 25, planeY);
+        // Falling golden leaves
+        for (let i = 0; i < 7; i++) {
+          const lx = winX + 10 + ((sceneTick * 0.7 + i * 22) % (winW - 20));
+          const ly = winY + 20 + Math.sin((sceneTick + i * 35) * 0.06) * 25 + (i * 8);
+          pxRect(ctx, lx, ly, 3, 2, '#D97706');
+        }
 
-        // Route line
-        ctx.strokeStyle = '#0369A1';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
+        // Dark Wood Window frame & mullions
+        ctx.strokeStyle = '#451A03';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(winX, winY, winW, winH);
         ctx.beginPath();
-        ctx.moveTo(35, h - 30);
-        ctx.lineTo(w - 35, h - 30);
+        ctx.moveTo(winX + winW / 2, winY); ctx.lineTo(winX + winW / 2, winY + winH);
+        ctx.moveTo(winX, winY + winH / 2); ctx.lineTo(winX + winW, winY + winH / 2);
+        ctx.stroke();
+
+        // Warm light beams pouring in
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.08)';
+        ctx.beginPath();
+        ctx.moveTo(winX + 20, winY + 20);
+        ctx.lineTo(winX - 30, h);
+        ctx.lineTo(winX + winW + 30, h);
+        ctx.lineTo(winX + winW - 20, winY + 20);
+        ctx.fill();
+
+        // Floorboards
+        pxRect(ctx, 0, h - 35, w, 35, '#3B1203');
+        ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+        ctx.lineWidth = 1;
+        for (let r = h - 35; r < h; r += 8) {
+          ctx.beginPath(); ctx.moveTo(0, r); ctx.lineTo(w, r); ctx.stroke();
+        }
+
+        // Rustic Wooden Table
+        const tblX = Math.round(w / 2 - 85);
+        const tblY = h - 52;
+        const tblW = 170;
+        pxRect(ctx, tblX, tblY, tblW, 14, '#78350F');
+        pxRect(ctx, tblX + 2, tblY + 2, tblW - 4, 2, '#B45309'); // highlight
+        pxRect(ctx, tblX + 20, tblY + 14, 10, 38, '#451A03'); // table legs
+        pxRect(ctx, tblX + tblW - 30, tblY + 14, 10, 38, '#451A03');
+
+        // Retro Laptop on table
+        const lapX = Math.round(w / 2 - 40);
+        const lapY = tblY - 14;
+        pxRect(ctx, lapX, lapY, 24, 14, '#1E293B'); // screen frame
+        pxRect(ctx, lapX + 2, lapY + 2, 20, 10, '#0F172A'); // display
+        pxRect(ctx, lapX + 3, lapY + 3, 10, 1, '#10B981'); // matrix green code lines
+        pxRect(ctx, lapX + 3, lapY + 5, 14, 1, '#10B981');
+        pxRect(ctx, lapX + 3, lapY + 7, 8, 1, '#38BDF8');
+        pxRect(ctx, lapX - 2, tblY - 2, 28, 3, '#334155'); // keyboard base
+
+        // Cup of Egg Coffee with animated steam
+        const cupX = Math.round(w / 2 + 5);
+        const cupY = tblY - 10;
+        pxRect(ctx, cupX, cupY + 6, 12, 2, '#D4AF37'); // saucer
+        pxRect(ctx, cupX + 2, cupY, 8, 6, '#FEF08A'); // yellow froth
+        pxRect(ctx, cupX + 1, cupY + 1, 10, 5, '#F59E0B');
+        // Steam particles
+        const steam1Y = cupY - 4 - ((sceneTick * 0.8) % 18);
+        const steam2Y = cupY - 4 - (((sceneTick * 0.8) + 9) % 18);
+        pxRect(ctx, cupX + 4, steam1Y, 2, 2, 'rgba(255,255,255,0.7)');
+        pxRect(ctx, cupX + 6, steam2Y, 2, 2, 'rgba(255,255,255,0.7)');
+
+        // Note paper with Zalo number
+        const noteX = Math.round(w / 2 + 35);
+        pxRect(ctx, noteX, tblY - 4, 14, 8, '#FEF3C7');
+        pxRect(ctx, noteX + 2, tblY - 2, 8, 1, '#0284C7'); // blue Zalo text
+
+        // Seated Characters
+        drawGroomSeated(ctx, tblX - 2, tblY - 44, 2.5);
+        drawBrideSeated(ctx, tblX + tblW - 24, tblY - 44, 2.5);
+
+      } else if (type === 'chat_night') {
+        // SCENE 2: Đêm muộn 01:15 sáng - Nhắn tin xuyên thành phố
+        // Night sky
+        ctx.fillStyle = '#090D1A';
+        ctx.fillRect(0, 0, w, h);
+
+        // Golden Crescent Moon
+        ctx.fillStyle = '#FDE047';
+        ctx.beginPath();
+        ctx.arc(w / 2, 35, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#090D1A';
+        ctx.beginPath();
+        ctx.arc(w / 2 + 6, 32, 16, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Twinkling stars
+        for (let i = 0; i < 30; i++) {
+          const blink = (sceneTick + i * 11) % 36 > 18;
+          ctx.fillStyle = blink ? '#FFF' : '#FCD34D';
+          pxRect(ctx, (i * 37) % w, (i * 23) % (h - 70), 2, 2);
+        }
+
+        // Split City Silhouettes at bottom
+        // Left: Pleiku pine trees & mountain
+        ctx.fillStyle = '#0F172A';
+        ctx.beginPath();
+        ctx.moveTo(0, h - 35);
+        ctx.lineTo(80, h - 80);
+        ctx.lineTo(160, h - 35);
+        ctx.fill();
+        for (let i = 0; i < 5; i++) {
+          const px = 20 + i * 25;
+          pxRect(ctx, px, h - 55, 3, 20, '#022C22');
+          pxRect(ctx, px - 6, h - 70, 15, 18, '#064E3B');
+        }
+
+        // Right: Hanoi Turtle tower & city roof silhouette
+        ctx.fillStyle = '#1E1B4B';
+        pxRect(ctx, w - 140, h - 70, 45, 35);
+        pxRect(ctx, w - 130, h - 85, 25, 15); // pagoda roof
+        pxRect(ctx, w - 85, h - 60, 60, 25);
+
+        // Cozy Bedroom Windows
+        // Left window (Tân's room in Pleiku)
+        const roomLX = 25;
+        const roomLY = h - 90;
+        pxRect(ctx, roomLX, roomLY, 60, 50, '#1E293B');
+        pxRect(ctx, roomLX + 3, roomLY + 3, 54, 44, '#FEF3C7');
+        // Tân holding phone
+        drawPixelGroom(ctx, roomLX + 12, roomLY + 8, 1.8);
+        pxRect(ctx, roomLX + 32, roomLY + 20, 6, 10, '#0284C7'); // glowing phone
+        pxRect(ctx, roomLX + 33, roomLY + 21, 4, 8, '#BAE6FD');
+
+        // Right window (Chi's room in Hanoi)
+        const roomRX = w - 85;
+        const roomRY = h - 90;
+        pxRect(ctx, roomRX, roomRY, 60, 50, '#1E293B');
+        pxRect(ctx, roomRX + 3, roomRY + 3, 54, 44, '#FCE7F3');
+        // Chi holding phone
+        drawPixelBride(ctx, roomRX + 12, roomRY + 8, 1.8);
+        pxRect(ctx, roomRX + 20, roomRY + 20, 6, 10, '#EC4899'); // glowing phone
+        pxRect(ctx, roomRX + 21, roomRY + 21, 4, 8, '#FDF2F8');
+
+        // Constellation of floating pixel hearts connecting them
+        for (let i = 0; i < 5; i++) {
+          const t = ((sceneTick * 0.8 + i * 35) % 150) / 150;
+          const hx = (roomLX + 50) + t * (roomRX - roomLX - 40);
+          const hy = (roomLY + 15) - Math.sin(t * Math.PI) * 45;
+          // Draw mini pixel heart
+          ctx.fillStyle = i % 2 === 0 ? '#F43F5E' : '#FCD34D';
+          pxRect(ctx, hx + 1, hy, 2, 1);
+          pxRect(ctx, hx + 4, hy, 2, 1);
+          pxRect(ctx, hx, hy + 1, 7, 2);
+          pxRect(ctx, hx + 1, hy + 3, 5, 1);
+          pxRect(ctx, hx + 2, hy + 4, 3, 1);
+          pxRect(ctx, hx + 3, hy + 5, 1, 1);
+        }
+
+        // Digital Clock at top
+        ctx.fillStyle = '#38BDF8';
+        ctx.font = "bold 13px 'VT323', monospace";
+        ctx.fillText("01:15 AM • Zalo Active", w / 2 - 50, h - 14);
+
+      } else if (type === 'flight') {
+        // SCENE 3: Yêu xa 1.100km - Sân bay Nội Bài
+        // Sky gradient
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, h - 50);
+        skyGrad.addColorStop(0, '#0284C7');
+        skyGrad.addColorStop(0.6, '#38BDF8');
+        skyGrad.addColorStop(1, '#BAE6FD');
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, w, h - 50);
+
+        // Airport runway tarmac
+        pxRect(ctx, 0, h - 50, w, 50, '#334155');
+        // Yellow runway center dash line
+        ctx.strokeStyle = '#FCD34D';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([12, 10]);
+        ctx.beginPath();
+        ctx.moveTo(0, h - 25);
+        ctx.lineTo(w, h - 25);
         ctx.stroke();
         ctx.setLineDash([]);
 
+        // Animated clouds
+        for (let i = 0; i < 3; i++) {
+          const cx = (w - (sceneTick * 0.6 + i * 140) % (w + 100));
+          const cy = 25 + i * 25;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.beginPath();
+          ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+          ctx.arc(cx + 16, cy - 6, 22, 0, Math.PI * 2);
+          ctx.arc(cx + 34, cy, 16, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Pixel Airplane descending / flying across sky
+        const planeX = (sceneTick * 1.2) % (w + 120) - 50;
+        const planeY = 35 + Math.sin(sceneTick * 0.08) * 5;
+        drawPixelAirplane(ctx, planeX, planeY, 1.6);
+
+        // Terminal Reunion Platform
+        const platX = Math.round(w / 2 - 80);
+        const platY = h - 65;
+        pxRect(ctx, platX, platY, 160, 20, '#475569');
+        pxRect(ctx, platX + 4, platY + 2, 152, 2, '#94A3B8');
+
+        // Tân arriving with backpack and rolling suitcase
+        drawPixelGroom(ctx, platX + 15, platY - 38, 2.3);
+        // Backpack on Tân
+        pxRect(ctx, platX + 11, platY - 26, 4, 8, '#78350F');
+        // Rolling suitcase (vali du lịch pixel)
+        pxRect(ctx, platX + 4, platY - 18, 8, 14, '#1E3A8A');
+        pxRect(ctx, platX + 5, platY - 22, 6, 4, '#94A3B8'); // handle
+        pxRect(ctx, platX + 5, platY - 4, 2, 2, '#000'); // wheels
+        pxRect(ctx, platX + 9, platY - 4, 2, 2, '#000');
+
+        // Chi running forward with winter knit coat to hug
+        drawPixelBride(ctx, platX + 105, platY - 38, 2.3);
+        // Scarf on Chi
+        pxRect(ctx, platX + 108, platY - 24, 10, 4, '#F43F5E');
+
+        // Heart above reunion
+        ctx.fillStyle = '#E11D48';
+        const rhX = platX + 68;
+        const rhY = platY - 42 + Math.sin(sceneTick * 0.1) * 3;
+        pxRect(ctx, rhX + 1, rhY, 2, 1); pxRect(ctx, rhX + 4, rhY, 2, 1);
+        pxRect(ctx, rhX, rhY + 1, 7, 2); pxRect(ctx, rhX + 2, rhY + 3, 3, 2);
+
+        // Signboard
         ctx.fillStyle = '#0369A1';
-        ctx.font = "bold 11px 'Be Vietnam Pro', sans-serif";
-        ctx.fillText("GIA LAI (PLEIKU)", 25, h - 14);
-        ctx.fillText("HÀ NỘI (NỘI BÀI)", w - 105, h - 14);
+        ctx.font = "bold 10px 'Be Vietnam Pro', sans-serif";
+        ctx.fillText("GIA LAI ✈️ NỘI BÀI (1.100KM)", platX + 10, h - 8);
 
       } else if (type === 'argue') {
-        // Evening street scene before Chi's house
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#4C0519');
-        grad.addColorStop(1, '#1A0E13');
-        ctx.fillStyle = grad;
+        // SCENE 4: Giận dỗi - Đêm phố Hà Nội & Trà sữa hoa hồng
+        // Night street atmosphere
+        const streetGrad = ctx.createLinearGradient(0, 0, 0, h);
+        streetGrad.addColorStop(0, '#2E0817');
+        streetGrad.addColorStop(0.6, '#1A0810');
+        streetGrad.addColorStop(1, '#0F0409');
+        ctx.fillStyle = streetGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Street lamp glowing
-        ctx.fillStyle = '#FDE047';
-        ctx.beginPath();
-        ctx.arc(45, 45, 18, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#334155';
-        ctx.fillRect(43, 45, 4, h - 45);
+        // Cobblestone pavement
+        pxRect(ctx, 0, h - 35, w, 35, '#334155');
+        for (let i = 0; i < w; i += 20) {
+          pxRect(ctx, i, h - 35, 18, 4, '#475569');
+          pxRect(ctx, i + 10, h - 25, 18, 4, '#1E293B');
+        }
 
-        // House door
+        // Hanoi townhouse door on right
+        const doorX = w - 85;
+        pxRect(ctx, doorX, 35, 75, h - 70, '#78350F');
+        pxRect(ctx, doorX + 4, 39, 67, h - 78, '#9A3412');
+        pxRect(ctx, doorX + 10, 45, 18, 10, '#FEF3C7'); // house number plaque: "27"
         ctx.fillStyle = '#78350F';
-        ctx.fillRect(w - 95, 25, 75, h - 25);
-        ctx.fillStyle = '#B45309';
-        ctx.fillRect(w - 90, 30, 65, h - 30);
+        ctx.font = "bold 8px 'VT323', monospace";
+        ctx.fillText("No.27", doorX + 11, 52);
 
-        // Pouting Bride Chi
-        drawPixelBride(ctx, w - 80, h - 85, 2.3);
+        // Chi standing near doorway, pouting with arms crossed
+        drawBrideSeated(ctx, doorX + 10, h - 85, 2.3);
+        // Pout anger lightning spark
+        const sparkY = h - 95 + Math.sin(sceneTick * 0.15) * 3;
+        pxRect(ctx, doorX + 22, sparkY, 4, 2, '#F43F5E');
+        pxRect(ctx, doorX + 24, sparkY + 2, 2, 4, '#F43F5E');
 
-        // Groom Tân outside with boba & roses
-        drawPixelGroom(ctx, 65, h - 85, 2.3);
-        ctx.font = "26px system-ui";
-        ctx.fillText("🧋", 108, h - 60);
-        ctx.fillText("💐", 135, h - 60);
+        // Cast-iron vintage streetlamp on left with warm light cone
+        const lampX = 45;
+        // Volumetric light cone
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.14)';
+        ctx.beginPath();
+        ctx.moveTo(lampX, 35);
+        ctx.lineTo(lampX - 45, h);
+        ctx.lineTo(lampX + 120, h);
+        ctx.fill();
+
+        // Lamp pole
+        pxRect(ctx, lampX - 2, 35, 4, h - 70, '#1E293B');
+        pxRect(ctx, lampX - 10, 25, 20, 10, '#334155'); // lamp hood
+        pxRect(ctx, lampX - 6, 28, 12, 10, '#FEF08A'); // glowing bulb
+        // Glowing halo
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.35)';
+        ctx.beginPath();
+        ctx.arc(lampX, 33, 16, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Tân standing under lamplight offering boba tea & roses
+        const tanX = 75;
+        drawPixelGroom(ctx, tanX, h - 88, 2.3);
+        // Tân holding Boba Milk Tea in right hand
+        drawPixelBoba(ctx, tanX + 26, h - 68, 1.8);
+        // Tân holding Bouquet of Roses in left hand
+        drawPixelBouquet(ctx, tanX - 18, h - 70, 1.8);
 
       } else if (type === 'family') {
-        // Traditional Living Room with Betel & Tea
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#78350F');
-        grad.addColorStop(1, '#3B1203');
-        ctx.fillStyle = grad;
+        // SCENE 5: Lễ Dạm Ngõ 16.09.2026 - Gia đình chúc phúc
+        // Living room warm wood background
+        const roomGrad = ctx.createLinearGradient(0, 0, 0, h);
+        roomGrad.addColorStop(0, '#5C1D06');
+        roomGrad.addColorStop(0.6, '#3B1203');
+        roomGrad.addColorStop(1, '#200A02');
+        ctx.fillStyle = roomGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Center wooden table
-        ctx.fillStyle = '#92400E';
-        ctx.fillRect(w/2 - 70, h - 48, 140, 16);
-        ctx.fillRect(w/2 - 50, h - 32, 100, 32);
-
-        // Betel & Tea tray
-        ctx.font = "24px system-ui";
-        ctx.fillText("🍃", w/2 - 25, h - 54);
-        ctx.fillText("🍵", w/2 + 5, h - 54);
-
-        // Couple standing beside
-        drawPixelGroom(ctx, 35, h - 90, 2.4);
-        drawPixelBride(ctx, w - 70, h - 90, 2.4);
-
-        ctx.fillStyle = '#FEF08A';
-        ctx.font = "bold 13px 'Be Vietnam Pro', sans-serif";
+        // Red couplet on center wall (Câu đối đỏ thiếp vàng)
+        const couX = Math.round(w / 2 - 60);
+        pxRect(ctx, couX, 15, 120, 32, '#8B1E2D');
+        ctx.strokeStyle = '#D4AF37';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(couX, 15, 120, 32);
+        ctx.fillStyle = '#FCD34D';
+        ctx.font = "bold 12px 'Be Vietnam Pro', sans-serif";
         ctx.textAlign = 'center';
-        ctx.fillText("LỄ DẠM NGÕ 16.09.2026", w/2, 35);
+        ctx.fillText("✦ LỄ DẠM NGÕ 16.09.2026 ✦", w / 2, 35);
+        ctx.textAlign = 'left';
+
+        // Carved wooden table in center
+        const tblX = Math.round(w / 2 - 75);
+        const tblY = h - 55;
+        const tblW = 150;
+        pxRect(ctx, tblX, tblY, tblW, 16, '#78350F');
+        pxRect(ctx, tblX + 4, tblY + 2, tblW - 8, 2, '#B45309');
+        pxRect(ctx, tblX + 15, tblY + 16, 12, 35, '#451A03'); // table legs
+        pxRect(ctx, tblX + tblW - 27, tblY + 16, 12, 35, '#451A03');
+
+        // Traditional Betel Tray (Khay trầu cau têm cánh phượng)
+        drawPixelBetelTray(ctx, tblX + 18, tblY - 18, 1.8);
+
+        // Traditional Ceramic Tea Set (Ấm chén trà mạn)
+        drawPixelTeaSet(ctx, tblX + 85, tblY - 14, 1.7);
+
+        // Tân standing beside respectfully bowing
+        drawPixelGroom(ctx, tblX - 25, h - 92, 2.3);
+
+        // Chi in Red Royal Ao Dai holding hands
+        drawPixelBride(ctx, tblX + tblW - 2, h - 92, 2.3);
+
+        // Golden sparkles of blessings
+        for (let i = 0; i < 6; i++) {
+          const sx = tblX + 20 + ((sceneTick * 0.9 + i * 26) % (tblW - 40));
+          const sy = tblY - 30 + Math.sin((sceneTick + i * 20) * 0.08) * 12;
+          ctx.fillStyle = '#FDE047';
+          pxRect(ctx, sx, sy, 2, 2);
+        }
 
       } else if (type === 'wedding') {
-        // Royal Wedding Arch with Confetti explosion
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#8B1E2D');
-        grad.addColorStop(1, '#3B0710');
-        ctx.fillStyle = grad;
+        // SCENE 6: Đại Hỷ 16-17.01.2027 - Cổng cưới hoàng gia
+        // Romantic wedding gradient
+        const wedGrad = ctx.createLinearGradient(0, 0, 0, h);
+        wedGrad.addColorStop(0, '#8B1E2D');
+        wedGrad.addColorStop(0.5, '#4C0519');
+        wedGrad.addColorStop(1, '#25020B');
+        ctx.fillStyle = wedGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Gold Arch
-        ctx.fillStyle = '#D4AF37';
-        ctx.fillRect(w/2 - 80, 20, 16, h - 20);
-        ctx.fillRect(w/2 + 64, 20, 16, h - 20);
+        // Red Carpet Aisle
+        const carpW = 130;
+        const carpX = Math.round(w / 2 - carpW / 2);
+        pxRect(ctx, carpX, h - 35, carpW, 35, '#E11D48');
+        pxRect(ctx, carpX + 4, h - 35, 2, 35, '#D4AF37'); // gold trim
+        pxRect(ctx, carpX + carpW - 6, h - 35, 2, 35, '#D4AF37');
+
+        // Grand Royal Wedding Arch (Cổng hoa cưới hoàng gia mạ vàng)
+        const archX = Math.round(w / 2 - 80);
+        const archW = 160;
+        // Gold pillars
+        pxRect(ctx, archX, 25, 14, h - 55, '#D4AF37');
+        pxRect(ctx, archX + archW - 14, 25, 14, h - 55, '#D4AF37');
+        // Floral Arch Dome
         ctx.beginPath();
-        ctx.arc(w/2, 55, 65, Math.PI, 0);
+        ctx.arc(w / 2, 50, 68, Math.PI, 0);
         ctx.lineWidth = 14;
         ctx.strokeStyle = '#D4AF37';
         ctx.stroke();
 
-        // Grand Song Hy in center
+        // Lush flowers on arch
+        const flowerCols = ['#F43F5E', '#FDA4AF', '#FFFFFF', '#D4AF37', '#E11D48'];
+        for (let i = 0; i < 22; i++) {
+          const ang = Math.PI + (i / 21) * Math.PI;
+          const fx = w / 2 + Math.cos(ang) * 68;
+          const fy = 50 + Math.sin(ang) * 68;
+          ctx.fillStyle = flowerCols[i % flowerCols.length];
+          ctx.beginPath();
+          ctx.arc(fx, fy, 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 3D Embossed Gold Song Hỷ Badge 囍 atop arch
+        ctx.fillStyle = '#8B1E2D';
+        ctx.fillRect(w / 2 - 24, 8, 48, 26);
+        ctx.strokeStyle = '#D4AF37';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(w / 2 - 24, 8, 48, 26);
         ctx.fillStyle = '#F9E29D';
-        ctx.font = "bold 32px 'Be Vietnam Pro', sans-serif";
+        ctx.font = "bold 18px 'Be Vietnam Pro', sans-serif";
         ctx.textAlign = 'center';
-        ctx.fillText("囍", w/2, 50);
+        ctx.fillText("囍", w / 2, 28);
+        ctx.textAlign = 'left';
 
-        // Couple holding hands
-        drawPixelGroom(ctx, w/2 - 34, h - 85, 2.4);
-        drawPixelBride(ctx, w/2 + 10, h - 85, 2.4);
+        // Couple in Center: Tân sliding wedding ring onto Chi's finger
+        const groomX = Math.round(w / 2 - 38);
+        const brideX = Math.round(w / 2 + 8);
+        drawPixelGroom(ctx, groomX, h - 90, 2.5);
+        drawPixelBride(ctx, brideX, h - 90, 2.5);
 
-        // Confetti falling
-        for (let i = 0; i < 15; i++) {
-          const colors = ['#D4AF37', '#F43F5E', '#FFF', '#F9A8D4'];
-          const px = (w/2 - 90 + (i * 37 + sceneTick * 0.9) % 180);
-          const py = (sceneTick * 1.2 + i * 25) % h;
-          ctx.fillStyle = colors[i % colors.length];
-          ctx.fillRect(px, py, 4, 4);
+        // Sparkling Diamond Wedding Ring in center
+        const ringX = Math.round(w / 2 - 3);
+        const ringY = h - 68 + Math.sin(sceneTick * 0.1) * 2;
+        pxRect(ctx, ringX, ringY, 6, 6, '#D4AF37'); // gold band
+        pxRect(ctx, ringX + 1, ringY + 1, 4, 4, '#8B1E2D');
+        // Sparkling diamond gem
+        ctx.fillStyle = '#38BDF8';
+        pxRect(ctx, ringX + 1, ringY - 2, 4, 3);
+        // Star sparkle
+        const spark = (sceneTick % 20) > 10;
+        if (spark) {
+          ctx.fillStyle = '#FFFFFF';
+          pxRect(ctx, ringX + 2, ringY - 4, 2, 1);
+          pxRect(ctx, ringX, ringY - 2, 1, 2);
+          pxRect(ctx, ringX + 5, ringY - 2, 1, 2);
+        }
+
+        // Continuous shower of colorful confetti & rose petals
+        for (let i = 0; i < 20; i++) {
+          const colors = ['#D4AF37', '#F43F5E', '#FFFFFF', '#F9E29D', '#FB7185'];
+          const px = ((i * 31 + sceneTick * 0.9) % w);
+          const py = ((sceneTick * 1.1 + i * 27) % h);
+          pxRect(ctx, px, py, 3.5, 3.5, colors[i % colors.length]);
         }
       }
 
