@@ -564,27 +564,55 @@
     }
 
     // -------------------------------------------------------------
-    // NATURAL LANGUAGE & INTENT ENGINE (GENTLE PERSONA)
+    // NATURAL LANGUAGE & INTENT ENGINE (AI-POWERED WITH GENTLE PERSONA)
     // -------------------------------------------------------------
-    function processUserInput(rawText) {
+    let chatHistory = [];
+
+    async function queryAiApi(userMsg) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 9000);
+
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: userMsg,
+            slug: guestSlug || '',
+            history: chatHistory
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.reply) {
+            return data.reply.trim();
+          }
+        }
+      } catch (e) {
+        console.log('AI API fetch error, will use gentle fallback:', e);
+      }
+      return null;
+    }
+
+    async function processUserInput(rawText) {
       const text = rawText.trim().toLowerCase();
       const elder = isElder(getGuestDisplayName(), getRelationshipTitle());
       const guestName = getGuestDisplayName();
 
-      // Check if we are in an ongoing RSVP question flow
+      // 1. Check if we are in an ongoing RSVP question flow
       if (rsvpState.step) {
         handleRsvpStep(rawText);
         return;
       }
 
-      // 1. Intent: RSVP / Xác nhận tham dự
-      if (text.includes('rsvp') || text.includes('tham dự') || text.includes('đi ăn cưới') || text.includes('có mặt') || text.includes('tham gia') || text.includes('báo tin')) {
-        botReply(cardRsvpInteractive());
-        return;
-      }
+      // Track history
+      chatHistory.push({ role: 'user', content: rawText });
 
-      // 2. Intent: Lịch trình, thời gian, ngày giờ
-      if (text.includes('lịch') || text.includes('ngày') || text.includes('giờ') || text.includes('mấy giờ') || text.includes('khi nào') || text.includes('thời gian')) {
+      // 2. Direct chip handling for immediate UI responsiveness
+      if (rawText === 'Xem lịch trình hôn lễ 📅') {
         const lead = elder 
           ? `Dạ, chúng con xin kính gửi lịch trình chi tiết hai ngày cưới của hai cháu ạ:` 
           : `Tân & Chi gửi bạn lịch trình chi tiết hai ngày cưới của chúng mình nhé:`;
@@ -594,146 +622,77 @@
         `);
         return;
       }
-
-      // 3. Intent: Địa chỉ, chỉ đường, ở đâu
-      if (text.includes('địa chỉ') || text.includes('ở đâu') || text.includes('đường đi') || text.includes('chỉ đường') || text.includes('vị trí') || text.includes('bản đồ') || text.includes('nhà gái')) {
-        botReply(`
-          <div class="space-y-2">
-            <p class="font-bold text-stone-900 text-sm">📍 Không Gian Hôn Lễ Tại Tư Gia Nhà Gái:</p>
-            <p class="text-xs leading-relaxed text-stone-700">
-              Toàn bộ nghi thức Lễ Vu Quy và Tiệc Cưới ngày <strong>16 &amp; 17 Tháng 1 Năm 2027</strong> đều được gia đình tổ chức ấm cúng tại <strong>Tư Gia Nhà Gái</strong>.
-            </p>
-            <div class="p-3 bg-amber-50/60 rounded-xl border border-gold/30 text-xs space-y-1.5 text-stone-700">
-              <p class="font-semibold text-ruby">🏮 Không gian: Dựng rạp cưới truyền thống thân tình</p>
-              <p class="text-[11px] text-stone-600">Gia đình đã bố trí người đón tiếp, hướng dẫn lối vào và bãi đỗ xe ô tô, xe máy rộng rãi ngay cạnh rạp cưới để mọi người hoàn toàn an tâm khi đến chung vui ạ!</p>
-            </div>
-          </div>
-        `);
-        return;
-      }
-
-      // 4. Intent: Xem ảnh cưới, hình ảnh
-      if (text.includes('ảnh') || text.includes('hình') || text.includes('album') || text.includes('coi ảnh') || text.includes('ngắm')) {
+      if (rawText === 'Xem ảnh cưới của hai bạn 📸') {
         botReply(`
           <p class="text-xs text-stone-700">Tân &amp; Chi xin gửi tặng bạn những bức hình kỷ niệm trong album cưới vừa hoàn thành nhé:</p>
           ${cardGallery()}
         `);
         return;
       }
-
-      // 5. Intent: Mừng cưới, số tài khoản, quà mừng
-      if (text.includes('mừng cưới') || text.includes('stk') || text.includes('tài khoản') || text.includes('quà') || text.includes('chuyển khoản') || text.includes('phương xa')) {
+      if (rawText === 'Mình muốn xác nhận tham dự cùng hai bạn 💌' || rawText === 'Tôi muốn xác nhận tham dự 💌') {
+        botReply(cardRsvpInteractive());
+        return;
+      }
+      if (rawText === 'Tâm sự mỏng & Mừng cưới từ xa 🎁' || rawText === 'Tâm sự mỏng & Gửi quà mừng từ xa 🎁') {
         botReply(cardGift());
         return;
       }
 
-      // 6. Intent: Lời chúc
-      if (text.includes('chúc') || text.includes('hạnh phúc') || text.includes('trăm năm') || text.includes('bền lâu') || text.includes('vẹn tròn') || text.includes('chúc mừng')) {
+      // 3. For any typed text, show typing indicator and query AI backend
+      setTyping(true);
+
+      // Check if confetti needed for wishes
+      if (text.includes('chúc') || text.includes('hạnh phúc') || text.includes('trăm năm') || text.includes('vẹn tròn') || text.includes('chúc mừng')) {
         saveWishToApi(guestName || 'Người bạn thân quý', rawText);
         confetti({ particleCount: 65, spread: 70, origin: { y: 0.8 } });
-        botReply(`
-          <div class="space-y-2">
-            <p class="text-xs font-bold text-ruby">🌸 Đọc những dòng này mà Tân &amp; Chi thấy xúc động và ấm lòng quá chừng!</p>
-            <p class="text-xs italic font-serif text-stone-700 bg-amber-50/70 p-3 rounded-xl border border-gold/30">
-              "${rawText}"
-            </p>
-            <p class="text-xs leading-relaxed text-stone-600">
-              Lời chúc ý nghĩa của bạn đã được hai đứa nâng niu lưu vào <strong>Sổ Lưu Bút Kỷ Niệm</strong>. Cảm ơn bạn rất nhiều vì tình cảm thân thương này! 💐
-            </p>
-          </div>
-        `);
-        return;
       }
 
-      // 7. Intent: Chuyện tình yêu
-      if (text.includes('chuyện tình') || text.includes('quen nhau') || text.includes('yêu nhau') || text.includes('câu chuyện') || text.includes('hành trình')) {
-        botReply(`
-          <div class="space-y-2">
-            <p class="font-bold text-stone-900 text-sm">💍 Hành Trình Chung Đôi Của Tân &amp; Chi:</p>
-            <p class="text-xs leading-relaxed text-stone-600">
-              Tụi mình gặp gỡ và thương nhau từ sự đồng điệu mộc mạc — một chàng trai công nghệ miền đất đỏ Gia Lai và một cô gái dịu dàng đất Hà thành.
-            </p>
-            <p class="text-xs leading-relaxed text-stone-600">
-              Sau những tháng ngày cùng sẻ chia và gắn bó, ngày <strong>16.09.2026</strong> vừa qua hai gia đình đã gặp nhau trong buổi Lễ Dạm Ngõ ấm cúng, và ngày <strong>16 - 17.01.2027</strong> tới đây sẽ là khoảnh khắc hai đứa chính thức về chung một mái nhà. Cảm ơn bạn đã luôn quan tâm và chúc phúc cho hành trình này của tụi mình nhé! ✨
-            </p>
-          </div>
-        `);
-        return;
+      const aiReply = await queryAiApi(rawText);
+      setTyping(false);
+
+      // Detect if user is asking for specific rich cards
+      let attachedCard = '';
+      if (text.includes('rsvp') || text.includes('tham dự') || text.includes('đi ăn cưới') || text.includes('báo tin')) {
+        attachedCard = `<div class="pt-2">${cardRsvpInteractive()}</div>`;
+      } else if (text.includes('ảnh') || text.includes('hình') || text.includes('album') || text.includes('ngắm')) {
+        attachedCard = `<div class="pt-2">${cardGallery()}</div>`;
+      } else if (text.includes('stk') || text.includes('tài khoản') || text.includes('mừng cưới') || text.includes('quà')) {
+        attachedCard = `<div class="pt-2">${cardGift()}</div>`;
+      } else if (text.includes('lịch') || text.includes('ngày') || text.includes('mấy giờ') || text.includes('thời gian')) {
+        attachedCard = `<div class="pt-2">${cardSchedule()}</div>`;
       }
 
-      // 8. Intent: Trang phục / Dress code
-      if (text.includes('mặc gì') || text.includes('trang phục') || text.includes('dress code') || text.includes('đồ gì') || text.includes('màu gì')) {
+      if (aiReply) {
+        chatHistory.push({ role: 'assistant', content: aiReply });
+        // Format markdown-like newlines into paragraphs
+        const formattedReply = aiReply
+          .split(/\n\n+/)
+          .map(p => `<p class="text-xs leading-relaxed text-stone-700">${p.replace(/\n/g, '<br>')}</p>`)
+          .join('');
+
+        addMessage(`
+          <div class="space-y-2">
+            ${formattedReply}
+            ${attachedCard}
+          </div>
+        `, 'bot');
+      } else {
+        // Fallback response if AI API is temporarily unavailable
         botReply(`
           <div class="space-y-2">
-            <p class="font-bold text-stone-900 text-sm">👗 Gợi Ý Về Trang Phục:</p>
-            <p class="text-xs leading-relaxed text-stone-600">
-              Tân &amp; Chi không quy định dress code khắt khe đâu nè! Bạn chỉ cần chọn bộ trang phục lịch sự, thoải mái và tự tin nhất là đẹp nhất rồi.
+            <p class="text-xs text-stone-700 leading-relaxed">
+              Tân &amp; Chi cảm ơn lời nhắn của bạn nhiều nha! Tụi mình luôn ở đây để sẻ chia mọi thông tin về ngày vui cùng bạn.
             </p>
-            <p class="text-xs leading-relaxed text-stone-500 font-serif italic">
-              (Những gam màu ấm áp, thanh lịch như be, kem, pastel, trắng, xanh nhã nhặn hay đỏ nhung đều rất đẹp và hòa hợp với không khí ngày vui đó ạ ✨)
-            </p>
+            ${attachedCard}
+            <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
+              <button onclick="handleQuickSend('Xem lịch trình hôn lễ 📅')" class="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 font-medium">📅 Lịch trình</button>
+              <button onclick="handleQuickSend('Xem ảnh cưới 📸')" class="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 font-medium">📸 Xem ảnh</button>
+              <button onclick="handleQuickSend('Mình muốn xác nhận tham dự cùng hai bạn 💌')" class="px-2.5 py-1 rounded-full bg-ruby-light text-ruby border border-ruby/20 font-bold">💌 Báo tin tham dự</button>
+            </div>
           </div>
         `);
-        return;
       }
-
-      // 9. Intent: Chỗ để xe / Phương tiện
-      if (text.includes('đỗ xe') || text.includes('gửi xe') || text.includes('ô tô') || text.includes('xe máy') || text.includes('chỗ xe')) {
-        botReply(`
-          <div class="space-y-2">
-            <p class="font-bold text-stone-900 text-sm">🚗 Về Chỗ Gửi Xe:</p>
-            <p class="text-xs leading-relaxed text-stone-600">
-              Dạ có bãi đỗ xe ô tô và xe máy rộng rãi, an toàn ngay sát khu vực dựng rạp tại tư gia nhà gái ạ! Gia đình đã sắp xếp người túc trực đón tiếp và hỗ trợ hướng dẫn đỗ xe chu đáo, bạn hoàn toàn yên tâm nhé.
-            </p>
-          </div>
-        `);
-        return;
-      }
-
-      // 10. Intent: Đồ ăn / Thực đơn chay
-      if (text.includes('chay') || text.includes('thực đơn') || text.includes('món ăn') || text.includes('dị ứng') || text.includes('ăn gì')) {
-        botReply(`
-          <div class="space-y-2">
-            <p class="font-bold text-stone-900 text-sm">🍽️ Thực Đơn Tiệc Cưới:</p>
-            <p class="text-xs leading-relaxed text-stone-600">
-              Tiệc cưới chuẩn bị cỗ bàn truyền thống ấm cúng. Nếu bạn hoặc người thân có nhu cầu dùng món chay thanh tịnh hoặc cần kiêng món gì, bạn cứ nhắn cho tụi mình biết khi xác nhận tham dự để gia đình chuẩn bị chu đáo riêng cho bạn nha! 🥗
-            </p>
-          </div>
-        `);
-        return;
-      }
-
-      // 11. Intent: Lời khen thân thương
-      if (text.includes('đẹp đôi') || text.includes('xịn') || text.includes('dễ thương') || text.includes('đẹp quá') || text.includes('thích quá') || text.includes('tuyệt vời')) {
-        botReply(`
-          <div class="space-y-2">
-            <p class="text-xs leading-relaxed text-stone-700">
-              Ôi nghe bạn nói vậy mà hai đứa vui và ấm lòng suốt cả ngày luôn á! 🥰 Cảm ơn bạn rất nhiều vì sự ngọt ngào này.
-            </p>
-            <p class="text-xs text-stone-500 font-serif italic">Hẹn gặp bạn trong nụ cười ngày cưới nha!</p>
-          </div>
-        `);
-        return;
-      }
-
-      // Default Soft Reply
-      botReply(`
-        <div class="space-y-2">
-          <p class="text-xs text-stone-700 leading-relaxed">
-            Tân &amp; Chi cảm ơn lời nhắn của bạn nhiều nha! Tụi mình luôn ở đây để sẻ chia mọi thông tin về ngày vui cùng bạn.
-          </p>
-          <p class="text-xs text-stone-500 font-serif italic">
-            Bạn có muốn tụi mình gửi thêm thông tin lịch trình, ngắm ảnh hay chỉ đường không nè?
-          </p>
-          <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
-            <button onclick="handleQuickSend('Xem lịch trình hôn lễ 📅')" class="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 font-medium">📅 Lịch trình</button>
-            <button onclick="handleQuickSend('Xem ảnh cưới 📸')" class="px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200 font-medium">📸 Xem ảnh</button>
-            <button onclick="handleQuickSend('Mình muốn xác nhận tham dự cùng hai bạn 💌')" class="px-2.5 py-1 rounded-full bg-ruby-light text-ruby border border-ruby/20 font-bold">💌 Báo tin tham dự</button>
-          </div>
-        </div>
-      `);
     }
-
     // -------------------------------------------------------------
     // RSVP CONVERSATIONAL FLOW (GENTLE & PERSONALIZED)
     // -------------------------------------------------------------
