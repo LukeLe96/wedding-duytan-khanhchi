@@ -475,13 +475,21 @@
           </div>
         ` : '';
 
+        const isFullCard = html.includes('card-invitation-root');
+
         msgDiv.innerHTML = `
           <img src="./assets/couple_hero.jpg" alt="Avatar" class="w-8 h-8 rounded-full object-cover shrink-0 ring-1 ring-gold/40 shadow-xs mb-1">
-          <div class="max-w-[90%] sm:max-w-[80%] space-y-1">
-            <div class="bg-white border border-stone-200/90 text-stone-800 px-4 py-3 rounded-2xl rounded-bl-xs text-sm shadow-xs space-y-2">
-              ${html}
-              ${voiceButtonHtml}
-            </div>
+          <div class="${isFullCard ? 'w-full max-w-[96%] sm:max-w-[85%]' : 'max-w-[90%] sm:max-w-[80%]'} space-y-1">
+            ${isFullCard ? `
+              <div class="space-y-1">
+                ${html}
+              </div>
+            ` : `
+              <div class="bg-white border border-stone-200/90 text-stone-800 px-4 py-3 rounded-2xl rounded-bl-xs text-sm shadow-xs space-y-2">
+                ${html}
+                ${voiceButtonHtml}
+              </div>
+            `}
             <div class="text-[10px] text-stone-400 pl-1">${timeStr} • Tân &amp; Chi</div>
           </div>
         `;
@@ -544,34 +552,108 @@
     // -------------------------------------------------------------
     // RICH CONTENT CARDS TEMPLATES
     // -------------------------------------------------------------
-    function cardInvitation(guest) {
+    function cardInvitation(guest, followPrompt = '') {
       const guestName = guest ? decodeUnicode(guest.name) : 'Quý Khách';
       const guestRel = guest && guest.relation ? decodeUnicode(guest.relation) : '';
       const guestMsg = guest && guest.personal_message ? decodeUnicode(guest.personal_message) : '';
-      const sideText = guest && guest.side === 'bride' ? 'Khách Quý Nhà Gái' : 'Khách Quý Nhà Trai';
+      const isBrideSide = guest && guest.side === 'bride';
+      const sideText = isBrideSide ? 'Khách Quý Nhà Gái' : 'Khách Quý Nhà Trai';
       const relText = guestRel ? `• ${guestRel}` : '';
 
+      const ceremonyHeader = isBrideSide ? '✦ LỄ VU QUY ✦' : '✦ LỄ THÀNH HÔN ✦';
+      const coupleNames = isBrideSide 
+        ? `ĐINH KHÁNH CHI <span class="font-script text-2xl font-normal text-amber-300 mx-1 align-middle">✦</span> LÊ DUY TÂN`
+        : `LÊ DUY TÂN <span class="font-script text-2xl font-normal text-amber-300 mx-1 align-middle">✦</span> ĐINH KHÁNH CHI`;
+      const day2Name = isBrideSide ? 'Lễ Vu Quy &amp; Khai Tiệc' : 'Thành Hôn &amp; Khai Tiệc';
+
       return `
-        <div class="rounded-2xl bg-gradient-to-br from-[#722F37] via-ruby to-stone-900 text-white p-4 space-y-3 border border-gold/40 shadow-md">
-          <div class="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest text-gold-bright">
-            <span>✦ THIỆP MỜI TRÂN TRỌNG ✦</span>
-            <span>16 &amp; 17.01.2027</span>
-          </div>
-          <div class="border-t border-b border-gold/30 py-2.5 text-center space-y-1">
-            <p class="text-xs text-stone-200 italic font-serif">Kính mời:</p>
-            <h4 class="font-display text-xl font-bold text-white tracking-wide">${guestName}</h4>
-            <span class="inline-block px-2.5 py-0.5 rounded-full bg-gold/20 text-gold-bright text-[10px] font-bold uppercase border border-gold/30">
-              ${sideText} ${relText}
-            </span>
-            ${guestMsg ? `
-              <p class="text-xs text-gold-light italic font-serif pt-2 mt-1 border-t border-gold/20 leading-relaxed text-center">
-                "${guestMsg}"
-              </p>
+        <div class="card-invitation-root relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#7A1826] via-[#63121E] to-[#4A0B13] text-white p-1.5 shadow-2xl border-2 border-[#D4AF37]/60 max-w-sm mx-auto">
+          <!-- Inner Decorative Gold Border Frame -->
+          <div class="relative rounded-xl border border-[#D4AF37]/35 p-3.5 sm:p-4 bg-gradient-to-b from-white/[0.05] to-transparent">
+            
+            <!-- Corner Accents -->
+            <div class="absolute top-1.5 left-1.5 text-[#D4AF37]/50 text-[10px] leading-none select-none">✦</div>
+            <div class="absolute top-1.5 right-1.5 text-[#D4AF37]/50 text-[10px] leading-none select-none">✦</div>
+            <div class="absolute bottom-1.5 left-1.5 text-[#D4AF37]/50 text-[10px] leading-none select-none">✦</div>
+            <div class="absolute bottom-1.5 right-1.5 text-[#D4AF37]/50 text-[10px] leading-none select-none">✦</div>
+
+            <!-- Top Header & Double Happiness Monogram -->
+            <div class="text-center space-y-1">
+              <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-[#F7DC8A] via-[#D4AF37] to-[#A07C18] text-[#5A0F19] font-bold text-base shadow-md select-none ring-2 ring-[#F7DC8A]/40">
+                囍
+              </div>
+              <div class="flex items-center justify-center gap-2 text-[9px] font-bold tracking-[0.25em] text-amber-300 uppercase">
+                <span class="w-6 h-[1px] bg-gradient-to-r from-transparent to-[#D4AF37]/70"></span>
+                <span>${ceremonyHeader}</span>
+                <span class="w-6 h-[1px] bg-gradient-to-l from-transparent to-[#D4AF37]/70"></span>
+              </div>
+            </div>
+
+            <!-- Honored Guest Section -->
+            <div class="my-3 py-2.5 px-2 text-center rounded-lg bg-black/30 border border-[#D4AF37]/25 space-y-1">
+              <p class="text-[11px] text-amber-200/90 font-serif italic tracking-wide">Trân trọng kính mời:</p>
+              <h3 class="font-display text-xl sm:text-2xl font-bold text-amber-100 tracking-wide drop-shadow-sm">
+                ${guestName}
+              </h3>
+              <div class="pt-0.5">
+                <span class="inline-block px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[10px] font-semibold tracking-wider border border-amber-400/35 uppercase">
+                  ${sideText} ${relText}
+                </span>
+              </div>
+              ${guestMsg ? `
+                <div class="mt-2 pt-2 border-t border-amber-300/15">
+                  <p class="text-xs text-rose-100 font-serif italic leading-relaxed text-center px-1">
+                    "${guestMsg}"
+                  </p>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Couple Section -->
+            <div class="text-center space-y-1 pt-0.5">
+              <p class="text-[10px] text-rose-200 uppercase tracking-widest font-sans font-medium">Về chung vui ngày đại hỷ của</p>
+              <h4 class="font-display text-base sm:text-lg font-bold text-white tracking-wide">
+                ${coupleNames}
+              </h4>
+            </div>
+
+            <!-- Two-Day Schedule Grid -->
+            <div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-amber-300/20 text-left">
+              <!-- Day 1 -->
+              <div class="bg-black/35 p-2 rounded-lg border border-amber-300/20 space-y-1">
+                <div class="flex items-center justify-between text-[9px] font-bold text-amber-300 uppercase">
+                  <span>Tiệc Nhóm Họ</span>
+                  <span class="px-1 py-0.2 bg-black/40 rounded text-stone-300 text-[8px] font-normal border border-amber-300/20">09 Chạp</span>
+                </div>
+                <p class="text-xs font-bold text-white">17:00 • 16.01.2027</p>
+                <p class="text-[10px] text-stone-300">Thứ Bảy • Cơm thân mật</p>
+              </div>
+
+              <!-- Day 2 -->
+              <div class="bg-amber-950/45 p-2 rounded-lg border border-amber-400/35 space-y-1">
+                <div class="flex items-center justify-between text-[9px] font-bold text-amber-300 uppercase">
+                  <span>${day2Name}</span>
+                  <span class="px-1 py-0.2 bg-amber-900/60 rounded text-amber-200 text-[8px] font-medium border border-amber-400/30">10 Chạp</span>
+                </div>
+                <p class="text-xs font-bold text-amber-100">10:30 • 17.01.2027</p>
+                <p class="text-[10px] text-rose-200">Chủ Nhật • Hôn lễ chính thức</p>
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div class="mt-2 text-center text-[11px] text-amber-200/90 font-medium flex items-center justify-center gap-1.5">
+              <span>📍</span>
+              <span>Tư Gia Nhà Gái (Hà Nội) • Bãi đỗ xe ô tô rộng rãi</span>
+            </div>
+
+            <!-- Welcoming Guidance Note (Inside Card) -->
+            ${followPrompt ? `
+              <div class="mt-3 pt-2.5 border-t border-[#D4AF37]/25 text-center text-xs text-rose-100 font-serif italic leading-relaxed px-1">
+                💬 ${followPrompt}
+              </div>
             ` : ''}
+
           </div>
-          <p class="text-xs text-rose-100 leading-relaxed font-light text-center">
-            Về chung vui Lễ Vu Quy &amp; Tiệc Cưới của <strong>Lê Duy Tân &amp; Đinh Khánh Chi</strong> tại Tư Gia Nhà Gái.
-          </p>
         </div>
       `;
     }
@@ -1084,13 +1166,7 @@
             ? `Dạ, ${guestName || 'Gia đình mình'} có điều gì cần hỏi han hay dặn dò cứ nhắn tin ở đây cho hai cháu nhé, cháu sẽ giải đáp toàn bộ và thật chu đáo ạ! 🌸`
             : `Bạn có điều gì cần hỏi han hay dặn dò cứ nhắn tin ở đây nhé, tụi mình sẽ giải đáp toàn bộ nha! 💕`;
 
-          botReply(`
-            ${cardInvitation(guestData)}
-            <div class="mt-2 p-2.5 bg-ruby-light/40 border border-ruby/20 rounded-xl text-xs text-ruby font-medium text-center flex items-center justify-center gap-1.5 shadow-sm">
-              <span>💬</span>
-              <span>${followPrompt}</span>
-            </div>
-          `, 600);
+          botReply(cardInvitation(guestData, followPrompt), 600);
         }, 500);
 
       }, 700);
