@@ -113,60 +113,62 @@
       background: #8B1E2D;
     }
 
-    /* 6 Steps Story Stepper Bar */
+    /* Instagram-style Story Progress Segments */
     .story-progress-bar {
-      background: #1C0F14;
-      border-bottom: 1px solid #4A1A22;
-      padding: 5px 8px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 3px;
-      z-index: 25;
+      gap: 4px;
+      padding: 8px 10px 6px;
+      background: #14080C;
+      z-index: 30;
       flex-shrink: 0;
     }
-    .story-step {
+    .story-seg {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 3px 1px;
-      border-radius: 6px;
-      opacity: 0.45;
-      transition: all 0.25s;
-      cursor: pointer;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.22);
+      overflow: hidden;
     }
-    .story-step.active {
-      opacity: 1;
-      background: rgba(212, 175, 55, 0.2);
+    .story-seg .fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #F9E29D, #D4AF37);
+      transform: scaleX(0);
+      transform-origin: left center;
+      will-change: transform;
+    }
+
+    /* Hold-to-pause indicator */
+    .pause-pill {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: rgba(20, 10, 14, 0.85);
       border: 1px solid #D4AF37;
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-    }
-    .story-step.passed {
-      opacity: 0.85;
-      color: #F9E29D;
-    }
-    .story-step .icon {
+      border-radius: 20px;
+      padding: 8px 16px;
       font-size: 12px;
-      line-height: 1;
-    }
-    .story-step .label {
-      font-size: 7.5px;
-      font-weight: 700;
-      white-space: nowrap;
-      margin-top: 2px;
-      color: #E2E8F0;
-    }
-    .story-step.active .label {
-      color: #FCD34D;
       font-weight: 800;
+      color: #F9E29D;
+      z-index: 35;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    #story-container.is-paused .pause-pill {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    #story-container.is-paused .story-seg .fill {
+      opacity: 0.7;
     }
 
     /* Main Story Stage Viewport */
     #story-stage {
       position: relative;
       flex: 1;
+      min-height: 0;
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -324,55 +326,12 @@
       line-height: 1.45;
     }
 
-    /* Navigation Controls Bar */
-    .story-nav-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: auto;
-      padding-top: 8px;
-      border-top: 1px dashed rgba(212, 175, 55, 0.3);
+    /* Dialogue lines revealed one by one */
+    .dlg-item.dlg-hidden {
+      display: none;
     }
-    .story-progress {
-      align-self: flex-end;
-      margin-top: 6px;
-      font-size: 10px;
-      font-weight: 700;
-      color: rgba(249, 226, 157, 0.75);
-      letter-spacing: 0.3px;
-    }
-    .btn-nav-prev {
-      background: #251318;
-      color: #F9E29D;
-      border: 1px solid #D4AF37;
-      border-radius: 20px;
-      padding: 9px 16px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn-nav-prev:active {
-      transform: scale(0.96);
-    }
-    .btn-nav-next {
-      flex: 1;
-      background: linear-gradient(135deg, #D4AF37, #AA820A);
-      color: #1A0D04;
-      border: 2px solid #FFF;
-      border-radius: 20px;
-      padding: 10px 18px;
-      font-size: 12.5px;
-      font-weight: 900;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.45);
-      transition: all 0.15s;
-      letter-spacing: 0.3px;
-    }
-    .btn-nav-next:active {
-      transform: scale(0.96);
+    .narrator-card {
+      animation: bubblePop 0.3s ease-out;
     }
 
     /* Cover Screen */
@@ -522,6 +481,51 @@
       padding-top: 8px;
       text-align: left;
     }
+
+    /* Royal gold-plated frame */
+    .gold-frame {
+      width: 100%;
+      max-width: 330px;
+      padding: 4px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #AA820A, #F9E29D 25%, #D4AF37 50%, #FFF6D5 70%, #AA820A);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.55), 0 14px 40px rgba(0,0,0,0.8);
+      margin-bottom: 18px;
+      animation: cardRise 0.7s cubic-bezier(.2,.9,.3,1.2) both;
+    }
+    .gold-frame .wedding-card-final {
+      max-width: none;
+      margin-bottom: 0;
+      border-radius: 16px;
+      border: 1px solid #F9E29D;
+      overflow: hidden;
+    }
+    .wedding-card-final::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255, 240, 200, 0.35), transparent);
+      transform: skewX(-20deg);
+      animation: goldSheen 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .gold-text {
+      background: linear-gradient(180deg, #FFF6D5, #F9E29D 40%, #D4AF37 70%, #AA820A);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    @keyframes goldSheen {
+      0% { left: -60%; }
+      60%, 100% { left: 130%; }
+    }
+    @keyframes cardRise {
+      from { opacity: 0; transform: translateY(24px) scale(0.92); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -556,45 +560,28 @@
   </svg>
 
   <div id="story-container">
+    <!-- Instagram-style Story Progress Segments -->
+    <div class="story-progress-bar" id="story-progress-bar">
+      <div class="story-seg"><div class="fill"></div></div>
+      <div class="story-seg"><div class="fill"></div></div>
+      <div class="story-seg"><div class="fill"></div></div>
+      <div class="story-seg"><div class="fill"></div></div>
+      <div class="story-seg"><div class="fill"></div></div>
+      <div class="story-seg"><div class="fill"></div></div>
+    </div>
+
     <!-- Top Bar -->
     <div class="top-bar">
       <a href="/chat" class="btn-round" title="Về khung Chat">💬</a>
       <div class="title font-heading">
-        <span style="color:#D4AF37;">囍</span> CHUYỆN TÌNH PIXEL
+        <span style="color:#D4AF37;">囍</span> PIXEL WEDDING STORIES
       </div>
       <div class="btn-group">
-        <button id="autoplay-btn" class="btn-round" onclick="toggleAutoPlay()" title="Tự động lật trang">▶</button>
         <button id="sound-btn" class="btn-round" onclick="toggleSound()" title="Bật/Tắt âm thanh">🔊</button>
       </div>
     </div>
 
-    <!-- 6 Steps Story Stepper Bar -->
-    <div class="story-progress-bar">
-      <div class="story-step active" id="step-0" onclick="goToChapter(0)">
-        <span class="icon">☕</span>
-        <span class="label">1. Gặp gỡ</span>
-      </div>
-      <div class="story-step" id="step-1" onclick="goToChapter(1)">
-        <span class="icon">💬</span>
-        <span class="label">2. Nhắn tin</span>
-      </div>
-      <div class="story-step" id="step-2" onclick="goToChapter(2)">
-        <span class="icon">✈️</span>
-        <span class="label">3. Yêu xa</span>
-      </div>
-      <div class="story-step" id="step-3" onclick="goToChapter(3)">
-        <span class="icon">🥺</span>
-        <span class="label">4. Giận dỗi</span>
-      </div>
-      <div class="story-step" id="step-4" onclick="goToChapter(4)">
-        <span class="icon">🍵</span>
-        <span class="label">5. Gia đình</span>
-      </div>
-      <div class="story-step" id="step-5" onclick="goToChapter(5)">
-        <span class="icon">💒</span>
-        <span class="label">6. Rước dâu</span>
-      </div>
-    </div>
+    <div class="pause-pill font-heading">⏸ Đang tạm dừng • thả tay để tiếp tục</div>
 
     <!-- Main Story Viewport -->
     <div id="story-stage">
@@ -616,16 +603,6 @@
         <div class="story-dialogues-wrap" id="dialogues-container">
           <!-- Dialogues populated via JS -->
         </div>
-
-        <div class="story-nav-bar">
-          <button class="btn-nav-prev font-heading" id="btn-prev" onclick="prevChapter()">
-            ← Trước
-          </button>
-          <button class="btn-nav-next font-heading" id="btn-next" onclick="nextChapter()">
-            Xem Tiếp Hồi 2 ➔
-          </button>
-        </div>
-        <div class="story-progress" id="story-progress">Hồi 1 / 6 • 16%</div>
       </div>
     </div>
 
@@ -650,8 +627,11 @@
       </div>
 
       <button class="btn-main font-heading" onclick="startStoryFromCover()">
-        ▶ KHÁM PHÁ CÂU CHUYỆN!
+        ▶ XEM STORY
       </button>
+      <div id="cover-hint" style="font-size:10.5px; color:rgba(249,226,157,0.75); margin-top:10px; line-height:1.5;">
+        Tự động phát • Chạm phải: hồi kế • Chạm trái: hồi trước • Giữ: tạm dừng
+      </div>
 
       <a href="/chat" class="btn-round" style="width:auto; border-radius:20px; padding:8px 18px; margin-top:14px; font-size:11px; font-weight:700; color:#F9E29D;">
         ← Trở lại Thiệp Cưới Chat
@@ -668,16 +648,18 @@
         Trải qua bao thăng trầm, hai bạn chính thức về chung một nhà! 💒✨
       </div>
 
-      <!-- Mini Wedding Card -->
+      <!-- Royal Gold-plated Wedding Card -->
+      <div class="gold-frame">
       <div class="wedding-card-final">
-        <div class="card-emblem">囍</div>
-        <div class="card-title">✦ LỄ THÀNH HÔN &amp; VU QUY ✦</div>
-        <div class="card-names">LÊ DUY TÂN 囍 ĐINH KHÁNH CHI</div>
+        <div class="card-emblem gold-text">囍</div>
+        <div class="card-title">✦ THIỆP MỜI ĐẠI HỶ • LỄ THÀNH HÔN &amp; VU QUY ✦</div>
+        <div class="card-names gold-text">LÊ DUY TÂN 囍 ĐINH KHÁNH CHI</div>
         <div class="card-event">
           <div>✦ <strong>Tiệc Nhóm Họ:</strong> 17:00 • Thứ Bảy 16.01.2027 (09 Chạp)</div>
           <div style="margin-top:4px;">✦ <strong>Lễ Thành Hôn:</strong> 10:30 • Chủ Nhật 17.01.2027 (10 Chạp)</div>
           <div style="margin-top:4px; color:#FCD34D;">📍 Tư Gia Nhà Gái • Hà Nội</div>
         </div>
+      </div>
       </div>
 
       <div style="display:flex; gap:10px; flex-direction:column; width:100%; max-width:320px;">
@@ -698,8 +680,6 @@
     // ==========================================
     let audioCtx = null;
     let soundEnabled = true;
-    let isAutoPlay = false;
-    let autoPlayTimer = null;
 
     function initAudio() {
       if (!audioCtx) {
@@ -715,34 +695,6 @@
       soundEnabled = !soundEnabled;
       const btn = document.getElementById('sound-btn');
       btn.innerText = soundEnabled ? '🔊' : '🔇';
-    }
-
-    function toggleAutoPlay() {
-      initAudio();
-      isAutoPlay = !isAutoPlay;
-      const btn = document.getElementById('autoplay-btn');
-      btn.innerText = isAutoPlay ? '⏸' : '▶';
-      btn.style.borderColor = isAutoPlay ? '#10B981' : '#D4AF37';
-
-      if (isAutoPlay) {
-        runAutoPlay();
-      } else {
-        clearTimeout(autoPlayTimer);
-      }
-    }
-
-    function runAutoPlay() {
-      clearTimeout(autoPlayTimer);
-      if (!isAutoPlay) return;
-      autoPlayTimer = setTimeout(() => {
-        if (!isAutoPlay) return;
-        if (currentChapter < 5) {
-          nextChapter();
-          runAutoPlay();
-        } else {
-          toggleAutoPlay();
-        }
-      }, 7000); // 7s per chapter
     }
 
     function playTone(freq, type = 'triangle', duration = 0.1, gainVal = 0.15) {
@@ -764,6 +716,10 @@
     function sfxPageTurn() {
       playTone(440, 'triangle', 0.08, 0.12);
       setTimeout(() => playTone(660, 'triangle', 0.12, 0.12), 60);
+    }
+
+    function sfxLine() {
+      playTone(880, 'sine', 0.05, 0.05);
     }
 
     function sfxMilestone() {
@@ -872,12 +828,34 @@
       }
     ];
 
+    // ==========================================
+    // STORIES ENGINE (auto-play, tap left/right, hold to pause)
+    // ==========================================
+    const CHAPTER_DURATION = 8000;   // ms per chapter (8s thư thái)
+    const REVEAL_SPAN = 0.75;        // all dialogue lines visible by 75% of the chapter
+    const HOLD_DELAY = 220;          // ms before a press counts as hold
+    const COVER_AUTOSTART = 6;       // seconds
+
+    const container = document.getElementById('story-container');
+    const storyStage = document.getElementById('story-stage');
+    const segFills = document.querySelectorAll('#story-progress-bar .fill');
+
     let currentChapter = 0;
+    let playState = 'cover';         // 'cover' | 'playing' | 'ended'
+    let elapsed = 0;
+    let lastTs = null;
+    let holdPaused = false;
+    let visibleLines = 0;
+
+    function isPaused() {
+      return holdPaused || document.hidden;
+    }
 
     function startStoryFromCover() {
+      if (playState !== 'cover') return;
+      clearInterval(coverTimer);
       initAudio();
       document.getElementById('cover-screen').classList.add('hidden');
-      document.getElementById('victory-modal').classList.add('hidden');
       goToChapter(0);
     }
 
@@ -888,15 +866,17 @@
     }
 
     function goToChapter(idx) {
-      initAudio();
       currentChapter = idx;
+      playState = 'playing';
+      elapsed = 0;
+      visibleLines = 0;
       sfxPageTurn();
-      updateStepper(idx);
       renderChapterView(idx);
+      updateProgressBars();
     }
 
     function nextChapter() {
-      if (currentChapter < 5) {
+      if (currentChapter < CHAPTERS.length - 1) {
         goToChapter(currentChapter + 1);
       } else {
         openVictoryModal();
@@ -904,32 +884,69 @@
     }
 
     function prevChapter() {
-      if (currentChapter > 0) {
-        goToChapter(currentChapter - 1);
-      }
+      // Like Instagram: tapping back on the first story restarts it
+      goToChapter(Math.max(0, currentChapter - 1));
     }
 
     function openVictoryModal() {
+      playState = 'ended';
+      elapsed = CHAPTER_DURATION;
+      updateProgressBars();
       initAudio();
       sfxWin();
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 110,
-          spread: 85,
-          origin: { y: 0.5 },
-          colors: ['#D4AF37', '#8B1E2D', '#FFB6C1', '#FFFFFF']
-        });
-      }
       document.getElementById('victory-modal').classList.remove('hidden');
+      fireConfetti();
     }
 
-    function updateStepper(idx) {
-      for (let i = 0; i < 6; i++) {
-        const el = document.getElementById(`step-${i}`);
-        if (!el) continue;
-        el.classList.toggle('active', i === idx);
-        el.classList.toggle('passed', i < idx);
+    function fireConfetti() {
+      if (typeof confetti !== 'function') return;
+      const colors = ['#D4AF37', '#F9E29D', '#8B1E2D', '#FFB6C1', '#FFFFFF'];
+      confetti({ particleCount: 140, spread: 95, origin: { y: 0.45 }, colors });
+      const end = Date.now() + 2800;
+      (function sideCannons() {
+        confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, colors });
+        confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1, y: 0.7 }, colors });
+        if (Date.now() < end && playState === 'ended') requestAnimationFrame(sideCannons);
+      })();
+    }
+
+    function updateProgressBars() {
+      const ratio = Math.min(1, elapsed / CHAPTER_DURATION);
+      segFills.forEach((fill, i) => {
+        const v = i < currentChapter ? 1 : i === currentChapter ? ratio : 0;
+        fill.style.transform = `scaleX(${v})`;
+      });
+    }
+
+    function revealDialogues() {
+      const items = document.querySelectorAll('#dialogues-container .dlg-item');
+      const step = (CHAPTER_DURATION * REVEAL_SPAN) / items.length;
+      const count = Math.min(items.length, Math.floor(elapsed / step) + 1);
+      if (count === visibleLines) return;
+      for (let i = visibleLines; i < count; i++) items[i].classList.remove('dlg-hidden');
+      if (visibleLines > 0) sfxLine();
+      visibleLines = count;
+      storyStage.scrollTo({ top: storyStage.scrollHeight, behavior: 'smooth' });
+    }
+
+    function storyTick(ts) {
+      if (lastTs !== null && playState === 'playing' && !isPaused()) {
+        // Clamp so a throttled background tab doesn't skip chapters
+        elapsed += Math.min(ts - lastTs, 100);
+        if (elapsed >= CHAPTER_DURATION) {
+          nextChapter();
+        } else {
+          updateProgressBars();
+          revealDialogues();
+        }
       }
+      lastTs = ts;
+      requestAnimationFrame(storyTick);
+    }
+
+    function setHold(on) {
+      holdPaused = on;
+      container.classList.toggle('is-paused', on);
     }
 
     function renderChapterView(idx) {
@@ -940,15 +957,15 @@
       document.getElementById('chapter-title').innerText = chap.title;
       document.getElementById('chapter-location').innerText = chap.location;
 
-      // Render Dialogues
+      // Render Dialogues (hidden, revealed line by line by storyTick)
       let dlgHtml = '';
       chap.dialogues.forEach(d => {
         if (d.type === 'narrator') {
-          dlgHtml += `<div class="narrator-card">📜 ${d.text}</div>`;
+          dlgHtml += `<div class="dlg-item dlg-hidden narrator-card">📜 ${d.text}</div>`;
         } else {
           const isRight = d.side === 'right';
           dlgHtml += `
-            <div class="speech-row" style="${isRight ? 'flex-direction:row-reverse;' : ''}">
+            <div class="dlg-item dlg-hidden speech-row" style="${isRight ? 'flex-direction:row-reverse;' : ''}">
               <div class="speech-avatar">
                 <svg viewBox="0 0 12 16">
                   <use href="${isRight ? '#px-bride' : '#px-groom'}"/>
@@ -964,53 +981,83 @@
       });
       document.getElementById('dialogues-container').innerHTML = dlgHtml;
 
-      // Update Navigation Buttons
-      const btnPrev = document.getElementById('btn-prev');
-      const btnNext = document.getElementById('btn-next');
-
-      btnPrev.style.display = idx === 0 ? 'none' : 'block';
-      if (idx === 5) {
-        btnNext.innerText = '💌 MỞ THIỆP MỜI ĐẠI HỶ ➔';
-        btnNext.style.background = 'linear-gradient(135deg, #E11D48, #8B1E2D)';
-        btnNext.style.color = '#FFF';
-      } else {
-        btnNext.innerText = `Xem Tiếp Hồi ${idx + 2} ➔`;
-        btnNext.style.background = 'linear-gradient(135deg, #D4AF37, #AA820A)';
-        btnNext.style.color = '#1A0D04';
-      }
-
-      // Reading progress
-      const pct = Math.floor((idx + 1) / CHAPTERS.length * 100);
-      document.getElementById('story-progress').innerText = `Hồi ${idx + 1} / ${CHAPTERS.length} • ${pct}%`;
-
-      // Reset scroll position
-      document.getElementById('story-stage').scrollTop = 0;
+      storyStage.scrollTop = 0;
+      revealDialogues();
     }
 
-    // Touch swipe: left → next chapter, right → previous chapter
-    const storyStage = document.getElementById('story-stage');
-    let touchStartX = 0;
-    let touchStartY = 0;
+    // Tap right half → next, tap left half → previous, press & hold → pause
+    let pressTimer = null;
+    let pressActive = false;
+    let pressMoved = false;
+    let pressX = 0;
+    let pressY = 0;
 
-    storyStage.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].clientX;
-      touchStartY = e.changedTouches[0].clientY;
-    }, { passive: true });
+    function isStoryTapTarget(target) {
+      return playState === 'playing' &&
+        !target.closest('.top-bar, #cover-screen, #victory-modal, a, button');
+    }
 
-    storyStage.addEventListener('touchend', (e) => {
-      const diffX = e.changedTouches[0].clientX - touchStartX;
-      const diffY = e.changedTouches[0].clientY - touchStartY;
-      // Ignore mostly-vertical gestures so scrolling dialogues doesn't flip chapters
-      if (Math.abs(diffX) <= Math.abs(diffY)) return;
-      if (diffX < -50) {
-        nextChapter();
-      } else if (diffX > 50) {
-        prevChapter();
-      } else {
-        return;
-      }
-      if (isAutoPlay) runAutoPlay();
-    }, { passive: true });
+    function endPress() {
+      clearTimeout(pressTimer);
+      pressActive = false;
+      if (holdPaused) setHold(false);
+    }
+
+    container.addEventListener('pointerdown', (e) => {
+      if (!isStoryTapTarget(e.target)) return;
+      initAudio();
+      pressActive = true;
+      pressMoved = false;
+      pressX = e.clientX;
+      pressY = e.clientY;
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => setHold(true), HOLD_DELAY);
+    });
+
+    container.addEventListener('pointermove', (e) => {
+      if (!pressActive) return;
+      if (Math.abs(e.clientX - pressX) > 12 || Math.abs(e.clientY - pressY) > 12) pressMoved = true;
+    });
+
+    container.addEventListener('pointerup', (e) => {
+      if (!pressActive) return;
+      const wasHold = holdPaused;
+      endPress();
+      if (wasHold || pressMoved) return;
+      const rect = container.getBoundingClientRect();
+      if (e.clientX - rect.left < rect.width / 2) prevChapter();
+      else nextChapter();
+    });
+
+    container.addEventListener('pointercancel', endPress);
+    container.addEventListener('pointerleave', endPress);
+    container.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // Desktop keyboard: ← / → navigate, hold Space to pause
+    document.addEventListener('keydown', (e) => {
+      if (playState !== 'playing') return;
+      if (e.key === 'ArrowRight') nextChapter();
+      else if (e.key === 'ArrowLeft') prevChapter();
+      else if (e.key === ' ') { e.preventDefault(); setHold(true); }
+    });
+    document.addEventListener('keyup', (e) => {
+      if (e.key === ' ') setHold(false);
+    });
+
+    // Cover auto-starts so the story is fully hands-free
+    let coverCountdown = COVER_AUTOSTART;
+    const coverHint = document.getElementById('cover-hint');
+    const coverHintBase = coverHint.innerText;
+    coverHint.innerText = `${coverHintBase}\nTự động bắt đầu sau ${coverCountdown}s…`;
+    const coverTimer = setInterval(() => {
+      coverCountdown--;
+      if (coverCountdown <= 0) startStoryFromCover();
+      else coverHint.innerText = `${coverHintBase}\nTự động bắt đầu sau ${coverCountdown}s…`;
+    }, 1000);
+
+    renderChapterView(0);
+    updateProgressBars();
+    requestAnimationFrame(storyTick);
 
     // ==========================================
     // 3. ANIMATED PIXEL SCENE RENDERER (CANVAS)
@@ -1110,6 +1157,7 @@
       const w = canvas.width || 390;
       const h = canvas.height || 185;
       ctx.clearRect(0, 0, w, h);
+      ctx.textAlign = 'left';
 
       const type = CHAPTERS[currentChapter].sceneType;
 
