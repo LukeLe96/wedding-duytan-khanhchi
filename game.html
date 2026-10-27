@@ -6,7 +6,7 @@
   <title>Hành Trình Tìm Vợ 囍 Lê Duy Tân & Đinh Khánh Chi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800;900&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800;900&family=VT323&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold: #D4AF37;
@@ -41,7 +41,7 @@
       font-family: 'VT323', monospace;
       letter-spacing: 1.5px;
     }
-    .font-retro {
+    .font-heading {
       font-family: 'Be Vietnam Pro', sans-serif;
       font-weight: 800;
       letter-spacing: -0.01em;
@@ -68,6 +68,7 @@
         box-shadow: 0 0 0 1px #D4AF37, 0 20px 60px rgba(0,0,0,0.85);
       }
     }
+
     /* Top Bar */
     .top-bar {
       display: flex;
@@ -107,7 +108,7 @@
       background: #8B1E2D;
     }
 
-    /* Story Progress Bar */
+    /* 6 Steps Story Progress Bar */
     .story-progress-bar {
       background: #1F1014;
       border-bottom: 1px solid #4A1A22;
@@ -202,57 +203,14 @@
       color: #F9E29D;
       font-weight: bold;
     }
-    .hud-dist {
-      font-size: 12px;
-      color: #E2E8F0;
-      font-weight: bold;
-    }
-
-    /* Story Milestone Pop-up Toast */
-    #story-toast {
-      position: absolute;
-      top: 50px;
-      left: 12px;
-      right: 12px;
-      background: rgba(26, 12, 16, 0.95);
-      border: 2px solid #D4AF37;
-      border-radius: 12px;
-      padding: 8px 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px rgba(212, 175, 55, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 18;
-      pointer-events: none;
-      transform: translateY(-80px);
-      opacity: 0;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    #story-toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    #story-toast .toast-icon {
-      font-size: 26px;
-      line-height: 1;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-    }
-    #story-toast .toast-title {
+    .hud-chapter-tag {
       font-size: 11px;
+      color: #FEF08A;
       font-weight: 800;
-      color: #F9E29D;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    #story-toast .toast-desc {
-      font-size: 10.5px;
-      font-weight: 600;
-      color: #FCE7F3;
-      margin-top: 1px;
-      line-height: 1.35;
+      letter-spacing: 0.3px;
     }
 
-    /* Onscreen Jump Button for Mobile */
+    /* Jump Button */
     .jump-btn-wrap {
       position: absolute;
       bottom: 20px;
@@ -288,7 +246,144 @@
       margin-bottom: 2px;
     }
 
-    /* Screen Overlays (Menu / Victory / Game Over) */
+    /* ============================================================== */
+    /* STORY CUTSCENE OVERLAY (VISUAL NOVEL DIALOGUE BOX)             */
+    /* ============================================================== */
+    #cutscene-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(14, 7, 10, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 16px;
+      z-index: 28;
+      transition: opacity 0.25s ease;
+    }
+    #cutscene-modal.hidden {
+      display: none;
+    }
+
+    /* Stage Character Standings in Cutscene */
+    .cutscene-stage {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding-bottom: 12px;
+      pointer-events: none;
+    }
+    .actor-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      opacity: 0.55;
+      transform: scale(0.9);
+    }
+    .actor-box.active-speaker {
+      opacity: 1;
+      transform: scale(1.08);
+      filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
+    }
+    .actor-box svg {
+      width: 52px;
+      height: 70px;
+      image-rendering: pixelated;
+    }
+    .actor-name-badge {
+      font-size: 10px;
+      font-weight: 800;
+      color: #F9E29D;
+      background: #251318;
+      border: 1px solid #D4AF37;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    /* Dialogue Card Box */
+    .dialogue-card {
+      background: linear-gradient(165deg, #241217, #15090C);
+      border: 2px solid #D4AF37;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(212, 175, 55, 0.15);
+      position: relative;
+      cursor: pointer;
+    }
+    .dialogue-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      border-bottom: 1px dashed rgba(212, 175, 55, 0.3);
+      padding-bottom: 6px;
+    }
+    .speaker-tag {
+      font-size: 12px;
+      font-weight: 900;
+      color: #FCD34D;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.3px;
+    }
+    .location-tag {
+      font-size: 9.5px;
+      color: #FCE7F3;
+      font-weight: 600;
+    }
+    .dialogue-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #FFF;
+      line-height: 1.6;
+      min-height: 64px;
+      margin-bottom: 10px;
+    }
+    .tap-hint {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      font-size: 10px;
+      color: #F9E29D;
+      font-weight: 700;
+      animation: pulseHint 1.4s ease-in-out infinite;
+    }
+    @keyframes pulseHint {
+      0%, 100% { opacity: 0.5; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(2px); }
+    }
+
+    /* Cutscene Choice Action Box */
+    .cutscene-choice-wrap {
+      margin-top: 8px;
+      display: none;
+    }
+    .btn-story-action {
+      width: 100%;
+      background: linear-gradient(135deg, #D4AF37, #AA820A);
+      color: #1A0D04;
+      border: 2px solid #FFF;
+      border-radius: 25px;
+      padding: 11px 16px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+      transition: all 0.15s;
+    }
+    .btn-story-action:active {
+      transform: scale(0.97);
+    }
+
+    /* Start / Gameover Overlays */
     .screen-overlay {
       position: absolute;
       inset: 0;
@@ -301,13 +396,12 @@
       justify-content: center;
       padding: 20px;
       text-align: center;
-      z-index: 30;
+      z-index: 35;
       transition: opacity 0.25s;
     }
     .screen-overlay.hidden {
       display: none;
     }
-
     .hero-title {
       font-size: 17px;
       font-weight: 900;
@@ -321,11 +415,9 @@
       font-size: 12px;
       font-weight: 600;
       color: #FBCFE8;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       line-height: 1.45;
     }
-
-    /* Timeline card in menu */
     .timeline-preview {
       background: #251218;
       border: 1px solid #D4AF37;
@@ -333,7 +425,7 @@
       padding: 10px 14px;
       width: 100%;
       max-width: 320px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       text-align: left;
     }
     .timeline-preview .item {
@@ -351,7 +443,6 @@
       color: #FCD34D;
       font-weight: 700;
     }
-
     .btn-main {
       background: linear-gradient(135deg, #D4AF37, #AA820A);
       color: #1A0D04;
@@ -385,7 +476,7 @@
       gap: 6px;
     }
 
-    /* Victory Wedding Card */
+    /* Final Wedding Card in Victory */
     .wedding-card-final {
       background: linear-gradient(145deg, #8B1E2D, #550D18);
       border: 2px solid #D4AF37;
@@ -463,7 +554,7 @@
     <!-- Top Bar -->
     <div class="top-bar">
       <a href="/chat" class="btn-round" title="Về khung Chat" style="text-decoration:none;">💬</a>
-      <div class="title font-retro">
+      <div class="title font-heading">
         <span style="color:#D4AF37;">囍</span> HÀNH TRÌNH TÌM VỢ
       </div>
       <button id="sound-btn" class="btn-round" onclick="toggleSound()" title="Bật/Tắt âm thanh">🔊</button>
@@ -507,33 +598,66 @@
           <span class="hud-hearts" id="hud-hearts">❤️❤️❤️</span>
         </div>
         <div class="hud-box">
+          <div class="hud-chapter-tag font-heading" id="hud-chapter-tag">☕ CHẶNG 1</div>
           <div class="hud-score font-pixel" id="hud-score">00000</div>
-          <div class="hud-dist font-pixel" id="hud-dist">0m / 880m</div>
-        </div>
-      </div>
-
-      <!-- Story Milestone Toast -->
-      <div id="story-toast">
-        <div class="toast-icon" id="toast-icon">☕</div>
-        <div>
-          <div class="toast-title" id="toast-title">CHẶNG 1: LẦN ĐẦU GẶP GỠ</div>
-          <div class="toast-desc" id="toast-desc">Chạm ánh mắt nàng thơ Khánh Chi giữa lòng Hà Nội!</div>
         </div>
       </div>
 
       <!-- Jump Button (Mobile Touch) -->
-      <div class="jump-btn-wrap">
+      <div class="jump-btn-wrap" id="jump-btn-wrap">
         <button id="btn-jump" class="btn-jump" onclick="handleJumpAction(event)">
           <span>▲</span>
           JUMP
         </button>
       </div>
 
+      <!-- ============================================================== -->
+      <!-- STORY CUTSCENE OVERLAY (VISUAL NOVEL DIALOGUE BOX)             -->
+      <!-- ============================================================== -->
+      <div id="cutscene-modal" class="hidden">
+        <!-- Stage Actors Preview -->
+        <div class="cutscene-stage">
+          <div class="actor-box" id="actor-tan">
+            <svg viewBox="0 0 12 16"><use href="#px-groom"/></svg>
+            <div class="actor-name-badge">Chú rể Tân</div>
+          </div>
+          <div class="actor-box" id="actor-chi">
+            <svg viewBox="0 0 12 16"><use href="#px-bride"/></svg>
+            <div class="actor-name-badge">Cô dâu Chi</div>
+          </div>
+        </div>
+
+        <!-- Dialogue Card Box -->
+        <div class="dialogue-card" id="dialogue-card" onclick="advanceDialogue()">
+          <div class="dialogue-header">
+            <div class="speaker-tag" id="dlg-speaker">
+              <span>🤵‍♂️</span> Chú rể Tân
+            </div>
+            <div class="location-tag" id="dlg-location">
+              📍 Quán cà phê phố cổ Hà Nội
+            </div>
+          </div>
+          <div class="dialogue-text" id="dlg-text">
+            ...
+          </div>
+          <div class="tap-hint" id="dlg-tap-hint">
+            <span>Chạm để đọc tiếp</span> ▼
+          </div>
+
+          <!-- Cutscene Choice Action Button (Appears at end of dialogue) -->
+          <div class="cutscene-choice-wrap" id="cutscene-choice-wrap">
+            <button class="btn-story-action font-heading" id="btn-story-action" onclick="finishCutsceneAction(event)">
+              💌 LƯU SỐ ZALO &amp; CHẠY TIẾP
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- START MENU OVERLAY -->
       <div id="start-screen" class="screen-overlay">
-        <div class="hero-title font-retro">
+        <div class="hero-title font-heading">
           HÀNH TRÌNH TÌM VỢ 囍<br>
-          <span style="font-size:13px; color:#FCD34D;">TÂN &amp; CHI VỀ CHUNG MỘT NHÀ</span>
+          <span style="font-size:13px; color:#FCD34D;">LÊ DUY TÂN &amp; ĐINH KHÁNH CHI</span>
         </div>
         <div class="hero-subtitle">
           Vượt 1.100km Gia Lai ✈️ Hà Nội • Đón nàng về dinh 16-17.01.2027
@@ -541,16 +665,16 @@
 
         <!-- 6 Chapters Story Preview -->
         <div class="timeline-preview">
-          <div class="item"><span>☕</span> 1. Chạm ánh mắt đầu tiên tại Hà Nội</div>
-          <div class="item"><span>💬</span> 2. Tán tỉnh &amp; nhắn tin thâu đêm</div>
+          <div class="item"><span>☕</span> 1. Ly cà phê định mệnh tại Hà Nội</div>
+          <div class="item"><span>💬</span> 2. Tán tỉnh &amp; nhắn tin 2h sáng</div>
           <div class="item"><span>✈️</span> 3. 1.100km thử thách yêu xa</div>
           <div class="item"><span>🥺</span> 4. Những lần giận dỗi &amp; bí kíp làm lành</div>
           <div class="item"><span>🍵</span> 5. Ra mắt gia đình &amp; Dạm ngõ 16.09.2026</div>
           <div class="item"><span>💒</span> 6. Cổng cưới hoàng gia &amp; Trao thiệp Đại Hỷ!</div>
         </div>
 
-        <button class="btn-main font-retro" onclick="startGame()">
-          ▶ BẮT ĐẦU HÀNH TRÌNH!
+        <button class="btn-main font-heading" onclick="startStoryJourney()">
+          ▶ BẮT ĐẦU CÂU CHUYỆN!
         </button>
 
         <a href="/chat" class="btn-sec">
@@ -560,7 +684,7 @@
 
       <!-- GAME OVER OVERLAY -->
       <div id="gameover-screen" class="screen-overlay hidden">
-        <div class="hero-title font-retro" style="color:#EF4444;">
+        <div class="hero-title font-heading" style="color:#EF4444;">
           CHƯA KỊP ĐÓN ĐƯỢC VỢ! 💔
         </div>
         <div class="hero-subtitle">
@@ -578,8 +702,8 @@
           </div>
         </div>
 
-        <button class="btn-main font-retro" onclick="restartGame()">
-          🔄 THỬ LẠI TỪ ĐẦU
+        <button class="btn-main font-heading" onclick="restartFromCurrentChapter()">
+          🔄 CHƠI LẠI CHẶNG NÀY
         </button>
 
         <a href="/chat" class="btn-sec">
@@ -589,7 +713,7 @@
 
       <!-- VICTORY OVERLAY (TRAO THIỆP ĐẠI HỶ) -->
       <div id="victory-screen" class="screen-overlay hidden">
-        <div class="hero-title font-retro" style="color:#F9E29D; font-size:18px; margin-bottom:4px;">
+        <div class="hero-title font-heading" style="color:#F9E29D; font-size:18px; margin-bottom:4px;">
           🎉 TÂN ĐÃ RƯỚC ĐƯỢC VỢ VỀ DINH! 囍
         </div>
         <div class="hero-subtitle" style="margin-bottom:14px; color:#FEF08A;">
@@ -609,11 +733,11 @@
         </div>
 
         <div style="display:flex; gap:10px; flex-direction:column; width:100%; max-width:320px;">
-          <a href="/chat" class="btn-main font-retro" style="text-decoration:none; background:#8B1E2D; border-color:#F9E29D; color:#FFF; display:inline-block; padding:12px 20px;">
+          <a href="/chat" class="btn-main font-heading" style="text-decoration:none; background:#8B1E2D; border-color:#F9E29D; color:#FFF; display:inline-block; padding:12px 20px;">
             💌 MỞ THIỆP &amp; NHẮN TIN CHÚC PHÚC
           </a>
-          <button class="btn-sec font-retro" onclick="restartGame()" style="justify-content:center; margin-top:2px;">
-            🔄 Chơi lại hành trình tìm vợ
+          <button class="btn-sec font-heading" onclick="startStoryJourney()" style="justify-content:center; margin-top:2px;">
+            🔄 Xem lại hành trình từ đầu
           </button>
         </div>
       </div>
@@ -631,9 +755,7 @@
     function initAudio() {
       if (!audioCtx) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) {
-          audioCtx = new AudioContext();
-        }
+        if (AudioContext) audioCtx = new AudioContext();
       }
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
@@ -691,6 +813,11 @@
       playTone(130, 'triangle', 0.1, 0.2);
     }
 
+    function sfxTypeBlip() {
+      if (!soundEnabled || !audioCtx) return;
+      playTone(580 + Math.random() * 80, 'sine', 0.04, 0.08);
+    }
+
     function sfxMilestone() {
       if (!soundEnabled || !audioCtx) return;
       const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
@@ -715,131 +842,192 @@
       });
     }
 
-    // ==========================================
-    // 2. STORY CHAPTERS DATA (6 MILESTONES)
-    // ==========================================
-    const CHAPTERS = [
+    // ==============================================================
+    // 2. STORY SCRIPT DATA (VERIFIED BY CLAUDE CODE CLI)
+    // ==============================================================
+    const STORY_CHAPTERS = [
       {
-        startDist: 0,
-        endDist: 140,
-        title: "CHẶNG 1: LẦN ĐẦU GẶP GỠ (HÀ NỘI)",
-        desc: "Chạm ánh mắt nàng thơ Khánh Chi giữa lòng thủ đô! ☕",
-        icon: "☕",
-        bgColor: "#FED7AA",
+        chapter: 1,
+        title: "CHẶNG 1: LY CÀ PHÊ ĐỊNH MỆNH",
+        tag: "☕ CHẶNG 1",
+        location: "📍 Quán cà phê nhỏ phố cổ Hà Nội, chiều cuối thu",
         skyColors: ['#FBCFE8', '#FED7AA', '#FFFBEB'],
         itemEmoji: "☕",
         blockReward: "Số điện thoại của nàng! 📱",
-        obstacleType: "ngai_ngung"
+        targetMeters: 45, // Mini-run distance
+        dialogue: [
+          { speaker: "Người dẫn chuyện", text: "Hà Nội, một chiều heo may. Chàng kỹ sư từ Gia Lai ra Hà Nội công tác, tìm một góc nhỏ mở laptop... và đó là ngày định mệnh rẽ lối." },
+          { speaker: "Tân", text: "(Thầm nghĩ) Cà phê ở đây ngon thật, nhưng sao cô gái bàn bên còn ngọt ngào hơn cả ly bạc xỉu này nhỉ..." },
+          { speaker: "Chi", text: "Anh ơi, cho em hỏi ổ cắm điện chỗ anh còn trống không ạ? Laptop em sắp hết pin rồi." },
+          { speaker: "Tân", text: "Còn chứ! Anh nhường em luôn. Pin anh còn 80%, đủ ngồi đây đến... khi nào em về." },
+          { speaker: "Chi", text: "Haha, anh nói chuyện chuẩn phong cách kỹ sư ghê. Giọng anh không phải người Hà Nội đúng không?" },
+          { speaker: "Tân", text: "Em tinh ý thật. Anh ở Gia Lai, phố núi nhiều cà phê lắm, nhưng chưa ly nào làm anh quên đường về như hôm nay. Cho anh xin số Zalo của Chi được không?" },
+          { speaker: "Chi", text: "(Mỉm cười) Anh khéo thế. Được rồi, số em đây, có gì anh chỉ em mấy phím tắt laptop nhé!" }
+        ],
+        choice: {
+          prompt: "Tân đã có số của Chi!",
+          actionText: "💌 LƯU DANH BẠ 'CHI ❤️ HÀ NỘI' & CHẠY TIẾP"
+        }
       },
       {
-        startDist: 140,
-        endDist: 290,
-        title: "CHẶNG 2: TÁN TỈNH & NHẮN TIN 2H SÁNG",
-        desc: "Những đêm thức trắng nhắn tin, chờ từng dòng rep! 💬",
-        icon: "💬",
-        bgColor: "#FDE68A",
+        chapter: 2,
+        title: "CHẶNG 2: MỘT GIỜ SÁNG VẪN CHƯA NGỦ",
+        tag: "💬 CHẶNG 2",
+        location: "📍 Hai chiếc điện thoại sáng đèn trong đêm, Zalo",
         skyColors: ['#DDD6FE', '#FDE68A', '#FEF3C7'],
         itemEmoji: "❤️",
         blockReward: "Đồng ý đi chơi buổi đầu! 🛵",
-        obstacleType: "buon_ngu"
+        targetMeters: 45,
+        dialogue: [
+          { speaker: "Người dẫn chuyện", text: "01:07 sáng. Cả thành phố đã ngủ, chỉ còn hai người cứ chúc 'ngủ ngon đi' rồi lại nhắn thêm một tin nữa." },
+          { speaker: "Chi", text: "Anh Tân ơi, em đi ngủ thật đây. Mai em còn đi làm sớm nè." },
+          { speaker: "Tân", text: "Ừ, em ngủ ngon nhé. Mà khoan, em ngủ có hay mơ không?" },
+          { speaker: "Chi", text: "Lại bắt đầu câu chuyện mới à? Anh khôn thế 😤" },
+          { speaker: "Tân", text: "Anh chỉ muốn biết để tối nay còn xin vào giấc mơ của Chi đặt chỗ trước thôi." },
+          { speaker: "Chi", text: "Sến quá anh ơi! Nhưng mà... em đang cười này. Cuối tuần anh có bận gì không?" },
+          { speaker: "Tân", text: "Cuối tuần anh dành trọn cho Chi. Mình đi ăn bún chả rồi dạo Hồ Tây nhé! Anh qua đón em." }
+        ],
+        choice: {
+          prompt: "Chi đã đồng ý hẹn hò!",
+          actionText: "🛵 LÊN XE QUA ĐÓN CHI & CHẠY TIẾP"
+        }
       },
       {
-        startDist: 290,
-        endDist: 450,
-        title: "CHẶNG 3: 1.100KM THỬ THÁCH YÊU XA",
-        desc: "Gia Lai ✈️ Hà Nội — Nỗi nhớ đong đầy qua từng chuyến bay!",
-        icon: "✈️",
-        bgColor: "#BAE6FD",
+        chapter: 3,
+        title: "CHẶNG 3: YÊU XA 1.100 CÂY SỐ",
+        tag: "✈️ CHẶNG 3",
+        location: "📍 Sân bay Pleiku ✈️ Sân bay Nội Bài",
         skyColors: ['#93C5FD', '#BAE6FD', '#F0F9FF'],
         itemEmoji: "🎫",
         blockReward: "Chuyến bay hạ cánh sớm! 🛬",
-        obstacleType: "delay"
+        targetMeters: 50,
+        dialogue: [
+          { speaker: "Người dẫn chuyện", text: "Gia Lai và Hà Nội cách nhau 1.100km. Với Tân, đó không phải khoảng cách, mà chỉ là một chuyến bay chưa kịp đặt vé." },
+          { speaker: "Chi", text: "(Facetime) Anh ơi, hôm nay Hà Nội mưa lạnh lắm. Ước gì có anh ở đây dạo phố cùng em." },
+          { speaker: "Tân", text: "Ở Gia Lai nắng đẹp lắm nè. Anh muốn gói ít nắng gửi em, nhưng hãng bay bảo hành lý quá cước rồi." },
+          { speaker: "Chi", text: "Thế thì anh tự bay ra mà mang nắng cho em đi chứ!" },
+          { speaker: "Tân", text: "Anh vừa ấn đặt vé xong rồi! Chuyến tối thứ Sáu, ghế sát cửa sổ để nhìn xuống Hà Nội tìm em." },
+          { speaker: "Chi", text: "Anh bay nhiều thế, sắp lên hạng thẻ Vàng của hãng bay rồi đấy." },
+          { speaker: "Tân", text: "Hạng thẻ không quan trọng. Anh chỉ cần lên hạng 'chồng tương lai' trong lòng Chi thôi!" }
+        ],
+        choice: {
+          prompt: "Vé bay đã cầm trên tay!",
+          actionText: "✈️ XÁCH BALO BAY RA HÀ NỘI GẶP CHI"
+        }
       },
       {
-        startDist: 450,
-        endDist: 610,
-        title: "CHẶNG 4: GIẬN DỖI VU VƠ & LÀM LÀNH",
-        desc: "Yêu xa có lúc dỗi hờn, bí kíp trà sữa & hoa hồng dỗ dành! 💐",
-        icon: "🥺",
-        bgColor: "#FBCFE8",
+        chapter: 4,
+        title: "CHẶNG 4: ĐÃ XEM, KHÔNG TRẢ LỜI",
+        tag: "🥺 CHẶNG 4",
+        location: "📍 Trước cửa nhà Chi tại Hà Nội, buổi tối",
         skyColors: ['#F472B6', '#FBCFE8', '#FFF1F2'],
         itemEmoji: "🧋",
         blockReward: "Hết dỗi rồi, thương Tân nhất! 💕",
-        obstacleType: "doi_hon"
+        targetMeters: 45,
+        dialogue: [
+          { speaker: "Người dẫn chuyện", text: "Tin nhắn hiện 'Đã xem' từ 3 tiếng trước. Không trả lời. Không sticker. Tình hình cấp báo nghiêm trọng!" },
+          { speaker: "Tân", text: "Chi ơi, anh xin lỗi. Dù anh chưa biết mình sai gì, nhưng chắc chắn là anh sai rồi!" },
+          { speaker: "Chi", text: "Anh biết sai ở đâu chưa mà xin lỗi?" },
+          { speaker: "Tân", text: "Anh sai vì đã để Chi phải buồn. Còn chi tiết thì anh đang... phân tích nguyên nhân gốc rễ đây ạ." },
+          { speaker: "Chi", text: "Hôm qua anh bảo bận họp, xong em thấy anh online cả tối mà không nhắn em một câu!" },
+          { speaker: "Tân", text: "Ting tong! Anh đang đứng dưới cửa nhà em này. Ly trà sữa trân châu ít đá 70% đường đúng vị Chi thích, kèm bó hoa hồng thơm ngát nè." },
+          { speaker: "Chi", text: "...Trà sữa ngon đấy. Hoa cũng xinh. Lần này em tạm tha cho anh ngốc đó nhé! ❤️" }
+        ],
+        choice: {
+          prompt: "Bí kíp dỗ dành thành công!",
+          actionText: "💐 NẮM TAY NÀNG HẾT DỖI & CHẠY TIẾP"
+        }
       },
       {
-        startDist: 610,
-        endDist: 770,
-        title: "CHẶNG 5: VỀ GIA LAI RA MẮT & DẠM NGÕ",
-        desc: "Đưa nàng về Pleiku ra mắt & Lễ Dạm Ngõ 16.09.2026 ấm cúng 🍵",
-        icon: "🍵",
-        bgColor: "#FEF08A",
+        chapter: 5,
+        title: "CHẶNG 5: LỄ DẠM NGÕ 16.09.2026",
+        tag: "🍵 CHẶNG 5",
+        location: "📍 Nhà gái tại Hà Nội, ngày 16.09.2026",
         skyColors: ['#FDE047', '#FEF08A', '#FFFDF0'],
         itemEmoji: "🍃",
         blockReward: "Hai bên gia đình chúc phúc! 👨‍👩‍👧‍👦",
-        obstacleType: "hoi_hop"
+        targetMeters: 50,
+        dialogue: [
+          { speaker: "Người dẫn chuyện", text: "Ngày 16.09.2026. Đại gia đình nhà trai từ Gia Lai vượt 1.100km mang khay trầu cau ra Hà Nội làm Lễ Dạm Ngõ." },
+          { speaker: "Tân", text: "(Thì thầm) Chi ơi, cà vạt anh có lệch không? Anh tập câu chào bố mẹ em 50 lần rồi mà giờ run quá quên sạch." },
+          { speaker: "Chi", text: "(Cười) Bình tĩnh nào anh. Bố mẹ em quý anh lắm, cứ là chính anh thôi." },
+          { speaker: "Tân", text: "Dạ, con kính chào hai bác. Con là Tân, kỹ sư, quê Gia Lai. Hôm nay gia đình con đến xin phép hai bác cho con được chính thức cưới em Chi làm vợ ạ!" },
+          { speaker: "Người dẫn chuyện", "text": "Khay trầu cau têm cánh phượng đặt lên bàn thờ gia tiên. Bố mẹ hai bên mỉm cười gật đầu chúc phúc cho đôi trẻ." },
+          { speaker: "Chi", text: "Vậy là từ giờ anh chính thức là 'người nhà' rồi nhé!" },
+          { speaker: "Tân", text: "Từ nay con đường Gia Lai ✈️ Hà Nội không còn là yêu xa nữa, mà là đường về nhà!" }
+        ],
+        choice: {
+          prompt: "Hai họ gật đầu chúc phúc viên mãn!",
+          actionText: "💍 TIẾN VỀ LỄ CƯỚI HOÀNG GIA ĐÓN VỢ"
+        }
       },
       {
-        startDist: 770,
-        endDist: 880,
-        title: "CHẶNG 6: RƯỚC NÀNG VỀ DINH & TRAO THIỆP",
-        desc: "Đón cô dâu Khánh Chi về dinh ngày 16-17.01.2027! 💒",
-        icon: "💒",
-        bgColor: "#FECDD3",
+        chapter: 6,
+        title: "CHẶNG 6: ĐẠI HỶ – VỀ CHUNG MỘT NHÀ",
+        tag: "💒 CHẶNG 6",
+        location: "📍 Cổng Cưới Hoàng Gia, ngày 16-17.01.2027",
         skyColors: ['#FB7185', '#FECDD3', '#FFF1F2'],
         itemEmoji: "囍",
         blockReward: "Nhẫn Cưới Kim Cương! 💍",
-        obstacleType: "phao_hoa"
+        targetMeters: 40,
+        dialogue: [
+          { speaker: "Người dẫn chuyện", text: "Ngày 16-17.01.2027. Cổng hoa đã dựng, chữ Song Hỷ đỏ thắm. Hành trình 1.100km vượt ngàn dặm nhớ nhung đã đưa họ về bên nhau trọn vẹn." },
+          { speaker: "Tân", text: "Chi ơi, em có nhớ hôm ở quán cà phê, em mượn ổ cắm điện của anh không?" },
+          { speaker: "Chi", text: "Nhớ chứ! Ai ngờ mượn ổ điện mà giờ phải 'trả' bằng cả cuộc đời thế này." },
+          { speaker: "Tân", text: "Thì anh tính lãi kép mà! Giờ anh xin thêm một thứ nữa: Bàn tay của Chi, đi cùng anh suốt cuộc đời này nhé." },
+          { speaker: "Chi", text: "Em đồng ý! Từ nay đi đâu làm gì cũng nhớ về nhà với em nhé anh." },
+          { speaker: "Tân", text: "Anh hứa! Điều khoản hợp đồng hôn nhân này trọn đời, không bao giờ hết hạn!" },
+          { speaker: "Tân", text: "Và giờ, tụi mình xin trân trọng trao tận tay tấm Thiệp Cưới Đại Hỷ đến bạn và gia đình!" }
+        ],
+        choice: {
+          prompt: "Hành trình tìm vợ hoàn thành mỹ mãn!",
+          actionText: "💌 MỞ THIỆP CƯỚI ĐẠI HỶ CHÍNH THỨC"
+        }
       }
     ];
 
-    let currentChapterIdx = 0;
-
-    function getChapterByDist(d) {
-      for (let i = 0; i < CHAPTERS.length; i++) {
-        if (d >= CHAPTERS[i].startDist && d < CHAPTERS[i].endDist) {
-          return i;
-        }
-      }
-      return CHAPTERS.length - 1;
-    }
-
-    function showStoryToast(chap) {
-      const toast = document.getElementById('story-toast');
-      document.getElementById('toast-icon').innerText = chap.icon;
-      document.getElementById('toast-title').innerText = chap.title;
-      document.getElementById('toast-desc').innerText = chap.desc;
-      toast.classList.add('show');
-      sfxMilestone();
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3500);
-    }
-
-    function updateStoryTracker(idx) {
-      for (let i = 0; i < 6; i++) {
-        const el = document.getElementById(`step-${i}`);
-        if (!el) continue;
-        el.classList.toggle('active', i === idx);
-        el.classList.toggle('passed', i < idx);
-      }
-    }
-
     // ==========================================
-    // 3. CANVAS & GAME ENGINE
+    // 3. ENGINE STATE & VARIABLES
     // ==========================================
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const canvasWrap = document.getElementById('canvas-wrap');
 
-    let gameState = 'START'; // 'START', 'PLAYING', 'GAMEOVER', 'VICTORY'
+    let gameState = 'START'; // 'START', 'CUTSCENE', 'RUNNING', 'GAMEOVER', 'VICTORY'
+    let currentChapterIdx = 0;
+    let dialogueStep = 0;
+    let chapterRunDistance = 0;
     let score = 0;
-    let distance = 0;
-    const GOAL_DISTANCE = 880;
+    let hearts = 3;
 
     let width = 390;
     let height = 550;
     let groundY = 460;
+
+    let player = {
+      x: 60,
+      y: 0,
+      width: 30,
+      height: 40,
+      vy: 0,
+      jumpStrength: -11.5,
+      gravity: 0.62,
+      isGrounded: true,
+      jumpsRemaining: 2,
+      runFrame: 0,
+      runTimer: 0,
+      invincibleTimer: 0
+    };
+
+    let gameSpeed = 3.6;
+    let bgScroll = 0;
+    let blocks = [];
+    let items = [];
+    let obstacles = [];
+    let particles = [];
+    let popups = [];
+    let finishArch = null;
+    let spawnTimer = 0;
 
     function resizeCanvas() {
       width = canvasWrap.clientWidth;
@@ -853,260 +1041,126 @@
     }
     window.addEventListener('resize', resizeCanvas);
 
-    // SPRITE PIXEL RENDERERS
-    function drawPixelGroom(ctx, x, y, scale = 2.5, runFrame = 0) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(scale, scale);
-      
-      // Hair
-      ctx.fillStyle = '#2B1D16';
-      ctx.fillRect(3, 0, 5, 1);
-      ctx.fillRect(2, 1, 8, 2);
-      ctx.fillRect(2, 3, 1, 1);
-      ctx.fillRect(9, 3, 1, 1);
-      
-      // Face
-      ctx.fillStyle = '#F7D4B6';
-      ctx.fillRect(3, 3, 6, 1);
-      ctx.fillRect(2, 4, 1, 3);
-      ctx.fillRect(9, 4, 1, 3);
-      ctx.fillRect(4, 6, 4, 1);
-      ctx.fillRect(3, 7, 6, 1);
-      
-      // Glasses & Eyes
-      ctx.fillStyle = '#1F2937';
-      ctx.fillRect(3, 4, 6, 1);
-      ctx.fillRect(3, 5, 1, 1);
-      ctx.fillRect(5, 5, 2, 1);
-      ctx.fillRect(8, 5, 1, 1);
-      
-      // Blush
-      ctx.fillStyle = '#F2A7A7';
-      ctx.fillRect(3, 6, 1, 1);
-      ctx.fillRect(8, 6, 1, 1);
-      
-      // Smile
-      ctx.fillStyle = '#C2410C';
-      ctx.fillRect(5, 7, 2, 1);
-      
-      // Navy Suit & Bowtie
-      ctx.fillStyle = '#1E2A44';
-      ctx.fillRect(3, 9, 6, 1);
-      ctx.fillRect(2, 10, 8, 1);
-      ctx.fillRect(1, 11, 10, 1);
-      ctx.fillRect(2, 12, 8, 1);
-      
-      // Shirt white & red bow
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(5, 9, 2, 3);
-      ctx.fillStyle = '#B3263A';
-      ctx.fillRect(5, 9, 2, 1);
-      
-      // Legs (Run cycle)
-      ctx.fillStyle = '#141B2D';
-      if (runFrame === 1) {
-        ctx.fillRect(2, 13, 3, 2);
-        ctx.fillRect(7, 13, 3, 1);
-      } else if (runFrame === 2) {
-        ctx.fillRect(2, 13, 3, 1);
-        ctx.fillRect(7, 13, 3, 2);
-      } else {
-        ctx.fillRect(3, 13, 2, 2);
-        ctx.fillRect(7, 13, 2, 2);
-      }
-      
-      // Shoes
-      ctx.fillStyle = '#0F0F10';
-      ctx.fillRect(2, 15, 3, 1);
-      ctx.fillRect(7, 15, 3, 1);
-
-      ctx.restore();
-    }
-
-    function drawPixelBride(ctx, x, y, scale = 2.5, runFrame = 0) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(scale, scale);
-
-      // Yellow Headdress Crown
-      ctx.fillStyle = '#D4AF37';
-      ctx.fillRect(3, 0, 6, 2);
-      ctx.fillRect(2, 1, 1, 1);
-      ctx.fillRect(9, 1, 1, 1);
-
-      // Hair
-      ctx.fillStyle = '#2B1D16';
-      ctx.fillRect(2, 2, 1, 6);
-      ctx.fillRect(9, 2, 1, 6);
-      ctx.fillRect(4, 2, 4, 1);
-
-      // Face
-      ctx.fillStyle = '#F7D4B6';
-      ctx.fillRect(3, 3, 6, 4);
-
-      // Eyes
-      ctx.fillStyle = '#1F2937';
-      ctx.fillRect(4, 4, 1, 1);
-      ctx.fillRect(7, 4, 1, 1);
-
-      // Blush
-      ctx.fillStyle = '#F2A7A7';
-      ctx.fillRect(3, 5, 1, 1);
-      ctx.fillRect(8, 5, 1, 1);
-
-      // Red Ao Dai
-      ctx.fillStyle = '#B3263A';
-      ctx.fillRect(3, 7, 6, 2);
-      ctx.fillRect(2, 9, 8, 4);
-
-      // Bouquet pink & green
-      ctx.fillStyle = '#F9A8D4';
-      ctx.fillRect(5, 9, 2, 2);
-      ctx.fillStyle = '#4D7C0F';
-      ctx.fillRect(5, 11, 2, 1);
-
-      // Gold pattern on chest
-      ctx.fillStyle = '#D4AF37';
-      ctx.fillRect(5, 7, 2, 1);
-
-      // Pants & Shoes
-      ctx.fillStyle = '#F5F0E6';
-      ctx.fillRect(3, 13, 2, 2);
-      ctx.fillRect(7, 13, 2, 2);
-
-      ctx.fillStyle = '#0F0F10';
-      ctx.fillRect(3, 15, 2, 1);
-      ctx.fillRect(7, 15, 2, 1);
-
-      ctx.restore();
-    }
-
-    // DRAW QUESTION BLOCK [ ? ]
-    function drawQuestionBlock(ctx, block) {
-      const x = block.x;
-      const y = block.y + (block.bumpY || 0);
-      const w = block.width;
-      const h = block.height;
-
-      if (block.hit) {
-        ctx.fillStyle = '#64748B';
-        ctx.fillRect(x, y, w, h);
-        ctx.fillStyle = '#475569';
-        ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
-        ctx.strokeStyle = '#1E293B';
-        ctx.strokeRect(x, y, w, h);
-      } else {
-        ctx.fillStyle = '#D4AF37';
-        ctx.fillRect(x, y, w, h);
-        ctx.fillStyle = '#F59E0B';
-        ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
-        ctx.fillStyle = '#FEF3C7';
-        ctx.fillRect(x + 2, y + 2, w - 4, 3);
-        ctx.fillRect(x + 2, y + 2, 3, h - 4);
-
-        ctx.strokeStyle = '#78350F';
-        ctx.strokeRect(x, y, w, h);
-
-        ctx.fillStyle = '#78350F';
-        ctx.fillRect(x + 3, y + 3, 2, 2);
-        ctx.fillRect(x + w - 5, y + 3, 2, 2);
-        ctx.fillRect(x + 3, y + h - 5, 2, 2);
-        ctx.fillRect(x + w - 5, y + h - 5, 2, 2);
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = "bold 15px 'Be Vietnam Pro', sans-serif";
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('?', x + w/2, y + h/2 + 1);
-      }
-    }
-
-    // DRAW FINISH WEDDING ARCH
-    function drawWeddingArch(ctx, x, y) {
-      const w = 130;
-      const h = 185;
-      ctx.save();
-      ctx.translate(x, y - h);
-
-      // Gold Pillars
-      ctx.fillStyle = '#D4AF37';
-      ctx.fillRect(10, 20, 16, h - 20);
-      ctx.fillRect(w - 26, 20, 16, h - 20);
-
-      // Arch Dome
-      ctx.beginPath();
-      ctx.arc(w/2, 50, 48, Math.PI, 0);
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = '#D4AF37';
-      ctx.stroke();
-
-      // Flowers pink & ruby on arch
-      const colors = ['#F43F5E', '#FDA4AF', '#8B1E2D', '#FFFFFF', '#D4AF37'];
-      for (let i = 0; i < 20; i++) {
-        const ang = Math.PI + (i / 19) * Math.PI;
-        const fx = w/2 + Math.cos(ang) * 48;
-        const fy = 50 + Math.sin(ang) * 48;
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.beginPath();
-        ctx.arc(fx, fy, 6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Grand Song Hy banner at top center
-      ctx.fillStyle = '#8B1E2D';
-      ctx.fillRect(w/2 - 28, 8, 56, 28);
-      ctx.strokeStyle = '#D4AF37';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(w/2 - 28, 8, 56, 28);
-      ctx.fillStyle = '#F9E29D';
-      ctx.font = "bold 18px 'Be Vietnam Pro', sans-serif";
-      ctx.textAlign = 'center';
-      ctx.fillText('囍', w/2, 28);
-
-      // Cô dâu Khánh Chi đứng đón chú rể
-      drawPixelBride(ctx, w/2 - 15, h - 42, 2.6, 0);
-
-      ctx.restore();
-    }
-
     // ==========================================
-    // 4. GAME STATE & ENTITIES
+    // 4. CUTSCENE CONTROLLER (VISUAL NOVEL BOX)
     // ==========================================
-    let player = {
-      x: 60,
-      y: 0,
-      width: 30,
-      height: 40,
-      vy: 0,
-      jumpStrength: -11.5,
-      gravity: 0.62,
-      isGrounded: false,
-      jumpsRemaining: 2,
-      runFrame: 0,
-      runTimer: 0,
-      invincibleTimer: 0
-    };
+    function startStoryJourney() {
+      initAudio();
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('gameover-screen').classList.add('hidden');
+      document.getElementById('victory-screen').classList.add('hidden');
 
-    let hearts = 3;
-    let gameSpeed = 3.6;
-    let bgScroll = 0;
-
-    let blocks = [];
-    let items = [];
-    let obstacles = [];
-    let particles = [];
-    let popups = [];
-    let finishArch = null;
-
-    function resetGameEntities() {
-      score = 0;
-      distance = 0;
-      hearts = 3;
-      gameSpeed = 3.6;
-      bgScroll = 0;
       currentChapterIdx = 0;
+      score = 0;
+      hearts = 3;
+      updateHUD();
+      openCutscene(0);
+    }
 
+    function restartFromCurrentChapter() {
+      initAudio();
+      document.getElementById('gameover-screen').classList.add('hidden');
+      hearts = 3;
+      updateHUD();
+      openCutscene(currentChapterIdx);
+    }
+
+    function openCutscene(chapIdx) {
+      gameState = 'CUTSCENE';
+      currentChapterIdx = chapIdx;
+      dialogueStep = 0;
+      updateStoryTracker(currentChapterIdx);
+
+      // Hide jump button during dialogue
+      document.getElementById('jump-btn-wrap').style.display = 'none';
+
+      const modal = document.getElementById('cutscene-modal');
+      modal.classList.remove('hidden');
+
+      document.getElementById('cutscene-choice-wrap').style.display = 'none';
+      document.getElementById('dlg-tap-hint').style.display = 'flex';
+
+      sfxMilestone();
+      renderCurrentDialogue();
+    }
+
+    function renderCurrentDialogue() {
+      const chap = STORY_CHAPTERS[currentChapterIdx];
+      const dlg = chap.dialogue[dialogueStep];
+
+      // Update Location
+      document.getElementById('dlg-location').innerText = chap.location;
+
+      // Update Speaker
+      const speakerEl = document.getElementById('dlg-speaker');
+      const actorTan = document.getElementById('actor-tan');
+      const actorChi = document.getElementById('actor-chi');
+
+      actorTan.classList.remove('active-speaker');
+      actorChi.classList.remove('active-speaker');
+
+      if (dlg.speaker === 'Tân') {
+        speakerEl.innerHTML = '<span>🤵‍♂️</span> Chú rể Tân';
+        speakerEl.style.color = '#FCD34D';
+        actorTan.classList.add('active-speaker');
+      } else if (dlg.speaker === 'Chi') {
+        speakerEl.innerHTML = '<span>👰‍♀️</span> Cô dâu Chi';
+        speakerEl.style.color = '#F472B6';
+        actorChi.classList.add('active-speaker');
+      } else {
+        speakerEl.innerHTML = '<span>📜</span> Người dẫn chuyện';
+        speakerEl.style.color = '#F9E29D';
+      }
+
+      // Update Text
+      document.getElementById('dlg-text').innerText = dlg.text;
+      sfxTypeBlip();
+
+      // Check if last line of dialogue
+      const isLast = (dialogueStep === chap.dialogue.length - 1);
+      if (isLast) {
+        document.getElementById('dlg-tap-hint').style.display = 'none';
+        const choiceWrap = document.getElementById('cutscene-choice-wrap');
+        const btnAction = document.getElementById('btn-story-action');
+        btnAction.innerText = chap.choice.actionText;
+        choiceWrap.style.display = 'block';
+      }
+    }
+
+    function advanceDialogue() {
+      if (gameState !== 'CUTSCENE') return;
+      const chap = STORY_CHAPTERS[currentChapterIdx];
+      if (dialogueStep < chap.dialogue.length - 1) {
+        dialogueStep++;
+        renderCurrentDialogue();
+      }
+    }
+
+    function finishCutsceneAction(e) {
+      if (e) e.stopPropagation();
+      initAudio();
+
+      // If chapter 6 finished, reveal Victory Wedding Card directly!
+      if (currentChapterIdx === 5) {
+        document.getElementById('cutscene-modal').classList.add('hidden');
+        triggerVictory();
+        return;
+      }
+
+      // Otherwise, close cutscene and start the mini-run segment
+      document.getElementById('cutscene-modal').classList.add('hidden');
+      startMiniRunSegment();
+    }
+
+    function startMiniRunSegment() {
+      gameState = 'RUNNING';
+      chapterRunDistance = 0;
+      spawnTimer = 0;
+
+      // Show Jump button
+      document.getElementById('jump-btn-wrap').style.display = 'block';
+
+      // Reset entities for this mini segment
       player.x = 60;
       player.y = groundY - player.height;
       player.vy = 0;
@@ -1121,24 +1175,12 @@
       popups = [];
       finishArch = null;
 
-      updateStoryTracker(0);
       updateHUD();
-      showStoryToast(CHAPTERS[0]);
     }
 
-    function startGame() {
-      initAudio();
-      document.getElementById('start-screen').classList.add('hidden');
-      document.getElementById('gameover-screen').classList.add('hidden');
-      document.getElementById('victory-screen').classList.add('hidden');
-      resetGameEntities();
-      gameState = 'PLAYING';
-    }
-
-    function restartGame() {
-      startGame();
-    }
-
+    // ==========================================
+    // 5. MINI-RUN PLATFORMER ENGINE
+    // ==========================================
     function handleJumpAction(e) {
       if (e) {
         e.preventDefault();
@@ -1146,12 +1188,7 @@
       }
       initAudio();
 
-      if (gameState === 'START' || gameState === 'GAMEOVER' || gameState === 'VICTORY') {
-        startGame();
-        return;
-      }
-
-      if (gameState === 'PLAYING') {
+      if (gameState === 'RUNNING') {
         if (player.jumpsRemaining > 0) {
           player.vy = player.jumpsRemaining === 2 ? player.jumpStrength : player.jumpStrength * 0.9;
           player.jumpsRemaining--;
@@ -1179,102 +1216,68 @@
     });
 
     canvasWrap.addEventListener('touchstart', (e) => {
-      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar')) return;
+      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar') || e.target.closest('#cutscene-modal')) return;
       handleJumpAction(e);
     }, { passive: false });
 
     canvasWrap.addEventListener('mousedown', (e) => {
-      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar')) return;
+      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar') || e.target.closest('#cutscene-modal')) return;
       handleJumpAction(e);
     });
 
-    // ==========================================
-    // 5. WORLD SPAWNER WITH STORY PROGRESSION
-    // ==========================================
-    let spawnTimer = 0;
+    function spawnMiniRunElements() {
+      const chap = STORY_CHAPTERS[currentChapterIdx];
+      if (chapterRunDistance >= chap.targetMeters) return;
 
-    function spawnWorldElements() {
-      if (distance >= GOAL_DISTANCE && !finishArch) {
-        finishArch = {
-          x: width + 80,
-          y: groundY
-        };
-        return;
-      }
-      if (distance >= GOAL_DISTANCE) return;
-
-      const chap = CHAPTERS[currentChapterIdx];
       spawnTimer++;
-
-      if (spawnTimer % 85 === 0) {
+      if (spawnTimer % 75 === 0) {
         const rand = Math.random();
-
-        // 1. Question Block [?] with story reward
         if (rand < 0.45) {
           blocks.push({
             x: width + 20,
-            y: groundY - 80 - Math.floor(Math.random() * 2) * 35,
+            y: groundY - 78,
             width: 32,
             height: 32,
             hit: false,
             bumpY: 0,
             rewardText: chap.blockReward
           });
-        }
-        // 2. Story Obstacle
-        else if (rand < 0.78) {
+        } else if (rand < 0.78) {
           obstacles.push({
             x: width + 20,
             y: groundY - 30,
             width: 28,
-            height: 30,
-            type: chap.obstacleType
+            height: 30
           });
-        }
-        // 3. Story Collectible Item
-        else {
+        } else {
           items.push({
             x: width + 20,
-            y: groundY - 45 - Math.random() * 50,
+            y: groundY - 45 - Math.random() * 40,
             size: 26,
-            emoji: chap.itemEmoji,
-            rotation: 0
+            emoji: chap.itemEmoji
           });
         }
       }
     }
 
-    // ==========================================
-    // 6. UPDATE LOOP
-    // ==========================================
     function update() {
-      if (gameState !== 'PLAYING') return;
+      if (gameState !== 'RUNNING') return;
 
-      distance += (gameSpeed * 0.05);
-      gameSpeed = 3.6 + Math.min(2.0, distance * 0.002);
+      chapterRunDistance += (gameSpeed * 0.05);
       bgScroll += gameSpeed;
 
-      // Check Chapter Transition
-      const newChapIdx = getChapterByDist(distance);
-      if (newChapIdx !== currentChapterIdx) {
-        currentChapterIdx = newChapIdx;
-        updateStoryTracker(currentChapterIdx);
-        showStoryToast(CHAPTERS[currentChapterIdx]);
-      }
+      const chap = STORY_CHAPTERS[currentChapterIdx];
 
       // Player animation
       player.runTimer++;
       if (player.runTimer % 6 === 0) {
         player.runFrame = (player.runFrame + 1) % 3;
       }
-      if (player.invincibleTimer > 0) {
-        player.invincibleTimer--;
-      }
+      if (player.invincibleTimer > 0) player.invincibleTimer--;
 
       // Physics
       player.vy += player.gravity;
       player.y += player.vy;
-
       if (player.y >= groundY - player.height) {
         player.y = groundY - player.height;
         player.vy = 0;
@@ -1282,19 +1285,28 @@
         player.jumpsRemaining = 2;
       }
 
-      spawnWorldElements();
+      spawnMiniRunElements();
+
+      // Check if mini-run segment completed -> Transition to next chapter cutscene!
+      if (chapterRunDistance >= chap.targetMeters && blocks.length === 0 && obstacles.length === 0) {
+        if (currentChapterIdx < 5) {
+          openCutscene(currentChapterIdx + 1);
+          return;
+        } else {
+          triggerVictory();
+          return;
+        }
+      }
 
       // Blocks
       for (let i = blocks.length - 1; i >= 0; i--) {
         const b = blocks[i];
         b.x -= gameSpeed;
-
         if (b.bumpY < 0) {
           b.bumpY += 1.5;
           if (b.bumpY > 0) b.bumpY = 0;
         }
 
-        // Mario Head-bump collision
         if (!b.hit && player.vy < 0) {
           if (
             player.x + player.width > b.x &&
@@ -1319,7 +1331,6 @@
             });
           }
         }
-
         if (b.x + b.width < -40) blocks.splice(i, 1);
       }
 
@@ -1327,8 +1338,6 @@
       for (let i = items.length - 1; i >= 0; i--) {
         const it = items[i];
         it.x -= gameSpeed;
-        it.rotation += 0.08;
-
         if (
           player.x + player.width > it.x &&
           player.x < it.x + it.size &&
@@ -1338,7 +1347,6 @@
           items.splice(i, 1);
           score += 100;
           sfxCoin();
-
           popups.push({
             x: it.x,
             y: it.y,
@@ -1349,7 +1357,6 @@
           });
           continue;
         }
-
         if (it.x + it.size < -40) items.splice(i, 1);
       }
 
@@ -1385,17 +1392,7 @@
             return;
           }
         }
-
         if (o.x + o.width < -40) obstacles.splice(i, 1);
-      }
-
-      // Finish Arch
-      if (finishArch) {
-        finishArch.x -= gameSpeed;
-        if (player.x >= finishArch.x + 20) {
-          triggerVictory();
-          return;
-        }
       }
 
       // Popups & Particles
@@ -1405,7 +1402,6 @@
         p.life--;
         if (p.life <= 0) popups.splice(i, 1);
       }
-
       for (let i = particles.length - 1; i >= 0; i--) {
         const pt = particles[i];
         pt.x += pt.vx;
@@ -1424,20 +1420,28 @@
       }
       document.getElementById('hud-hearts').innerText = heartStr;
       document.getElementById('hud-score').innerText = String(score).padStart(5, '0');
-      const distShown = Math.min(GOAL_DISTANCE, Math.floor(distance));
-      document.getElementById('hud-dist').innerText = `${distShown}m / ${GOAL_DISTANCE}m`;
+      document.getElementById('hud-chapter-tag').innerText = STORY_CHAPTERS[currentChapterIdx].tag;
+    }
+
+    function updateStoryTracker(idx) {
+      for (let i = 0; i < 6; i++) {
+        const el = document.getElementById(`step-${i}`);
+        if (!el) continue;
+        el.classList.toggle('active', i === idx);
+        el.classList.toggle('passed', i < idx);
+      }
     }
 
     function triggerGameOver() {
       gameState = 'GAMEOVER';
       document.getElementById('over-score').innerText = score;
-      document.getElementById('over-chapter').innerText = CHAPTERS[currentChapterIdx].title;
+      document.getElementById('over-chapter').innerText = STORY_CHAPTERS[currentChapterIdx].title;
       document.getElementById('gameover-screen').classList.remove('hidden');
     }
 
     function triggerVictory() {
       gameState = 'VICTORY';
-      updateStoryTracker(5); // Highlight Step 6: Rước dâu
+      updateStoryTracker(5);
       sfxWin();
 
       if (typeof confetti === 'function') {
@@ -1453,14 +1457,13 @@
     }
 
     // ==========================================
-    // 7. RENDER LOOP
+    // 6. RENDER LOOP
     // ==========================================
     function draw() {
       ctx.clearRect(0, 0, width, height);
+      const chap = STORY_CHAPTERS[currentChapterIdx];
 
-      const chap = CHAPTERS[currentChapterIdx];
-
-      // 1. SKY GRADIENT PER CHAPTER
+      // Sky Gradient
       const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
       skyGrad.addColorStop(0, chap.skyColors[0]);
       skyGrad.addColorStop(0.5, chap.skyColors[1]);
@@ -1468,19 +1471,19 @@
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, width, groundY);
 
-      // Pixel Sun
+      // Sun
       ctx.fillStyle = '#FDE047';
       ctx.beginPath();
       ctx.arc(width - 65, 65, 26, 0, Math.PI * 2);
       ctx.fill();
 
-      // Parallax Clouds
+      // Clouds
       ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       const cloudOffset = (bgScroll * 0.2) % (width + 120);
       drawPixelCloud(ctx, width - cloudOffset, 60, 48);
       drawPixelCloud(ctx, width * 0.4 - cloudOffset * 0.7, 95, 38);
 
-      // Distant Hills / Skylines
+      // Hills
       ctx.fillStyle = 'rgba(216, 180, 254, 0.7)';
       ctx.beginPath();
       ctx.moveTo(0, groundY);
@@ -1491,32 +1494,25 @@
       ctx.lineTo(width, groundY);
       ctx.fill();
 
-      // Meadow & Wedding Carpet Ground
+      // Ground
       ctx.fillStyle = '#10B981';
       ctx.fillRect(0, groundY, width, 14);
-
       ctx.fillStyle = '#065F46';
       ctx.fillRect(0, groundY + 14, width, height - groundY - 14);
-
       ctx.fillStyle = '#D4AF37';
       ctx.fillRect(0, groundY + 6, width, 2);
 
-      // Flowers on meadow
+      // Meadow flowers
       for (let i = 0; i < width + 40; i += 35) {
         const fx = (i - (bgScroll % 35));
         ctx.fillStyle = (i % 2 === 0) ? '#F43F5E' : '#FFFFFF';
         ctx.fillRect(fx, groundY + 2, 3, 3);
       }
 
-      // Finish Arch
-      if (finishArch) {
-        drawWeddingArch(ctx, finishArch.x, finishArch.y);
-      }
-
-      // Question Blocks
+      // Blocks
       blocks.forEach(b => drawQuestionBlock(ctx, b));
 
-      // Collectible Items
+      // Items
       items.forEach(it => {
         ctx.save();
         ctx.font = "20px system-ui, sans-serif";
@@ -1541,19 +1537,17 @@
         ctx.font = "14px system-ui";
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        let obIcon = '📦';
-        if (o.type === 'delay') obIcon = '⏳';
-        else if (o.type === 'doi_hon') obIcon = '⚡';
-        else if (o.type === 'buon_ngu') obIcon = '🥱';
-        ctx.fillText(obIcon, o.x + o.width/2, o.y + o.height/2);
+        ctx.fillText('🎁', o.x + o.width/2, o.y + o.height/2);
         ctx.restore();
       });
 
-      // Player (Chú rể Duy Tân)
-      const isBlinking = player.invincibleTimer > 0 && Math.floor(player.invincibleTimer / 4) % 2 === 0;
-      if (!isBlinking) {
-        const frame = player.isGrounded ? player.runFrame : 1;
-        drawPixelGroom(ctx, player.x, player.y, 2.5, frame);
+      // Player
+      if (gameState === 'RUNNING') {
+        const isBlinking = player.invincibleTimer > 0 && Math.floor(player.invincibleTimer / 4) % 2 === 0;
+        if (!isBlinking) {
+          const frame = player.isGrounded ? player.runFrame : 1;
+          drawPixelGroom(ctx, player.x, player.y, 2.5, frame);
+        }
       }
 
       // Particles
@@ -1562,7 +1556,7 @@
         ctx.fillRect(pt.x, pt.y, 3, 3);
       });
 
-      // Popups Text (Story dialogue / reward)
+      // Popups
       popups.forEach(p => {
         ctx.save();
         ctx.fillStyle = p.color;
@@ -1583,7 +1577,80 @@
       ctx.fill();
     }
 
-    // Engine loop
+    function drawPixelGroom(ctx, x, y, scale = 2.5, runFrame = 0) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+      ctx.fillStyle = '#2B1D16';
+      ctx.fillRect(3, 0, 5, 1);
+      ctx.fillRect(2, 1, 8, 2);
+      ctx.fillStyle = '#F7D4B6';
+      ctx.fillRect(3, 3, 6, 1);
+      ctx.fillRect(2, 4, 1, 3);
+      ctx.fillRect(9, 4, 1, 3);
+      ctx.fillRect(4, 6, 4, 1);
+      ctx.fillRect(3, 7, 6, 1);
+      ctx.fillStyle = '#1F2937';
+      ctx.fillRect(3, 4, 6, 1);
+      ctx.fillRect(3, 5, 1, 1);
+      ctx.fillRect(5, 5, 2, 1);
+      ctx.fillRect(8, 5, 1, 1);
+      ctx.fillStyle = '#F2A7A7';
+      ctx.fillRect(3, 6, 1, 1);
+      ctx.fillRect(8, 6, 1, 1);
+      ctx.fillStyle = '#C2410C';
+      ctx.fillRect(5, 7, 2, 1);
+      ctx.fillStyle = '#1E2A44';
+      ctx.fillRect(3, 9, 6, 1);
+      ctx.fillRect(2, 10, 8, 1);
+      ctx.fillRect(1, 11, 10, 1);
+      ctx.fillRect(2, 12, 8, 1);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(5, 9, 2, 3);
+      ctx.fillStyle = '#B3263A';
+      ctx.fillRect(5, 9, 2, 1);
+      ctx.fillStyle = '#141B2D';
+      if (runFrame === 1) {
+        ctx.fillRect(2, 13, 3, 2);
+        ctx.fillRect(7, 13, 3, 1);
+      } else if (runFrame === 2) {
+        ctx.fillRect(2, 13, 3, 1);
+        ctx.fillRect(7, 13, 3, 2);
+      } else {
+        ctx.fillRect(3, 13, 2, 2);
+        ctx.fillRect(7, 13, 2, 2);
+      }
+      ctx.fillStyle = '#0F0F10';
+      ctx.fillRect(2, 15, 3, 1);
+      ctx.fillRect(7, 15, 3, 1);
+      ctx.restore();
+    }
+
+    function drawQuestionBlock(ctx, block) {
+      const x = block.x;
+      const y = block.y + (block.bumpY || 0);
+      const w = block.width;
+      const h = block.height;
+      if (block.hit) {
+        ctx.fillStyle = '#64748B';
+        ctx.fillRect(x, y, w, h);
+        ctx.strokeStyle = '#1E293B';
+        ctx.strokeRect(x, y, w, h);
+      } else {
+        ctx.fillStyle = '#D4AF37';
+        ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = '#F59E0B';
+        ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
+        ctx.strokeStyle = '#78350F';
+        ctx.strokeRect(x, y, w, h);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = "bold 15px 'Be Vietnam Pro', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', x + w/2, y + h/2 + 1);
+      }
+    }
+
     function gameLoop() {
       update();
       draw();
@@ -1592,7 +1659,6 @@
 
     resizeCanvas();
     requestAnimationFrame(gameLoop);
-
   </script>
 
   <!-- Canvas Confetti CDN -->
