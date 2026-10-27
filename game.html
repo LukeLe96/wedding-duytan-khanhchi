@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Super Tân & Chi Run 囍 Cuộc Phiêu Lưu Về Chung Đôi</title>
+  <title>Hành Trình Tìm Vợ 囍 Lê Duy Tân & Đinh Khánh Chi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800;900&family=VT323&display=swap" rel="stylesheet">
   <style>
     :root {
       --gold: #D4AF37;
       --gold-light: #FDF4DC;
+      --gold-dark: #AA820A;
       --ruby: #8B1E2D;
       --ruby-dark: #66101F;
+      --ruby-light: #FFF1F2;
     }
     * {
       box-sizing: border-box;
@@ -23,8 +25,8 @@
       -webkit-touch-callout: none;
     }
     body {
-      background: #1A1215;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: #140C0E;
+      font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
       color: #FFF;
       display: flex;
       flex-direction: column;
@@ -35,9 +37,14 @@
       overflow: hidden;
       touch-action: manipulation;
     }
-    .retro-font {
-      font-family: 'Press Start 2P', monospace, cursive;
-      image-rendering: pixelated;
+    .font-pixel {
+      font-family: 'VT323', monospace;
+      letter-spacing: 1.5px;
+    }
+    .font-retro {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
     #game-container {
       position: relative;
@@ -46,19 +53,19 @@
       height: 100vh;
       height: 100dvh;
       max-height: 840px;
-      background: #23171B;
+      background: #1C1215;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
       overflow: hidden;
     }
     @media (min-width: 441px) {
       #game-container {
-        height: 92vh;
-        max-height: 780px;
-        border-radius: 20px;
-        border: 3px solid #8B1E2D;
-        box-shadow: 0 0 0 1px #D4AF37, 0 20px 50px rgba(0,0,0,0.7);
+        height: 94vh;
+        max-height: 790px;
+        border-radius: 24px;
+        border: 2.5px solid #8B1E2D;
+        box-shadow: 0 0 0 1px #D4AF37, 0 20px 60px rgba(0,0,0,0.85);
       }
     }
     /* Top Bar */
@@ -66,21 +73,22 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px;
-      background: #140C0E;
+      padding: 8px 12px;
+      background: #12090C;
       border-bottom: 2px solid #8B1E2D;
-      z-index: 20;
+      z-index: 25;
     }
     .top-bar .title {
-      font-size: 11px;
+      font-size: 13px;
+      font-weight: 800;
       color: #F9E29D;
       display: flex;
       align-items: center;
       gap: 6px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
     .top-bar .btn-round {
-      background: #2A171C;
+      background: #251318;
       border: 1px solid #D4AF37;
       color: #F9E29D;
       width: 32px;
@@ -91,18 +99,68 @@
       justify-content: center;
       font-size: 13px;
       cursor: pointer;
+      text-decoration: none;
       transition: all 0.15s;
     }
     .top-bar .btn-round:active {
       transform: scale(0.92);
       background: #8B1E2D;
     }
+
+    /* Story Progress Bar */
+    .story-progress-bar {
+      background: #1F1014;
+      border-bottom: 1px solid #4A1A22;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3px;
+      z-index: 20;
+    }
+    .story-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2px 1px;
+      border-radius: 4px;
+      opacity: 0.45;
+      transition: all 0.3s;
+    }
+    .story-step.active {
+      opacity: 1;
+      background: rgba(212, 175, 55, 0.18);
+      border: 1px solid #D4AF37;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+    .story-step.passed {
+      opacity: 0.85;
+      color: #F9E29D;
+    }
+    .story-step .icon {
+      font-size: 11px;
+      line-height: 1;
+    }
+    .story-step .label {
+      font-size: 7.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      margin-top: 2px;
+      color: #E2E8F0;
+    }
+    .story-step.active .label {
+      color: #FCD34D;
+      font-weight: 800;
+    }
+
     /* Canvas Area */
     #canvas-wrap {
       position: relative;
       flex: 1;
       width: 100%;
-      background: #FFE8D6;
+      background: #FED7AA;
       overflow: hidden;
     }
     canvas {
@@ -112,12 +170,13 @@
       image-rendering: pixelated;
       image-rendering: crisp-edges;
     }
+
     /* HUD Overlay */
     .hud-overlay {
       position: absolute;
-      top: 10px;
-      left: 12px;
-      right: 12px;
+      top: 8px;
+      left: 10px;
+      right: 10px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -125,56 +184,102 @@
       z-index: 10;
     }
     .hud-box {
-      background: rgba(20, 12, 14, 0.85);
+      background: rgba(18, 9, 12, 0.88);
       border: 1.5px solid #D4AF37;
       border-radius: 8px;
-      padding: 5px 10px;
+      padding: 4px 10px;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
     .hud-hearts {
       font-size: 13px;
       letter-spacing: 2px;
     }
     .hud-score {
-      font-size: 11px;
+      font-size: 15px;
       color: #F9E29D;
+      font-weight: bold;
     }
     .hud-dist {
-      font-size: 9px;
+      font-size: 12px;
       color: #E2E8F0;
+      font-weight: bold;
     }
+
+    /* Story Milestone Pop-up Toast */
+    #story-toast {
+      position: absolute;
+      top: 50px;
+      left: 12px;
+      right: 12px;
+      background: rgba(26, 12, 16, 0.95);
+      border: 2px solid #D4AF37;
+      border-radius: 12px;
+      padding: 8px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px rgba(212, 175, 55, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 18;
+      pointer-events: none;
+      transform: translateY(-80px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #story-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    #story-toast .toast-icon {
+      font-size: 26px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+    #story-toast .toast-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #F9E29D;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    #story-toast .toast-desc {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #FCE7F3;
+      margin-top: 1px;
+      line-height: 1.35;
+    }
+
     /* Onscreen Jump Button for Mobile */
     .jump-btn-wrap {
       position: absolute;
-      bottom: 24px;
-      right: 20px;
+      bottom: 20px;
+      right: 18px;
       z-index: 15;
     }
     .btn-jump {
-      width: 76px;
-      height: 76px;
+      width: 74px;
+      height: 74px;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #E11D48, #8B1E2D);
       border: 3px solid #F9E29D;
       color: #FFF;
       font-size: 11px;
       font-weight: 800;
-      box-shadow: 0 8px 25px rgba(225, 29, 72, 0.6), inset 0 2px 4px rgba(255,255,255,0.4);
+      box-shadow: 0 8px 25px rgba(225, 29, 72, 0.65), inset 0 2px 4px rgba(255,255,255,0.4);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      active-scale: 0.92;
       transition: transform 0.08s;
       outline: none;
       -webkit-tap-highlight-color: transparent;
     }
     .btn-jump:active {
-      transform: scale(0.9);
+      transform: scale(0.91);
       background: #8B1E2D;
     }
     .btn-jump span {
@@ -182,18 +287,19 @@
       line-height: 1;
       margin-bottom: 2px;
     }
-    /* Menu & Overlays */
+
+    /* Screen Overlays (Menu / Victory / Game Over) */
     .screen-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(18, 10, 13, 0.92);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: rgba(16, 8, 11, 0.94);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 20px;
       text-align: center;
       z-index: 30;
       transition: opacity 0.25s;
@@ -201,75 +307,76 @@
     .screen-overlay.hidden {
       display: none;
     }
-    .game-logo {
-      font-size: 15px;
+
+    .hero-title {
+      font-size: 17px;
+      font-weight: 900;
       color: #F9E29D;
-      line-height: 1.5;
-      text-shadow: 2px 2px 0 #8B1E2D, 3px 3px 0 #000;
-      margin-bottom: 12px;
+      line-height: 1.35;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.4);
+      margin-bottom: 6px;
     }
-    .game-sub {
+    .hero-subtitle {
       font-size: 12px;
-      color: #FBCFE8;
-      margin-bottom: 24px;
       font-weight: 600;
+      color: #FBCFE8;
+      margin-bottom: 18px;
+      line-height: 1.45;
     }
-    .char-select {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .char-card {
-      background: #2D1A20;
-      border: 2px solid #58242D;
+
+    /* Timeline card in menu */
+    .timeline-preview {
+      background: #251218;
+      border: 1px solid #D4AF37;
       border-radius: 12px;
-      padding: 12px 14px;
-      cursor: pointer;
+      padding: 10px 14px;
+      width: 100%;
+      max-width: 320px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .timeline-preview .item {
       display: flex;
-      flex-direction: column;
       align-items: center;
       gap: 8px;
-      transition: all 0.15s;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #FCE7F3;
+      padding: 4px 0;
+      border-bottom: 1px dashed rgba(212, 175, 55, 0.25);
     }
-    .char-card.selected {
-      border-color: #D4AF37;
-      background: #461C26;
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-      transform: translateY(-2px);
+    .timeline-preview .item:last-child {
+      border-bottom: none;
+      color: #FCD34D;
+      font-weight: 700;
     }
-    .char-card svg {
-      width: 36px;
-      height: 48px;
-      image-rendering: pixelated;
-    }
-    .char-card .name {
-      font-size: 10px;
-      color: #F9E29D;
-    }
+
     .btn-main {
       background: linear-gradient(135deg, #D4AF37, #AA820A);
-      color: #1F1005;
+      color: #1A0D04;
       border: 2px solid #FFF;
       border-radius: 30px;
       padding: 12px 32px;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
       transition: all 0.15s;
       letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
     .btn-main:active {
       transform: scale(0.95);
     }
     .btn-sec {
-      background: #2A171C;
+      background: #241117;
       color: #F9E29D;
       border: 1px solid #D4AF37;
       border-radius: 20px;
       padding: 9px 20px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       margin-top: 10px;
       cursor: pointer;
       text-decoration: none;
@@ -277,34 +384,47 @@
       align-items: center;
       gap: 6px;
     }
-    .instructions {
-      font-size: 10px;
-      color: #CBD5E1;
-      margin-top: 18px;
-      line-height: 1.6;
-    }
-    /* Victory / Game Over stats */
-    .stat-badge {
-      background: #2A171C;
-      border: 1px solid #D4AF37;
-      border-radius: 10px;
-      padding: 10px 16px;
-      margin-bottom: 20px;
+
+    /* Victory Wedding Card */
+    .wedding-card-final {
+      background: linear-gradient(145deg, #8B1E2D, #550D18);
+      border: 2px solid #D4AF37;
+      border-radius: 16px;
+      padding: 16px 14px;
       width: 100%;
-      max-width: 280px;
+      max-width: 320px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.3);
+      position: relative;
     }
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 11px;
-    }
-    .stat-row:last-child {
-      margin-bottom: 0;
-    }
-    .stat-val {
+    .card-emblem {
+      font-size: 26px;
       color: #F9E29D;
-      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #F9E29D;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .card-names {
+      font-size: 15px;
+      font-weight: 900;
+      color: #FFF;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .card-event {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #FCE7F3;
+      line-height: 1.5;
+      border-top: 1px dashed rgba(212, 175, 55, 0.4);
+      padding-top: 8px;
     }
   </style>
 </head>
@@ -343,10 +463,38 @@
     <!-- Top Bar -->
     <div class="top-bar">
       <a href="/chat" class="btn-round" title="Về khung Chat" style="text-decoration:none;">💬</a>
-      <div class="title retro-font">
-        <span>囍</span> SUPER TÂN &amp; CHI
+      <div class="title font-retro">
+        <span style="color:#D4AF37;">囍</span> HÀNH TRÌNH TÌM VỢ
       </div>
       <button id="sound-btn" class="btn-round" onclick="toggleSound()" title="Bật/Tắt âm thanh">🔊</button>
+    </div>
+
+    <!-- Story Progress 6 Steps Tracker -->
+    <div class="story-progress-bar">
+      <div class="story-step active" id="step-0">
+        <span class="icon">☕</span>
+        <span class="label">1. Gặp gỡ</span>
+      </div>
+      <div class="story-step" id="step-1">
+        <span class="icon">💬</span>
+        <span class="label">2. Nhắn tin</span>
+      </div>
+      <div class="story-step" id="step-2">
+        <span class="icon">✈️</span>
+        <span class="label">3. Yêu xa</span>
+      </div>
+      <div class="story-step" id="step-3">
+        <span class="icon">🥺</span>
+        <span class="label">4. Giận dỗi</span>
+      </div>
+      <div class="story-step" id="step-4">
+        <span class="icon">🍵</span>
+        <span class="label">5. Gia đình</span>
+      </div>
+      <div class="story-step" id="step-5">
+        <span class="icon">💒</span>
+        <span class="label">6. Rước dâu</span>
+      </div>
     </div>
 
     <!-- Canvas Wrap -->
@@ -359,8 +507,17 @@
           <span class="hud-hearts" id="hud-hearts">❤️❤️❤️</span>
         </div>
         <div class="hud-box">
-          <div class="hud-score retro-font" id="hud-score">00000</div>
-          <div class="hud-dist retro-font" id="hud-dist">0m / 800m</div>
+          <div class="hud-score font-pixel" id="hud-score">00000</div>
+          <div class="hud-dist font-pixel" id="hud-dist">0m / 880m</div>
+        </div>
+      </div>
+
+      <!-- Story Milestone Toast -->
+      <div id="story-toast">
+        <div class="toast-icon" id="toast-icon">☕</div>
+        <div>
+          <div class="toast-title" id="toast-title">CHẶNG 1: LẦN ĐẦU GẶP GỠ</div>
+          <div class="toast-desc" id="toast-desc">Chạm ánh mắt nàng thơ Khánh Chi giữa lòng Hà Nội!</div>
         </div>
       </div>
 
@@ -374,67 +531,55 @@
 
       <!-- START MENU OVERLAY -->
       <div id="start-screen" class="screen-overlay">
-        <div class="game-logo retro-font">
-          SUPER TÂN &amp; CHI RUN<br>
-          <span style="font-size:10px; color:#F9E29D;">囍 CUỘC PHIÊU LƯU VỀ CHUNG ĐÔI 囍</span>
+        <div class="hero-title font-retro">
+          HÀNH TRÌNH TÌM VỢ 囍<br>
+          <span style="font-size:13px; color:#FCD34D;">TÂN &amp; CHI VỀ CHUNG MỘT NHÀ</span>
         </div>
-        <div class="game-sub">
-          Vượt ngàn dặm Gia Lai ✈️ Hà Nội • 16-17.01.2027
-        </div>
-
-        <div style="font-size:11px; margin-bottom:10px; color:#F9E29D;">CHỌN NHÂN VẬT ĐẠI DIỆN:</div>
-        <div class="char-select">
-          <div id="sel-groom" class="char-card selected" onclick="selectCharacter('groom')">
-            <svg viewBox="0 0 12 16"><use href="#px-groom"/></svg>
-            <span class="name retro-font">CHÚ RỂ TÂN</span>
-          </div>
-          <div id="sel-bride" class="char-card" onclick="selectCharacter('bride')">
-            <svg viewBox="0 0 12 16"><use href="#px-bride"/></svg>
-            <span class="name retro-font">CÔ DÂU CHI</span>
-          </div>
+        <div class="hero-subtitle">
+          Vượt 1.100km Gia Lai ✈️ Hà Nội • Đón nàng về dinh 16-17.01.2027
         </div>
 
-        <button class="btn-main retro-font" onclick="startGame()">
-          ▶ BẮT ĐẦU CHƠI!
+        <!-- 6 Chapters Story Preview -->
+        <div class="timeline-preview">
+          <div class="item"><span>☕</span> 1. Chạm ánh mắt đầu tiên tại Hà Nội</div>
+          <div class="item"><span>💬</span> 2. Tán tỉnh &amp; nhắn tin thâu đêm</div>
+          <div class="item"><span>✈️</span> 3. 1.100km thử thách yêu xa</div>
+          <div class="item"><span>🥺</span> 4. Những lần giận dỗi &amp; bí kíp làm lành</div>
+          <div class="item"><span>🍵</span> 5. Ra mắt gia đình &amp; Dạm ngõ 16.09.2026</div>
+          <div class="item"><span>💒</span> 6. Cổng cưới hoàng gia &amp; Trao thiệp Đại Hỷ!</div>
+        </div>
+
+        <button class="btn-main font-retro" onclick="startGame()">
+          ▶ BẮT ĐẦU HÀNH TRÌNH!
         </button>
 
-        <div class="instructions">
-          📱 <strong>Chạm màn hình</strong> hoặc nút <strong>JUMP</strong> để nhảy.<br>
-          ⌨️ Bấm <strong>Phím Space</strong> hoặc <strong>Mũi tên lên</strong>.<br>
-          ✨ Húc đầu vào khối gạch <strong>[ ? ]</strong> để nhận Song Hỷ &amp; Nhẫn cưới!
-        </div>
-
-        <a href="/chat" class="btn-sec" style="margin-top:16px;">
+        <a href="/chat" class="btn-sec">
           ← Trở lại Thiệp Cưới Chat
         </a>
       </div>
 
       <!-- GAME OVER OVERLAY -->
       <div id="gameover-screen" class="screen-overlay hidden">
-        <div class="game-logo retro-font" style="color:#EF4444;">
-          CHƯA KỊP VỀ ĐÍCH! 💔
+        <div class="hero-title font-retro" style="color:#EF4444;">
+          CHƯA KỊP ĐÓN ĐƯỢC VỢ! 💔
         </div>
-        <div class="game-sub">
-          Đường về chung đôi có chút thử thách, thử lại nhé!
+        <div class="hero-subtitle">
+          Đường về chung đôi có chút thử thách, anh Tân quyết không từ bỏ!
         </div>
 
-        <div class="stat-badge">
-          <div class="stat-row">
+        <div style="background:#251218; border:1px solid #D4AF37; border-radius:12px; padding:10px 18px; margin-bottom:18px; width:100%; max-width:280px; text-align:left;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11px;">
             <span>Điểm tích lũy:</span>
-            <span class="stat-val retro-font" id="over-score">0</span>
+            <span class="font-pixel" id="over-score" style="color:#F9E29D; font-size:16px;">0</span>
           </div>
-          <div class="stat-row">
-            <span>Chữ Hỷ 囍 thu thập:</span>
-            <span class="stat-val retro-font" id="over-coins">0</span>
-          </div>
-          <div class="stat-row">
-            <span>Quãng đường:</span>
-            <span class="stat-val retro-font" id="over-dist">0m</span>
+          <div style="display:flex; justify-content:space-between; font-size:11px;">
+            <span>Chặng dừng chân:</span>
+            <span id="over-chapter" style="color:#FCD34D; font-weight:700;">Chặng 1</span>
           </div>
         </div>
 
-        <button class="btn-main retro-font" onclick="restartGame()">
-          🔄 CHƠI LẠI NGAY
+        <button class="btn-main font-retro" onclick="restartGame()">
+          🔄 THỬ LẠI TỪ ĐẦU
         </button>
 
         <a href="/chat" class="btn-sec">
@@ -442,37 +587,35 @@
         </a>
       </div>
 
-      <!-- VICTORY OVERLAY -->
+      <!-- VICTORY OVERLAY (TRAO THIỆP ĐẠI HỶ) -->
       <div id="victory-screen" class="screen-overlay hidden">
-        <div class="game-logo retro-font" style="color:#F9E29D;">
-          🎉 ĐẠI HỶ HOÀN MỸ! 囍
+        <div class="hero-title font-retro" style="color:#F9E29D; font-size:18px; margin-bottom:4px;">
+          🎉 TÂN ĐÃ RƯỚC ĐƯỢC VỢ VỀ DINH! 囍
         </div>
-        <div class="game-sub" style="color:#FEF08A;">
-          Tân &amp; Chi đã chính thức về chung một nhà! 💒✨
+        <div class="hero-subtitle" style="margin-bottom:14px; color:#FEF08A;">
+          Trải qua bao thăng trầm, hai bạn chính thức về chung một nhà! 💒✨
         </div>
 
-        <div class="stat-badge">
-          <div class="stat-row">
-            <span>Tổng điểm Đại Hỷ:</span>
-            <span class="stat-val retro-font" id="vic-score" style="color:#FCD34D;">0</span>
-          </div>
-          <div class="stat-row">
-            <span>Chữ Song Hỷ 囍:</span>
-            <span class="stat-val retro-font" id="vic-coins">0</span>
-          </div>
-          <div class="stat-row">
-            <span>Danh hiệu:</span>
-            <span class="stat-val" id="vic-title" style="color:#F43F5E; font-weight:bold;">Chàng Rể Kim Cương</span>
+        <!-- Mini Wedding Invitation Card -->
+        <div class="wedding-card-final">
+          <div class="card-emblem">囍</div>
+          <div class="card-title">✦ LỄ THÀNH HÔN &amp; VU QUY ✦</div>
+          <div class="card-names">LÊ DUY TÂN 囍 ĐINH KHÁNH CHI</div>
+          <div class="card-event">
+            <div>✦ <strong>Tiệc Nhóm Họ:</strong> 17:00 • Thứ Bảy 16.01.2027 (09 Chạp)</div>
+            <div style="margin-top:4px;">✦ <strong>Lễ Thành Hôn:</strong> 10:30 • Chủ Nhật 17.01.2027 (10 Chạp)</div>
+            <div style="margin-top:4px; color:#FCD34D;">📍 Tư Gia Nhà Gái • Hà Nội</div>
           </div>
         </div>
 
-        <button class="btn-main retro-font" onclick="restartGame()" style="margin-bottom:12px;">
-          🔄 CHƠI LẠI LẦN NỮA
-        </button>
-
-        <a href="/chat" class="btn-sec" style="background:#8B1E2D; border-color:#F9E29D;">
-          💌 Gửi lời chúc mừng cho Tân &amp; Chi
-        </a>
+        <div style="display:flex; gap:10px; flex-direction:column; width:100%; max-width:320px;">
+          <a href="/chat" class="btn-main font-retro" style="text-decoration:none; background:#8B1E2D; border-color:#F9E29D; color:#FFF; display:inline-block; padding:12px 20px;">
+            💌 MỞ THIỆP &amp; NHẮN TIN CHÚC PHÚC
+          </a>
+          <button class="btn-sec font-retro" onclick="restartGame()" style="justify-content:center; margin-top:2px;">
+            🔄 Chơi lại hành trình tìm vợ
+          </button>
+        </div>
       </div>
 
     </div>
@@ -480,7 +623,7 @@
 
   <script>
     // ==========================================
-    // 1. RETRO 8-BIT CHIPTUNE AUDIO SYNTHESIZER
+    // 1. RETRO AUDIO SYNTHESIZER (WEB AUDIO API)
     // ==========================================
     let audioCtx = null;
     let soundEnabled = true;
@@ -525,21 +668,20 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(650, audioCtx.currentTime + 0.15);
+        osc.frequency.setValueAtTime(240, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(680, audioCtx.currentTime + 0.14);
         gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.14);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.15);
+        osc.stop(audioCtx.currentTime + 0.14);
       } catch (e) {}
     }
 
     function sfxCoin() {
       if (!soundEnabled || !audioCtx) return;
       try {
-        const now = audioCtx.currentTime;
         playTone(987.77, 'square', 0.08, 0.15); // B5
         setTimeout(() => playTone(1318.51, 'square', 0.22, 0.15), 80); // E6
       } catch (e) {}
@@ -549,36 +691,151 @@
       playTone(130, 'triangle', 0.1, 0.2);
     }
 
+    function sfxMilestone() {
+      if (!soundEnabled || !audioCtx) return;
+      const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+      notes.forEach((freq, idx) => {
+        setTimeout(() => playTone(freq, 'triangle', 0.15, 0.2), idx * 100);
+      });
+    }
+
     function sfxHurt() {
       if (!soundEnabled || !audioCtx) return;
       try {
-        const now = audioCtx.currentTime;
         playTone(180, 'sawtooth', 0.1, 0.15);
-        setTimeout(() => playTone(120, 'sawtooth', 0.15, 0.15), 90);
+        setTimeout(() => playTone(110, 'sawtooth', 0.15, 0.15), 80);
       } catch (e) {}
     }
 
     function sfxWin() {
       if (!soundEnabled || !audioCtx) return;
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
       notes.forEach((freq, idx) => {
-        setTimeout(() => playTone(freq, 'square', 0.18, 0.2), idx * 120);
+        setTimeout(() => playTone(freq, 'square', 0.2, 0.22), idx * 120);
       });
     }
 
     // ==========================================
-    // 2. CANVAS & GAME ENGINE
+    // 2. STORY CHAPTERS DATA (6 MILESTONES)
+    // ==========================================
+    const CHAPTERS = [
+      {
+        startDist: 0,
+        endDist: 140,
+        title: "CHẶNG 1: LẦN ĐẦU GẶP GỠ (HÀ NỘI)",
+        desc: "Chạm ánh mắt nàng thơ Khánh Chi giữa lòng thủ đô! ☕",
+        icon: "☕",
+        bgColor: "#FED7AA",
+        skyColors: ['#FBCFE8', '#FED7AA', '#FFFBEB'],
+        itemEmoji: "☕",
+        blockReward: "Số điện thoại của nàng! 📱",
+        obstacleType: "ngai_ngung"
+      },
+      {
+        startDist: 140,
+        endDist: 290,
+        title: "CHẶNG 2: TÁN TỈNH & NHẮN TIN 2H SÁNG",
+        desc: "Những đêm thức trắng nhắn tin, chờ từng dòng rep! 💬",
+        icon: "💬",
+        bgColor: "#FDE68A",
+        skyColors: ['#DDD6FE', '#FDE68A', '#FEF3C7'],
+        itemEmoji: "❤️",
+        blockReward: "Đồng ý đi chơi buổi đầu! 🛵",
+        obstacleType: "buon_ngu"
+      },
+      {
+        startDist: 290,
+        endDist: 450,
+        title: "CHẶNG 3: 1.100KM THỬ THÁCH YÊU XA",
+        desc: "Gia Lai ✈️ Hà Nội — Nỗi nhớ đong đầy qua từng chuyến bay!",
+        icon: "✈️",
+        bgColor: "#BAE6FD",
+        skyColors: ['#93C5FD', '#BAE6FD', '#F0F9FF'],
+        itemEmoji: "🎫",
+        blockReward: "Chuyến bay hạ cánh sớm! 🛬",
+        obstacleType: "delay"
+      },
+      {
+        startDist: 450,
+        endDist: 610,
+        title: "CHẶNG 4: GIẬN DỖI VU VƠ & LÀM LÀNH",
+        desc: "Yêu xa có lúc dỗi hờn, bí kíp trà sữa & hoa hồng dỗ dành! 💐",
+        icon: "🥺",
+        bgColor: "#FBCFE8",
+        skyColors: ['#F472B6', '#FBCFE8', '#FFF1F2'],
+        itemEmoji: "🧋",
+        blockReward: "Hết dỗi rồi, thương Tân nhất! 💕",
+        obstacleType: "doi_hon"
+      },
+      {
+        startDist: 610,
+        endDist: 770,
+        title: "CHẶNG 5: VỀ GIA LAI RA MẮT & DẠM NGÕ",
+        desc: "Đưa nàng về Pleiku ra mắt & Lễ Dạm Ngõ 16.09.2026 ấm cúng 🍵",
+        icon: "🍵",
+        bgColor: "#FEF08A",
+        skyColors: ['#FDE047', '#FEF08A', '#FFFDF0'],
+        itemEmoji: "🍃",
+        blockReward: "Hai bên gia đình chúc phúc! 👨‍👩‍👧‍👦",
+        obstacleType: "hoi_hop"
+      },
+      {
+        startDist: 770,
+        endDist: 880,
+        title: "CHẶNG 6: RƯỚC NÀNG VỀ DINH & TRAO THIỆP",
+        desc: "Đón cô dâu Khánh Chi về dinh ngày 16-17.01.2027! 💒",
+        icon: "💒",
+        bgColor: "#FECDD3",
+        skyColors: ['#FB7185', '#FECDD3', '#FFF1F2'],
+        itemEmoji: "囍",
+        blockReward: "Nhẫn Cưới Kim Cương! 💍",
+        obstacleType: "phao_hoa"
+      }
+    ];
+
+    let currentChapterIdx = 0;
+
+    function getChapterByDist(d) {
+      for (let i = 0; i < CHAPTERS.length; i++) {
+        if (d >= CHAPTERS[i].startDist && d < CHAPTERS[i].endDist) {
+          return i;
+        }
+      }
+      return CHAPTERS.length - 1;
+    }
+
+    function showStoryToast(chap) {
+      const toast = document.getElementById('story-toast');
+      document.getElementById('toast-icon').innerText = chap.icon;
+      document.getElementById('toast-title').innerText = chap.title;
+      document.getElementById('toast-desc').innerText = chap.desc;
+      toast.classList.add('show');
+      sfxMilestone();
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    function updateStoryTracker(idx) {
+      for (let i = 0; i < 6; i++) {
+        const el = document.getElementById(`step-${i}`);
+        if (!el) continue;
+        el.classList.toggle('active', i === idx);
+        el.classList.toggle('passed', i < idx);
+      }
+    }
+
+    // ==========================================
+    // 3. CANVAS & GAME ENGINE
     // ==========================================
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const canvasWrap = document.getElementById('canvas-wrap');
 
-    let currentRole = 'groom'; // 'groom' or 'bride'
-    let gameState = 'START';    // 'START', 'PLAYING', 'GAMEOVER', 'VICTORY'
+    let gameState = 'START'; // 'START', 'PLAYING', 'GAMEOVER', 'VICTORY'
     let score = 0;
-    let coinsCollected = 0;
     let distance = 0;
-    const GOAL_DISTANCE = 800; // 800 meters to Wedding Gate
+    const GOAL_DISTANCE = 880;
 
     let width = 390;
     let height = 550;
@@ -589,11 +846,9 @@
       height = canvasWrap.clientHeight;
       canvas.width = width;
       canvas.height = height;
-      groundY = height - 70;
-      if (player) {
-        if (player.y > groundY - player.height) {
-          player.y = groundY - player.height;
-        }
+      groundY = height - 68;
+      if (player && player.y > groundY - player.height) {
+        player.y = groundY - player.height;
       }
     }
     window.addEventListener('resize', resizeCanvas);
@@ -604,7 +859,6 @@
       ctx.translate(x, y);
       ctx.scale(scale, scale);
       
-      const s = 1;
       // Hair
       ctx.fillStyle = '#2B1D16';
       ctx.fillRect(3, 0, 5, 1);
@@ -649,7 +903,7 @@
       ctx.fillStyle = '#B3263A';
       ctx.fillRect(5, 9, 2, 1);
       
-      // Legs (Run cycle animation)
+      // Legs (Run cycle)
       ctx.fillStyle = '#141B2D';
       if (runFrame === 1) {
         ctx.fillRect(2, 13, 3, 2);
@@ -718,45 +972,12 @@
 
       // Pants & Shoes
       ctx.fillStyle = '#F5F0E6';
-      if (runFrame === 1) {
-        ctx.fillRect(3, 13, 2, 2);
-        ctx.fillRect(7, 13, 2, 1);
-      } else if (runFrame === 2) {
-        ctx.fillRect(3, 13, 2, 1);
-        ctx.fillRect(7, 13, 2, 2);
-      } else {
-        ctx.fillRect(3, 13, 2, 2);
-        ctx.fillRect(7, 13, 2, 2);
-      }
+      ctx.fillRect(3, 13, 2, 2);
+      ctx.fillRect(7, 13, 2, 2);
 
       ctx.fillStyle = '#0F0F10';
       ctx.fillRect(3, 15, 2, 1);
       ctx.fillRect(7, 15, 2, 1);
-
-      ctx.restore();
-    }
-
-    // DRAW PIXEL SONG HY (囍) COIN
-    function drawPixelSongHy(ctx, x, y, size = 24, rotation = 0) {
-      ctx.save();
-      ctx.translate(x + size/2, y + size/2);
-      ctx.scale(Math.cos(rotation), 1);
-      
-      // Gold background circle
-      ctx.fillStyle = '#D4AF37';
-      ctx.beginPath();
-      ctx.arc(0, 0, size/2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = '#F9E29D';
-      ctx.stroke();
-
-      // Red 囍 character
-      ctx.fillStyle = '#8B1E2D';
-      ctx.font = `bold ${Math.round(size * 0.58)}px 'Plus Jakarta Sans', sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('囍', 0, 1);
 
       ctx.restore();
     }
@@ -769,15 +990,13 @@
       const h = block.height;
 
       if (block.hit) {
-        // Empty block (hit)
-        ctx.fillStyle = '#6B7280';
+        ctx.fillStyle = '#64748B';
         ctx.fillRect(x, y, w, h);
-        ctx.fillStyle = '#4B5563';
+        ctx.fillStyle = '#475569';
         ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
-        ctx.strokeStyle = '#1F2937';
+        ctx.strokeStyle = '#1E293B';
         ctx.strokeRect(x, y, w, h);
       } else {
-        // Active Question Block (Gold)
         ctx.fillStyle = '#D4AF37';
         ctx.fillRect(x, y, w, h);
         ctx.fillStyle = '#F59E0B';
@@ -789,47 +1008,45 @@
         ctx.strokeStyle = '#78350F';
         ctx.strokeRect(x, y, w, h);
 
-        // Screws in corners
         ctx.fillStyle = '#78350F';
         ctx.fillRect(x + 3, y + 3, 2, 2);
         ctx.fillRect(x + w - 5, y + 3, 2, 2);
         ctx.fillRect(x + 3, y + h - 5, 2, 2);
         ctx.fillRect(x + w - 5, y + h - 5, 2, 2);
 
-        // White '?' symbol
         ctx.fillStyle = '#FFFFFF';
-        ctx.font = "bold 15px 'Press Start 2P', monospace";
+        ctx.font = "bold 15px 'Be Vietnam Pro', sans-serif";
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('?', x + w/2, y + h/2 + 1);
       }
     }
 
-    // DRAW WEDDING ARCH (FINISH GATE)
+    // DRAW FINISH WEDDING ARCH
     function drawWeddingArch(ctx, x, y) {
-      const w = 120;
-      const h = 180;
+      const w = 130;
+      const h = 185;
       ctx.save();
       ctx.translate(x, y - h);
 
       // Gold Pillars
       ctx.fillStyle = '#D4AF37';
-      ctx.fillRect(10, 20, 14, h - 20);
-      ctx.fillRect(w - 24, 20, 14, h - 20);
+      ctx.fillRect(10, 20, 16, h - 20);
+      ctx.fillRect(w - 26, 20, 16, h - 20);
 
       // Arch Dome
       ctx.beginPath();
-      ctx.arc(w/2, 50, 45, Math.PI, 0);
+      ctx.arc(w/2, 50, 48, Math.PI, 0);
       ctx.lineWidth = 14;
       ctx.strokeStyle = '#D4AF37';
       ctx.stroke();
 
       // Flowers pink & ruby on arch
       const colors = ['#F43F5E', '#FDA4AF', '#8B1E2D', '#FFFFFF', '#D4AF37'];
-      for (let i = 0; i < 18; i++) {
-        const ang = Math.PI + (i / 17) * Math.PI;
-        const fx = w/2 + Math.cos(ang) * 45;
-        const fy = 50 + Math.sin(ang) * 45;
+      for (let i = 0; i < 20; i++) {
+        const ang = Math.PI + (i / 19) * Math.PI;
+        const fx = w/2 + Math.cos(ang) * 48;
+        const fy = 50 + Math.sin(ang) * 48;
         ctx.fillStyle = colors[i % colors.length];
         ctx.beginPath();
         ctx.arc(fx, fy, 6, 0, Math.PI * 2);
@@ -838,26 +1055,23 @@
 
       // Grand Song Hy banner at top center
       ctx.fillStyle = '#8B1E2D';
-      ctx.fillRect(w/2 - 25, 10, 50, 26);
+      ctx.fillRect(w/2 - 28, 8, 56, 28);
       ctx.strokeStyle = '#D4AF37';
-      ctx.strokeRect(w/2 - 25, 10, 50, 26);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(w/2 - 28, 8, 56, 28);
       ctx.fillStyle = '#F9E29D';
-      ctx.font = "bold 16px 'Plus Jakarta Sans', sans-serif";
+      ctx.font = "bold 18px 'Be Vietnam Pro', sans-serif";
       ctx.textAlign = 'center';
       ctx.fillText('囍', w/2, 28);
 
-      // Bride waiting at gate (if playing groom), or Groom waiting (if playing bride)
-      if (currentRole === 'groom') {
-        drawPixelBride(ctx, w/2 - 15, h - 40, 2.5, 0);
-      } else {
-        drawPixelGroom(ctx, w/2 - 15, h - 40, 2.5, 0);
-      }
+      // Cô dâu Khánh Chi đứng đón chú rể
+      drawPixelBride(ctx, w/2 - 15, h - 42, 2.6, 0);
 
       ctx.restore();
     }
 
     // ==========================================
-    // 3. GAME STATE & ENTITIES
+    // 4. GAME STATE & ENTITIES
     // ==========================================
     let player = {
       x: 60,
@@ -879,7 +1093,7 @@
     let bgScroll = 0;
 
     let blocks = [];
-    let coins = [];
+    let items = [];
     let obstacles = [];
     let particles = [];
     let popups = [];
@@ -887,11 +1101,11 @@
 
     function resetGameEntities() {
       score = 0;
-      coinsCollected = 0;
       distance = 0;
       hearts = 3;
       gameSpeed = 3.6;
       bgScroll = 0;
+      currentChapterIdx = 0;
 
       player.x = 60;
       player.y = groundY - player.height;
@@ -901,19 +1115,15 @@
       player.invincibleTimer = 0;
 
       blocks = [];
-      coins = [];
+      items = [];
       obstacles = [];
       particles = [];
       popups = [];
       finishArch = null;
 
+      updateStoryTracker(0);
       updateHUD();
-    }
-
-    function selectCharacter(role) {
-      currentRole = role;
-      document.getElementById('sel-groom').classList.toggle('selected', role === 'groom');
-      document.getElementById('sel-bride').classList.toggle('selected', role === 'bride');
+      showStoryToast(CHAPTERS[0]);
     }
 
     function startGame() {
@@ -948,14 +1158,13 @@
           player.isGrounded = false;
           sfxJump();
 
-          // Spawn little jump dust particles
           for (let i = 0; i < 4; i++) {
             particles.push({
               x: player.x + player.width/2,
               y: player.y + player.height,
               vx: (Math.random() - 0.5) * 3 - gameSpeed * 0.4,
               vy: Math.random() * -2,
-              life: 20,
+              life: 18,
               color: '#FFFFFF'
             });
           }
@@ -963,16 +1172,13 @@
       }
     }
 
-    // Keyboard controls
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
         handleJumpAction(e);
       }
     });
 
-    // Tap canvas to jump
     canvasWrap.addEventListener('touchstart', (e) => {
-      // Don't trigger if clicked on jump button or top bar
       if (e.target.closest('#btn-jump') || e.target.closest('.top-bar')) return;
       handleJumpAction(e);
     }, { passive: false });
@@ -983,27 +1189,27 @@
     });
 
     // ==========================================
-    // 4. LEVEL GENERATOR & SPAWNING
+    // 5. WORLD SPAWNER WITH STORY PROGRESSION
     // ==========================================
     let spawnTimer = 0;
 
     function spawnWorldElements() {
       if (distance >= GOAL_DISTANCE && !finishArch) {
-        // Spawn Finish Wedding Arch
         finishArch = {
           x: width + 80,
           y: groundY
         };
         return;
       }
-
       if (distance >= GOAL_DISTANCE) return;
 
+      const chap = CHAPTERS[currentChapterIdx];
       spawnTimer++;
-      if (spawnTimer % 90 === 0) {
+
+      if (spawnTimer % 85 === 0) {
         const rand = Math.random();
 
-        // 1. Question Block [ ? ]
+        // 1. Question Block [?] with story reward
         if (rand < 0.45) {
           blocks.push({
             x: width + 20,
@@ -1011,25 +1217,27 @@
             width: 32,
             height: 32,
             hit: false,
-            bumpY: 0
+            bumpY: 0,
+            rewardText: chap.blockReward
           });
         }
-        // 2. Obstacle (Gift box / Flower bush)
-        else if (rand < 0.8) {
+        // 2. Story Obstacle
+        else if (rand < 0.78) {
           obstacles.push({
             x: width + 20,
-            y: groundY - 32,
+            y: groundY - 30,
             width: 28,
-            height: 32,
-            type: Math.random() > 0.5 ? 'gift' : 'bush'
+            height: 30,
+            type: chap.obstacleType
           });
         }
-        // 3. Free floating Song Hy coin
+        // 3. Story Collectible Item
         else {
-          coins.push({
+          items.push({
             x: width + 20,
-            y: groundY - 50 - Math.random() * 50,
-            size: 24,
+            y: groundY - 45 - Math.random() * 50,
+            size: 26,
+            emoji: chap.itemEmoji,
             rotation: 0
           });
         }
@@ -1037,28 +1245,33 @@
     }
 
     // ==========================================
-    // 5. UPDATE LOOP
+    // 6. UPDATE LOOP
     // ==========================================
     function update() {
       if (gameState !== 'PLAYING') return;
 
-      // Distance & speed progression
       distance += (gameSpeed * 0.05);
       gameSpeed = 3.6 + Math.min(2.0, distance * 0.002);
       bgScroll += gameSpeed;
 
-      // Player run cycle
+      // Check Chapter Transition
+      const newChapIdx = getChapterByDist(distance);
+      if (newChapIdx !== currentChapterIdx) {
+        currentChapterIdx = newChapIdx;
+        updateStoryTracker(currentChapterIdx);
+        showStoryToast(CHAPTERS[currentChapterIdx]);
+      }
+
+      // Player animation
       player.runTimer++;
       if (player.runTimer % 6 === 0) {
         player.runFrame = (player.runFrame + 1) % 3;
       }
-
-      // Player Invincibility timer
       if (player.invincibleTimer > 0) {
         player.invincibleTimer--;
       }
 
-      // Player Gravity & Jump Physics
+      // Physics
       player.vy += player.gravity;
       player.y += player.vy;
 
@@ -1069,21 +1282,19 @@
         player.jumpsRemaining = 2;
       }
 
-      // Spawning
       spawnWorldElements();
 
-      // Update Question Blocks & Hit Detection
+      // Blocks
       for (let i = blocks.length - 1; i >= 0; i--) {
         const b = blocks[i];
         b.x -= gameSpeed;
 
-        // Bump animation return
         if (b.bumpY < 0) {
           b.bumpY += 1.5;
           if (b.bumpY > 0) b.bumpY = 0;
         }
 
-        // Mario Head-bump collision (jumping upward into bottom of block)
+        // Mario Head-bump collision
         if (!b.hit && player.vy < 0) {
           if (
             player.x + player.width > b.x &&
@@ -1093,54 +1304,45 @@
           ) {
             b.hit = true;
             b.bumpY = -8;
-            player.vy = 1; // bounce back down slightly
+            player.vy = 1;
             sfxBump();
-
-            // Reward: 囍 Song Hy coin or Ring
-            const isRing = Math.random() < 0.3;
-            score += isRing ? 200 : 100;
-            coinsCollected++;
+            score += 200;
             sfxCoin();
 
-            // Float popup text
             popups.push({
               x: b.x + b.width/2,
-              y: b.y - 10,
-              text: isRing ? '+200 💍' : '+100 囍',
-              color: isRing ? '#38BDF8' : '#F9E29D',
+              y: b.y - 12,
+              text: b.rewardText || '+200 囍',
+              color: '#FCD34D',
               vy: -2,
-              life: 35
+              life: 45
             });
           }
         }
 
-        if (b.x + b.width < -40) {
-          blocks.splice(i, 1);
-        }
+        if (b.x + b.width < -40) blocks.splice(i, 1);
       }
 
-      // Update Coins
-      for (let i = coins.length - 1; i >= 0; i--) {
-        const c = coins[i];
-        c.x -= gameSpeed;
-        c.rotation += 0.08;
+      // Items
+      for (let i = items.length - 1; i >= 0; i--) {
+        const it = items[i];
+        it.x -= gameSpeed;
+        it.rotation += 0.08;
 
-        // Collect detection
         if (
-          player.x + player.width > c.x &&
-          player.x < c.x + c.size &&
-          player.y + player.height > c.y &&
-          player.y < c.y + c.size
+          player.x + player.width > it.x &&
+          player.x < it.x + it.size &&
+          player.y + player.height > it.y &&
+          player.y < it.y + it.size
         ) {
-          coins.splice(i, 1);
+          items.splice(i, 1);
           score += 100;
-          coinsCollected++;
           sfxCoin();
 
           popups.push({
-            x: c.x,
-            y: c.y,
-            text: '+100 囍',
+            x: it.x,
+            y: it.y,
+            text: `+100 ${it.emoji}`,
             color: '#F9E29D',
             vy: -2,
             life: 30
@@ -1148,17 +1350,14 @@
           continue;
         }
 
-        if (c.x + c.size < -40) {
-          coins.splice(i, 1);
-        }
+        if (it.x + it.size < -40) items.splice(i, 1);
       }
 
-      // Update Obstacles
+      // Obstacles
       for (let i = obstacles.length - 1; i >= 0; i--) {
         const o = obstacles[i];
         o.x -= gameSpeed;
 
-        // Collision with player
         if (
           player.invincibleTimer <= 0 &&
           player.x + player.width - 6 > o.x &&
@@ -1167,10 +1366,9 @@
           player.y < o.y + o.height
         ) {
           hearts--;
-          player.invincibleTimer = 65; // ~1.5s invincibility
+          player.invincibleTimer = 65;
           sfxHurt();
 
-          // Screen shake & particles
           for (let p = 0; p < 8; p++) {
             particles.push({
               x: player.x + player.width/2,
@@ -1188,12 +1386,10 @@
           }
         }
 
-        if (o.x + o.width < -40) {
-          obstacles.splice(i, 1);
-        }
+        if (o.x + o.width < -40) obstacles.splice(i, 1);
       }
 
-      // Update Wedding Arch (Finish Gate)
+      // Finish Arch
       if (finishArch) {
         finishArch.x -= gameSpeed;
         if (player.x >= finishArch.x + 20) {
@@ -1202,7 +1398,7 @@
         }
       }
 
-      // Update Popups & Particles
+      // Popups & Particles
       for (let i = popups.length - 1; i >= 0; i--) {
         const p = popups[i];
         p.y += p.vy;
@@ -1222,14 +1418,11 @@
     }
 
     function updateHUD() {
-      // Hearts
       let heartStr = '';
       for (let i = 0; i < 3; i++) {
         heartStr += i < hearts ? '❤️' : '🖤';
       }
       document.getElementById('hud-hearts').innerText = heartStr;
-
-      // Score & Distance
       document.getElementById('hud-score').innerText = String(score).padStart(5, '0');
       const distShown = Math.min(GOAL_DISTANCE, Math.floor(distance));
       document.getElementById('hud-dist').innerText = `${distShown}m / ${GOAL_DISTANCE}m`;
@@ -1238,161 +1431,145 @@
     function triggerGameOver() {
       gameState = 'GAMEOVER';
       document.getElementById('over-score').innerText = score;
-      document.getElementById('over-coins').innerText = coinsCollected;
-      document.getElementById('over-dist').innerText = `${Math.floor(distance)}m`;
+      document.getElementById('over-chapter').innerText = CHAPTERS[currentChapterIdx].title;
       document.getElementById('gameover-screen').classList.remove('hidden');
     }
 
     function triggerVictory() {
       gameState = 'VICTORY';
+      updateStoryTracker(5); // Highlight Step 6: Rước dâu
       sfxWin();
 
-      // Confetti burst
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 80,
-          spread: 80,
+          particleCount: 90,
+          spread: 85,
           origin: { y: 0.5 },
           colors: ['#D4AF37', '#8B1E2D', '#FFB6C1', '#FFFFFF']
         });
       }
 
-      const totalScore = score + 500; // Bonus for completion
-      document.getElementById('vic-score').innerText = totalScore;
-      document.getElementById('vic-coins').innerText = coinsCollected;
-      
-      let title = 'Chàng Rể Kim Cương';
-      if (currentRole === 'bride') {
-        title = totalScore > 1200 ? 'Nàng Dâu Tuyệt Sắc 👑' : 'Nàng Dâu Duyên Dáng 🌸';
-      } else {
-        title = totalScore > 1200 ? 'Chàng Rể Siêu Cấp 🏆' : 'Chàng Rể Tinh Anh 🤵';
-      }
-      document.getElementById('vic-title').innerText = title;
-
       document.getElementById('victory-screen').classList.remove('hidden');
     }
 
     // ==========================================
-    // 6. RENDER LOOP
+    // 7. RENDER LOOP
     // ==========================================
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
-      // 1. SKY GRADIENT (Sunset Peach & Royal Warmth)
+      const chap = CHAPTERS[currentChapterIdx];
+
+      // 1. SKY GRADIENT PER CHAPTER
       const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
-      skyGrad.addColorStop(0, '#FBCFE8'); // Soft pink
-      skyGrad.addColorStop(0.5, '#FED7AA'); // Warm peach
-      skyGrad.addColorStop(1, '#FFFBEB'); // Warm gold-white
+      skyGrad.addColorStop(0, chap.skyColors[0]);
+      skyGrad.addColorStop(0.5, chap.skyColors[1]);
+      skyGrad.addColorStop(1, chap.skyColors[2]);
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, width, groundY);
 
       // Pixel Sun
       ctx.fillStyle = '#FDE047';
       ctx.beginPath();
-      ctx.arc(width - 70, 70, 28, 0, Math.PI * 2);
+      ctx.arc(width - 65, 65, 26, 0, Math.PI * 2);
       ctx.fill();
 
-      // 2. PARALLAX CLOUDS (Layer 1)
+      // Parallax Clouds
       ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       const cloudOffset = (bgScroll * 0.2) % (width + 120);
-      drawPixelCloud(ctx, width - cloudOffset, 65, 50);
-      drawPixelCloud(ctx, width * 0.4 - cloudOffset * 0.7, 105, 40);
+      drawPixelCloud(ctx, width - cloudOffset, 60, 48);
+      drawPixelCloud(ctx, width * 0.4 - cloudOffset * 0.7, 95, 38);
 
-      // 3. DISTANT HILLS / HANOI & GIALAI OUTLINE (Layer 2)
-      ctx.fillStyle = '#E9D5FF';
+      // Distant Hills / Skylines
+      ctx.fillStyle = 'rgba(216, 180, 254, 0.7)';
       ctx.beginPath();
       ctx.moveTo(0, groundY);
       for (let i = 0; i <= width; i += 40) {
-        const hillH = Math.sin((i + bgScroll * 0.4) * 0.015) * 25 + 45;
+        const hillH = Math.sin((i + bgScroll * 0.4) * 0.015) * 22 + 42;
         ctx.lineTo(i, groundY - hillH);
       }
       ctx.lineTo(width, groundY);
       ctx.fill();
 
-      // 4. GREEN MEADOW & WEDDING RUNWAY (Ground)
-      // Grass top layer
+      // Meadow & Wedding Carpet Ground
       ctx.fillStyle = '#10B981';
       ctx.fillRect(0, groundY, width, 14);
 
-      // Dark emerald soil
       ctx.fillStyle = '#065F46';
       ctx.fillRect(0, groundY + 14, width, height - groundY - 14);
 
-      // Gold wedding carpet line on ground
       ctx.fillStyle = '#D4AF37';
       ctx.fillRect(0, groundY + 6, width, 2);
 
-      // Flowers on grass
+      // Flowers on meadow
       for (let i = 0; i < width + 40; i += 35) {
         const fx = (i - (bgScroll % 35));
         ctx.fillStyle = (i % 2 === 0) ? '#F43F5E' : '#FFFFFF';
         ctx.fillRect(fx, groundY + 2, 3, 3);
       }
 
-      // 5. WEDDING FINISH ARCH
+      // Finish Arch
       if (finishArch) {
         drawWeddingArch(ctx, finishArch.x, finishArch.y);
       }
 
-      // 6. QUESTION BLOCKS
+      // Question Blocks
       blocks.forEach(b => drawQuestionBlock(ctx, b));
 
-      // 7. COINS (Song Hy)
-      coins.forEach(c => drawPixelSongHy(ctx, c.x, c.y, c.size, c.rotation));
-
-      // 8. OBSTACLES (Wedding Gift Boxes / Flower Bushes)
-      obstacles.forEach(o => {
-        if (o.type === 'gift') {
-          // Luxury Red Gift Box with Gold Ribbon
-          ctx.fillStyle = '#8B1E2D';
-          ctx.fillRect(o.x, o.y, o.width, o.height);
-          ctx.fillStyle = '#D4AF37';
-          ctx.fillRect(o.x + o.width/2 - 2, o.y, 4, o.height); // vertical ribbon
-          ctx.fillRect(o.x, o.y + o.height/2 - 2, o.width, 4); // horizontal ribbon
-          // Ribbon bow at top
-          ctx.beginPath();
-          ctx.arc(o.x + o.width/2 - 4, o.y - 3, 4, 0, Math.PI * 2);
-          ctx.arc(o.x + o.width/2 + 4, o.y - 3, 4, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // Rose Bush
-          ctx.fillStyle = '#047857';
-          ctx.beginPath();
-          ctx.arc(o.x + 8, o.y + 16, 12, 0, Math.PI*2);
-          ctx.arc(o.x + 20, o.y + 14, 14, 0, Math.PI*2);
-          ctx.fill();
-          // Roses
-          ctx.fillStyle = '#E11D48';
-          ctx.fillRect(o.x + 6, o.y + 8, 4, 4);
-          ctx.fillRect(o.x + 18, o.y + 10, 4, 4);
-        }
+      // Collectible Items
+      items.forEach(it => {
+        ctx.save();
+        ctx.font = "20px system-ui, sans-serif";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = '#D4AF37';
+        ctx.shadowBlur = 6;
+        ctx.fillText(it.emoji, it.x + it.size/2, it.y + it.size/2);
+        ctx.restore();
       });
 
-      // 9. PLAYER (Duy Tân or Khánh Chi)
+      // Obstacles
+      obstacles.forEach(o => {
+        ctx.save();
+        ctx.fillStyle = '#8B1E2D';
+        ctx.fillRect(o.x, o.y, o.width, o.height);
+        ctx.fillStyle = '#D4AF37';
+        ctx.fillRect(o.x + o.width/2 - 2, o.y, 4, o.height);
+        ctx.fillRect(o.x, o.y + o.height/2 - 2, o.width, 4);
+
+        ctx.fillStyle = '#FFF';
+        ctx.font = "14px system-ui";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        let obIcon = '📦';
+        if (o.type === 'delay') obIcon = '⏳';
+        else if (o.type === 'doi_hon') obIcon = '⚡';
+        else if (o.type === 'buon_ngu') obIcon = '🥱';
+        ctx.fillText(obIcon, o.x + o.width/2, o.y + o.height/2);
+        ctx.restore();
+      });
+
+      // Player (Chú rể Duy Tân)
       const isBlinking = player.invincibleTimer > 0 && Math.floor(player.invincibleTimer / 4) % 2 === 0;
       if (!isBlinking) {
         const frame = player.isGrounded ? player.runFrame : 1;
-        if (currentRole === 'groom') {
-          drawPixelGroom(ctx, player.x, player.y, 2.5, frame);
-        } else {
-          drawPixelBride(ctx, player.x, player.y, 2.5, frame);
-        }
+        drawPixelGroom(ctx, player.x, player.y, 2.5, frame);
       }
 
-      // 10. PARTICLES
+      // Particles
       particles.forEach(pt => {
         ctx.fillStyle = pt.color;
         ctx.fillRect(pt.x, pt.y, 3, 3);
       });
 
-      // 11. POPUP TEXTS (+100 囍)
+      // Popups Text (Story dialogue / reward)
       popups.forEach(p => {
         ctx.save();
         ctx.fillStyle = p.color;
-        ctx.font = "bold 11px 'Press Start 2P', monospace";
+        ctx.font = "bold 12px 'Be Vietnam Pro', sans-serif";
         ctx.textAlign = 'center';
         ctx.shadowColor = '#000';
-        ctx.shadowBlur = 4;
+        ctx.shadowBlur = 6;
         ctx.fillText(p.text, p.x, p.y);
         ctx.restore();
       });
@@ -1406,16 +1583,13 @@
       ctx.fill();
     }
 
-    // ==========================================
-    // 7. MAIN ENGINE LOOP
-    // ==========================================
+    // Engine loop
     function gameLoop() {
       update();
       draw();
       requestAnimationFrame(gameLoop);
     }
 
-    // Init canvas & loop
     resizeCanvas();
     requestAnimationFrame(gameLoop);
 
