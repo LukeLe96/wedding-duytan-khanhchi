@@ -554,23 +554,41 @@
     // -------------------------------------------------------------
     function cardInvitation(guest, followPrompt = '') {
       const guestName = guest ? decodeUnicode(guest.name) : 'Quý Khách';
-      const guestRel = guest && guest.relation ? decodeUnicode(guest.relation) : '';
+      let guestRel = guest && guest.relation ? decodeUnicode(guest.relation) : '';
       const guestMsg = guest && guest.personal_message ? decodeUnicode(guest.personal_message) : '';
       const isBrideSide = guest && guest.side === 'bride';
-      const sideText = isBrideSide ? 'Khách Quý Nhà Gái' : 'Khách Quý Nhà Trai';
+
+      // Check if family / relatives to avoid cold "Khách Quý" and 3rd-person phrasing
+      const isFamily = /bác|chú|cô|dì|ông|bà|cậu|mợ|thím|dượng|anh|chị|em ruột|ruột/.test((guestRel + ' ' + guestName).toLowerCase());
+      
+      let sideText = isBrideSide ? 'Khách Quý Nhà Gái' : 'Khách Quý Nhà Trai';
+      if (isFamily) {
+        sideText = isBrideSide ? 'Gia Đình Nhà Gái' : 'Gia Đình Nhà Trai';
+      }
+
+      // Warm, affectionate relationship phrasing
+      let warmRel = guestRel;
+      if (guestRel) {
+        warmRel = warmRel.replace(/chú rể/gi, 'hai cháu').replace(/cô dâu/gi, 'hai cháu');
+        if (/bác ruột/i.test(warmRel)) warmRel = 'Bác ruột của hai cháu';
+        else if (/chú ruột/i.test(warmRel)) warmRel = 'Chú ruột của hai cháu';
+        else if (/cô ruột/i.test(warmRel)) warmRel = 'Cô ruột của hai cháu';
+        else if (/dì ruột/i.test(warmRel)) warmRel = 'Dì ruột của hai cháu';
+        else if (/chị gái/i.test(warmRel)) warmRel = isBrideSide ? 'Chị gái của Chi' : 'Chị gái của hai đứa';
+      }
 
       const ceremonyHeader = isBrideSide ? '✦ LỄ VU QUY ✦' : '✦ LỄ THÀNH HÔN ✦';
       const coupleNames = isBrideSide 
         ? `<div class="flex items-center justify-center gap-1.5 flex-wrap"><span class="whitespace-nowrap font-bold">ĐINH KHÁNH CHI</span><span class="text-amber-400 font-serif font-extrabold text-xl mx-1 align-middle select-none">囍</span><span class="whitespace-nowrap font-bold">LÊ DUY TÂN</span></div>`
         : `<div class="flex items-center justify-center gap-1.5 flex-wrap"><span class="whitespace-nowrap font-bold">LÊ DUY TÂN</span><span class="text-amber-400 font-serif font-extrabold text-xl mx-1 align-middle select-none">囍</span><span class="whitespace-nowrap font-bold">ĐINH KHÁNH CHI</span></div>`;
       
-      const day2Name = isBrideSide ? 'Lễ Vu Quy' : 'Lễ Thành Hôn';
+      const day2Name = isBrideSide ? 'Lễ Vu Quy & Khai Tiệc' : 'Lễ Thành Hôn & Khai Tiệc';
 
-      const tagBadge = guestRel
+      const tagBadge = warmRel
         ? `<div class="inline-flex flex-wrap items-center justify-center gap-1 px-3 py-1 rounded-full bg-amber-400/20 text-amber-200 text-[10px] font-semibold tracking-wider border border-amber-400/35 uppercase">
             <span class="whitespace-nowrap">${sideText}</span>
             <span class="opacity-50">•</span>
-            <span class="whitespace-nowrap">${guestRel}</span>
+            <span class="whitespace-nowrap">${warmRel}</span>
           </div>`
         : `<span class="inline-block px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[10px] font-semibold tracking-wider border border-amber-400/35 uppercase whitespace-nowrap">${sideText}</span>`;
 
@@ -1131,7 +1149,7 @@
                 Dạ, chúng con kính chào ${guestName || 'Gia đình mình'} ạ! 🌸
               </p>
               <p class="text-xs text-stone-700 leading-relaxed">
-                Chúng con là <strong>Lê Duy Tân &amp; Đinh Khánh Chi</strong>. Thật hạnh phúc cho hai cháu khi được gửi lời mời trân trọng nhất đến ${guestRel ? guestRel + ' cùng toàn thể gia đình' : (guestName || 'gia đình mình')} về chung vui ngày đại hỷ của hai cháu ạ!
+                Chúng con là <strong>Lê Duy Tân &amp; Đinh Khánh Chi</strong>. Thật hạnh phúc cho hai cháu khi được gửi lời mời trân trọng nhất đến ${guestName || 'Bác cùng toàn thể gia đình'} về chung vui ngày đại hỷ của hai cháu ạ!
               </p>
             </div>
           `;
