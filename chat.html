@@ -558,13 +558,21 @@
       const guestMsg = guest && guest.personal_message ? decodeUnicode(guest.personal_message) : '';
       const isBrideSide = guest && guest.side === 'bride';
       const sideText = isBrideSide ? 'Khách Quý Nhà Gái' : 'Khách Quý Nhà Trai';
-      const relText = guestRel ? `• ${guestRel}` : '';
 
       const ceremonyHeader = isBrideSide ? '✦ LỄ VU QUY ✦' : '✦ LỄ THÀNH HÔN ✦';
       const coupleNames = isBrideSide 
-        ? `ĐINH KHÁNH CHI <span class="font-script text-2xl font-normal text-amber-300 mx-1 align-middle">✦</span> LÊ DUY TÂN`
-        : `LÊ DUY TÂN <span class="font-script text-2xl font-normal text-amber-300 mx-1 align-middle">✦</span> ĐINH KHÁNH CHI`;
-      const day2Name = isBrideSide ? 'Lễ Vu Quy &amp; Khai Tiệc' : 'Thành Hôn &amp; Khai Tiệc';
+        ? `<div class="flex items-center justify-center gap-1.5 flex-wrap"><span class="whitespace-nowrap">ĐINH KHÁNH CHI</span><span class="font-script text-xl text-amber-300 align-middle">✦</span><span class="whitespace-nowrap">LÊ DUY TÂN</span></div>`
+        : `<div class="flex items-center justify-center gap-1.5 flex-wrap"><span class="whitespace-nowrap">LÊ DUY TÂN</span><span class="font-script text-xl text-amber-300 align-middle">✦</span><span class="whitespace-nowrap">ĐINH KHÁNH CHI</span></div>`;
+      
+      const day2Name = isBrideSide ? 'Lễ Vu Quy' : 'Lễ Thành Hôn';
+
+      const tagBadge = guestRel
+        ? `<div class="inline-flex flex-wrap items-center justify-center gap-1 px-3 py-1 rounded-full bg-amber-400/20 text-amber-200 text-[10px] font-semibold tracking-wider border border-amber-400/35 uppercase">
+            <span class="whitespace-nowrap">${sideText}</span>
+            <span class="opacity-50">•</span>
+            <span class="whitespace-nowrap">${guestRel}</span>
+          </div>`
+        : `<span class="inline-block px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[10px] font-semibold tracking-wider border border-amber-400/35 uppercase whitespace-nowrap">${sideText}</span>`;
 
       return `
         <div class="card-invitation-root relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#7A1826] via-[#63121E] to-[#4A0B13] text-white p-1.5 shadow-2xl border-2 border-[#D4AF37]/60 max-w-sm mx-auto">
@@ -590,19 +598,17 @@
             </div>
 
             <!-- Honored Guest Section -->
-            <div class="my-3 py-2.5 px-2 text-center rounded-lg bg-black/30 border border-[#D4AF37]/25 space-y-1">
+            <div class="my-3 py-2.5 px-2 text-center rounded-lg bg-black/30 border border-[#D4AF37]/25 space-y-1.5">
               <p class="text-[11px] text-amber-200/90 font-serif italic tracking-wide">Trân trọng kính mời:</p>
               <h3 class="font-display text-xl sm:text-2xl font-bold text-amber-100 tracking-wide drop-shadow-sm">
                 ${guestName}
               </h3>
               <div class="pt-0.5">
-                <span class="inline-block px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-200 text-[10px] font-semibold tracking-wider border border-amber-400/35 uppercase">
-                  ${sideText} ${relText}
-                </span>
+                ${tagBadge}
               </div>
               ${guestMsg ? `
                 <div class="mt-2 pt-2 border-t border-amber-300/15">
-                  <p class="text-xs text-rose-100 font-serif italic leading-relaxed text-center px-1">
+                  <p class="text-xs text-rose-100 font-serif italic leading-relaxed text-center px-2">
                     "${guestMsg}"
                   </p>
                 </div>
@@ -612,9 +618,9 @@
             <!-- Couple Section -->
             <div class="text-center space-y-1 pt-0.5">
               <p class="text-[10px] text-rose-200 uppercase tracking-widest font-sans font-medium">Về chung vui ngày đại hỷ của</p>
-              <h4 class="font-display text-base sm:text-lg font-bold text-white tracking-wide">
+              <div class="font-display text-sm sm:text-base font-bold text-white tracking-wide">
                 ${coupleNames}
-              </h4>
+              </div>
             </div>
 
             <!-- Two-Day Schedule Grid -->
@@ -622,33 +628,37 @@
               <!-- Day 1 -->
               <div class="bg-black/35 p-2 rounded-lg border border-amber-300/20 space-y-1">
                 <div class="flex items-center justify-between text-[9px] font-bold text-amber-300 uppercase">
-                  <span>Tiệc Nhóm Họ</span>
+                  <span class="whitespace-nowrap">Tiệc Nhóm Họ</span>
                   <span class="px-1 py-0.2 bg-black/40 rounded text-stone-300 text-[8px] font-normal border border-amber-300/20">09 Chạp</span>
                 </div>
-                <p class="text-xs font-bold text-white">17:00 • 16.01.2027</p>
-                <p class="text-[10px] text-stone-300">Thứ Bảy • Cơm thân mật</p>
+                <p class="text-xs font-bold text-white whitespace-nowrap">17:00 • 16.01.2027</p>
+                <p class="text-[10px] text-stone-300 whitespace-nowrap">Thứ Bảy • Tiệc thân mật</p>
               </div>
 
               <!-- Day 2 -->
               <div class="bg-amber-950/45 p-2 rounded-lg border border-amber-400/35 space-y-1">
                 <div class="flex items-center justify-between text-[9px] font-bold text-amber-300 uppercase">
-                  <span>${day2Name}</span>
+                  <span class="whitespace-nowrap">${day2Name}</span>
                   <span class="px-1 py-0.2 bg-amber-900/60 rounded text-amber-200 text-[8px] font-medium border border-amber-400/30">10 Chạp</span>
                 </div>
-                <p class="text-xs font-bold text-amber-100">10:30 • 17.01.2027</p>
-                <p class="text-[10px] text-rose-200">Chủ Nhật • Hôn lễ chính thức</p>
+                <p class="text-xs font-bold text-amber-100 whitespace-nowrap">10:30 • 17.01.2027</p>
+                <p class="text-[10px] text-rose-200 whitespace-nowrap">Chủ Nhật • Khai tiệc mừng</p>
               </div>
             </div>
 
             <!-- Location -->
-            <div class="mt-2 text-center text-[11px] text-amber-200/90 font-medium flex items-center justify-center gap-1.5">
-              <span>📍</span>
-              <span>Tư Gia Nhà Gái (Hà Nội) • Bãi đỗ xe ô tô rộng rãi</span>
+            <div class="mt-2.5 text-center text-[11px] space-y-0.5">
+              <p class="text-amber-200/95 font-medium flex items-center justify-center gap-1 whitespace-nowrap">
+                <span>📍</span> <span>Tư Gia Nhà Gái • Hà Nội</span>
+              </p>
+              <p class="text-[10px] text-stone-300/90 font-light whitespace-nowrap">
+                Khuôn viên có bãi đỗ xe ô tô rộng rãi
+              </p>
             </div>
 
             <!-- Welcoming Guidance Note (Inside Card) -->
             ${followPrompt ? `
-              <div class="mt-3 pt-2.5 border-t border-[#D4AF37]/25 text-center text-xs text-rose-100 font-serif italic leading-relaxed px-1">
+              <div class="mt-3 pt-2.5 border-t border-[#D4AF37]/25 text-center text-xs text-rose-100 font-serif italic leading-relaxed px-2">
                 💬 ${followPrompt}
               </div>
             ` : ''}
