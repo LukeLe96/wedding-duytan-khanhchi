@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Super Tân & Chi Run 囍 Cuộc Phiêu Lưu Về Chung Đôi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --gold-light: #FDF4DC;
+      --ruby: #8B1E2D;
+      --ruby-dark: #66101F;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    body {
+      background: #1A1215;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: #FFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    .retro-font {
+      font-family: 'Press Start 2P', monospace, cursive;
+      image-rendering: pixelated;
+    }
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 840px;
+      background: #23171B;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+    }
+    @media (min-width: 441px) {
+      #game-container {
+        height: 92vh;
+        max-height: 780px;
+        border-radius: 20px;
+        border: 3px solid #8B1E2D;
+        box-shadow: 0 0 0 1px #D4AF37, 0 20px 50px rgba(0,0,0,0.7);
+      }
+    }
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #140C0E;
+      border-bottom: 2px solid #8B1E2D;
+      z-index: 20;
+    }
+    .top-bar .title {
+      font-size: 11px;
+      color: #F9E29D;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.5px;
+    }
+    .top-bar .btn-round {
+      background: #2A171C;
+      border: 1px solid #D4AF37;
+      color: #F9E29D;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .top-bar .btn-round:active {
+      transform: scale(0.92);
+      background: #8B1E2D;
+    }
+    /* Canvas Area */
+    #canvas-wrap {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      background: #FFE8D6;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    /* HUD Overlay */
+    .hud-overlay {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .hud-box {
+      background: rgba(20, 12, 14, 0.85);
+      border: 1.5px solid #D4AF37;
+      border-radius: 8px;
+      padding: 5px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .hud-hearts {
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+    .hud-score {
+      font-size: 11px;
+      color: #F9E29D;
+    }
+    .hud-dist {
+      font-size: 9px;
+      color: #E2E8F0;
+    }
+    /* Onscreen Jump Button for Mobile */
+    .jump-btn-wrap {
+      position: absolute;
+      bottom: 24px;
+      right: 20px;
+      z-index: 15;
+    }
+    .btn-jump {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #E11D48, #8B1E2D);
+      border: 3px solid #F9E29D;
+      color: #FFF;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 8px 25px rgba(225, 29, 72, 0.6), inset 0 2px 4px rgba(255,255,255,0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      active-scale: 0.92;
+      transition: transform 0.08s;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-jump:active {
+      transform: scale(0.9);
+      background: #8B1E2D;
+    }
+    .btn-jump span {
+      font-size: 18px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    /* Menu & Overlays */
+    .screen-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(18, 10, 13, 0.92);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      z-index: 30;
+      transition: opacity 0.25s;
+    }
+    .screen-overlay.hidden {
+      display: none;
+    }
+    .game-logo {
+      font-size: 15px;
+      color: #F9E29D;
+      line-height: 1.5;
+      text-shadow: 2px 2px 0 #8B1E2D, 3px 3px 0 #000;
+      margin-bottom: 12px;
+    }
+    .game-sub {
+      font-size: 12px;
+      color: #FBCFE8;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    .char-select {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .char-card {
+      background: #2D1A20;
+      border: 2px solid #58242D;
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .char-card.selected {
+      border-color: #D4AF37;
+      background: #461C26;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+      transform: translateY(-2px);
+    }
+    .char-card svg {
+      width: 36px;
+      height: 48px;
+      image-rendering: pixelated;
+    }
+    .char-card .name {
+      font-size: 10px;
+      color: #F9E29D;
+    }
+    .btn-main {
+      background: linear-gradient(135deg, #D4AF37, #AA820A);
+      color: #1F1005;
+      border: 2px solid #FFF;
+      border-radius: 30px;
+      padding: 12px 32px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      transition: all 0.15s;
+      letter-spacing: 0.5px;
+    }
+    .btn-main:active {
+      transform: scale(0.95);
+    }
+    .btn-sec {
+      background: #2A171C;
+      color: #F9E29D;
+      border: 1px solid #D4AF37;
+      border-radius: 20px;
+      padding: 9px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .instructions {
+      font-size: 10px;
+      color: #CBD5E1;
+      margin-top: 18px;
+      line-height: 1.6;
+    }
+    /* Victory / Game Over stats */
+    .stat-badge {
+      background: #2A171C;
+      border: 1px solid #D4AF37;
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 280px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+    .stat-row:last-child {
+      margin-bottom: 0;
+    }
+    .stat-val {
+      color: #F9E29D;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sprite SVG defs -->
+  <svg width="0" height="0" class="absolute" style="position:absolute; width:0; height:0;" aria-hidden="true" focusable="false">
+    <symbol id="px-groom" viewBox="0 0 12 16">
+      <path fill="#2B1D16" d="M3 0h5v1h-5zM2 1h8v2h-8zM2 3h1v1h-1zM9 3h1v1h-1zM4 5h1v1h-1zM7 5h1v1h-1z"/>
+      <path fill="#F7D4B6" d="M3 3h6v1h-6zM2 4h1v3h-1zM9 4h1v3h-1zM4 6h4v1h-4zM2 7h3v1h-3zM7 7h3v1h-3zM3 8h6v1h-6zM1 12h1v1h-1zM10 12h1v1h-1z"/>
+      <path fill="#1F2937" d="M3 4h6v1h-6zM3 5h1v1h-1zM5 5h2v1h-2zM8 5h1v1h-1z"/>
+      <path fill="#F2A7A7" d="M3 6h1v1h-1zM8 6h1v1h-1z"/>
+      <path fill="#C2410C" d="M5 7h2v1h-2z"/>
+      <path fill="#1E2A44" d="M3 9h1v1h-1zM8 9h1v1h-1zM2 10h3v1h-3zM7 10h1v1h-1zM9 10h1v1h-1zM1 11h4v1h-4zM7 11h4v1h-4zM2 12h8v1h-8zM3 13h6v1h-6z"/>
+      <path fill="#FFFFFF" d="M4 9h1v1h-1zM7 9h1v1h-1zM5 10h2v2h-2z"/>
+      <path fill="#B3263A" d="M5 9h2v1h-2z"/>
+      <path fill="#D4AF37" d="M8 10h1v1h-1z"/>
+      <path fill="#141B2D" d="M3 14h2v1h-2zM7 14h2v1h-2z"/>
+      <path fill="#0F0F10" d="M2 15h3v1h-3zM7 15h3v1h-3z"/>
+    </symbol>
+    <symbol id="px-bride" viewBox="0 0 12 16">
+      <path fill="#2B1D16" d="M2 2h1v7h-1zM9 2h1v7h-1zM3 6h1v2h-1zM8 6h1v2h-1zM4 3h1v1h-1zM7 3h1v1h-1z"/>
+      <path fill="#B3263A" d="M3 0h6v1h-6zM2 1h1v1h-1zM9 1h1v1h-1zM4 7h1v1h-1zM7 7h1v1h-1zM3 8h6v1h-6zM1 9h4v1h-4zM6 9h5v1h-5zM1 10h3v1h-3zM8 10h3v1h-3zM2 11h3v1h-3zM7 11h3v1h-3zM2 12h8v1h-8zM4 13h4v1h-4zM5 14h2v1h-2z"/>
+      <path fill="#D4AF37" d="M3 1h6v1h-6zM5 7h2v1h-2zM5 9h1v1h-1z"/>
+      <path fill="#F7D4B6" d="M3 2h6v1h-6zM3 3h1v1h-1zM5 3h2v1h-2zM8 3h1v1h-1zM4 4h4v1h-4zM3 5h2v1h-2zM7 5h2v1h-2zM4 6h4v1h-4zM4 10h1v1h-1zM7 10h1v1h-1z"/>
+      <path fill="#F2A7A7" d="M3 4h1v1h-1zM8 4h1v1h-1z"/>
+      <path fill="#D9465F" d="M5 5h2v1h-2z"/>
+      <path fill="#F9A8D4" d="M5 10h2v1h-2z"/>
+      <path fill="#4D7C0F" d="M5 11h2v1h-2z"/>
+      <path fill="#F5F0E6" d="M2 13h2v1h-2zM8 13h2v1h-2zM3 14h2v1h-2zM7 14h2v1h-2z"/>
+      <path fill="#0F0F10" d="M3 15h2v1h-2zM7 15h2v1h-2z"/>
+    </symbol>
+  </svg>
+
+  <div id="game-container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <a href="/chat" class="btn-round" title="Về khung Chat" style="text-decoration:none;">💬</a>
+      <div class="title retro-font">
+        <span>囍</span> SUPER TÂN &amp; CHI
+      </div>
+      <button id="sound-btn" class="btn-round" onclick="toggleSound()" title="Bật/Tắt âm thanh">🔊</button>
+    </div>
+
+    <!-- Canvas Wrap -->
+    <div id="canvas-wrap">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- HUD -->
+      <div class="hud-overlay">
+        <div class="hud-box">
+          <span class="hud-hearts" id="hud-hearts">❤️❤️❤️</span>
+        </div>
+        <div class="hud-box">
+          <div class="hud-score retro-font" id="hud-score">00000</div>
+          <div class="hud-dist retro-font" id="hud-dist">0m / 800m</div>
+        </div>
+      </div>
+
+      <!-- Jump Button (Mobile Touch) -->
+      <div class="jump-btn-wrap">
+        <button id="btn-jump" class="btn-jump" onclick="handleJumpAction(event)">
+          <span>▲</span>
+          JUMP
+        </button>
+      </div>
+
+      <!-- START MENU OVERLAY -->
+      <div id="start-screen" class="screen-overlay">
+        <div class="game-logo retro-font">
+          SUPER TÂN &amp; CHI RUN<br>
+          <span style="font-size:10px; color:#F9E29D;">囍 CUỘC PHIÊU LƯU VỀ CHUNG ĐÔI 囍</span>
+        </div>
+        <div class="game-sub">
+          Vượt ngàn dặm Gia Lai ✈️ Hà Nội • 16-17.01.2027
+        </div>
+
+        <div style="font-size:11px; margin-bottom:10px; color:#F9E29D;">CHỌN NHÂN VẬT ĐẠI DIỆN:</div>
+        <div class="char-select">
+          <div id="sel-groom" class="char-card selected" onclick="selectCharacter('groom')">
+            <svg viewBox="0 0 12 16"><use href="#px-groom"/></svg>
+            <span class="name retro-font">CHÚ RỂ TÂN</span>
+          </div>
+          <div id="sel-bride" class="char-card" onclick="selectCharacter('bride')">
+            <svg viewBox="0 0 12 16"><use href="#px-bride"/></svg>
+            <span class="name retro-font">CÔ DÂU CHI</span>
+          </div>
+        </div>
+
+        <button class="btn-main retro-font" onclick="startGame()">
+          ▶ BẮT ĐẦU CHƠI!
+        </button>
+
+        <div class="instructions">
+          📱 <strong>Chạm màn hình</strong> hoặc nút <strong>JUMP</strong> để nhảy.<br>
+          ⌨️ Bấm <strong>Phím Space</strong> hoặc <strong>Mũi tên lên</strong>.<br>
+          ✨ Húc đầu vào khối gạch <strong>[ ? ]</strong> để nhận Song Hỷ &amp; Nhẫn cưới!
+        </div>
+
+        <a href="/chat" class="btn-sec" style="margin-top:16px;">
+          ← Trở lại Thiệp Cưới Chat
+        </a>
+      </div>
+
+      <!-- GAME OVER OVERLAY -->
+      <div id="gameover-screen" class="screen-overlay hidden">
+        <div class="game-logo retro-font" style="color:#EF4444;">
+          CHƯA KỊP VỀ ĐÍCH! 💔
+        </div>
+        <div class="game-sub">
+          Đường về chung đôi có chút thử thách, thử lại nhé!
+        </div>
+
+        <div class="stat-badge">
+          <div class="stat-row">
+            <span>Điểm tích lũy:</span>
+            <span class="stat-val retro-font" id="over-score">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Chữ Hỷ 囍 thu thập:</span>
+            <span class="stat-val retro-font" id="over-coins">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Quãng đường:</span>
+            <span class="stat-val retro-font" id="over-dist">0m</span>
+          </div>
+        </div>
+
+        <button class="btn-main retro-font" onclick="restartGame()">
+          🔄 CHƠI LẠI NGAY
+        </button>
+
+        <a href="/chat" class="btn-sec">
+          ← Về khung chat gửi lời chúc
+        </a>
+      </div>
+
+      <!-- VICTORY OVERLAY -->
+      <div id="victory-screen" class="screen-overlay hidden">
+        <div class="game-logo retro-font" style="color:#F9E29D;">
+          🎉 ĐẠI HỶ HOÀN MỸ! 囍
+        </div>
+        <div class="game-sub" style="color:#FEF08A;">
+          Tân &amp; Chi đã chính thức về chung một nhà! 💒✨
+        </div>
+
+        <div class="stat-badge">
+          <div class="stat-row">
+            <span>Tổng điểm Đại Hỷ:</span>
+            <span class="stat-val retro-font" id="vic-score" style="color:#FCD34D;">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Chữ Song Hỷ 囍:</span>
+            <span class="stat-val retro-font" id="vic-coins">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Danh hiệu:</span>
+            <span class="stat-val" id="vic-title" style="color:#F43F5E; font-weight:bold;">Chàng Rể Kim Cương</span>
+          </div>
+        </div>
+
+        <button class="btn-main retro-font" onclick="restartGame()" style="margin-bottom:12px;">
+          🔄 CHƠI LẠI LẦN NỮA
+        </button>
+
+        <a href="/chat" class="btn-sec" style="background:#8B1E2D; border-color:#F9E29D;">
+          💌 Gửi lời chúc mừng cho Tân &amp; Chi
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. RETRO 8-BIT CHIPTUNE AUDIO SYNTHESIZER
+    // ==========================================
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('sound-btn');
+      btn.innerText = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function playTone(freq, type = 'square', duration = 0.1, gainVal = 0.15) {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function sfxJump() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(650, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch (e) {}
+    }
+
+    function sfxCoin() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const now = audioCtx.currentTime;
+        playTone(987.77, 'square', 0.08, 0.15); // B5
+        setTimeout(() => playTone(1318.51, 'square', 0.22, 0.15), 80); // E6
+      } catch (e) {}
+    }
+
+    function sfxBump() {
+      playTone(130, 'triangle', 0.1, 0.2);
+    }
+
+    function sfxHurt() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const now = audioCtx.currentTime;
+        playTone(180, 'sawtooth', 0.1, 0.15);
+        setTimeout(() => playTone(120, 'sawtooth', 0.15, 0.15), 90);
+      } catch (e) {}
+    }
+
+    function sfxWin() {
+      if (!soundEnabled || !audioCtx) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        setTimeout(() => playTone(freq, 'square', 0.18, 0.2), idx * 120);
+      });
+    }
+
+    // ==========================================
+    // 2. CANVAS & GAME ENGINE
+    // ==========================================
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const canvasWrap = document.getElementById('canvas-wrap');
+
+    let currentRole = 'groom'; // 'groom' or 'bride'
+    let gameState = 'START';    // 'START', 'PLAYING', 'GAMEOVER', 'VICTORY'
+    let score = 0;
+    let coinsCollected = 0;
+    let distance = 0;
+    const GOAL_DISTANCE = 800; // 800 meters to Wedding Gate
+
+    let width = 390;
+    let height = 550;
+    let groundY = 460;
+
+    function resizeCanvas() {
+      width = canvasWrap.clientWidth;
+      height = canvasWrap.clientHeight;
+      canvas.width = width;
+      canvas.height = height;
+      groundY = height - 70;
+      if (player) {
+        if (player.y > groundY - player.height) {
+          player.y = groundY - player.height;
+        }
+      }
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // SPRITE PIXEL RENDERERS
+    function drawPixelGroom(ctx, x, y, scale = 2.5, runFrame = 0) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+      
+      const s = 1;
+      // Hair
+      ctx.fillStyle = '#2B1D16';
+      ctx.fillRect(3, 0, 5, 1);
+      ctx.fillRect(2, 1, 8, 2);
+      ctx.fillRect(2, 3, 1, 1);
+      ctx.fillRect(9, 3, 1, 1);
+      
+      // Face
+      ctx.fillStyle = '#F7D4B6';
+      ctx.fillRect(3, 3, 6, 1);
+      ctx.fillRect(2, 4, 1, 3);
+      ctx.fillRect(9, 4, 1, 3);
+      ctx.fillRect(4, 6, 4, 1);
+      ctx.fillRect(3, 7, 6, 1);
+      
+      // Glasses & Eyes
+      ctx.fillStyle = '#1F2937';
+      ctx.fillRect(3, 4, 6, 1);
+      ctx.fillRect(3, 5, 1, 1);
+      ctx.fillRect(5, 5, 2, 1);
+      ctx.fillRect(8, 5, 1, 1);
+      
+      // Blush
+      ctx.fillStyle = '#F2A7A7';
+      ctx.fillRect(3, 6, 1, 1);
+      ctx.fillRect(8, 6, 1, 1);
+      
+      // Smile
+      ctx.fillStyle = '#C2410C';
+      ctx.fillRect(5, 7, 2, 1);
+      
+      // Navy Suit & Bowtie
+      ctx.fillStyle = '#1E2A44';
+      ctx.fillRect(3, 9, 6, 1);
+      ctx.fillRect(2, 10, 8, 1);
+      ctx.fillRect(1, 11, 10, 1);
+      ctx.fillRect(2, 12, 8, 1);
+      
+      // Shirt white & red bow
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(5, 9, 2, 3);
+      ctx.fillStyle = '#B3263A';
+      ctx.fillRect(5, 9, 2, 1);
+      
+      // Legs (Run cycle animation)
+      ctx.fillStyle = '#141B2D';
+      if (runFrame === 1) {
+        ctx.fillRect(2, 13, 3, 2);
+        ctx.fillRect(7, 13, 3, 1);
+      } else if (runFrame === 2) {
+        ctx.fillRect(2, 13, 3, 1);
+        ctx.fillRect(7, 13, 3, 2);
+      } else {
+        ctx.fillRect(3, 13, 2, 2);
+        ctx.fillRect(7, 13, 2, 2);
+      }
+      
+      // Shoes
+      ctx.fillStyle = '#0F0F10';
+      ctx.fillRect(2, 15, 3, 1);
+      ctx.fillRect(7, 15, 3, 1);
+
+      ctx.restore();
+    }
+
+    function drawPixelBride(ctx, x, y, scale = 2.5, runFrame = 0) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+
+      // Yellow Headdress Crown
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillRect(3, 0, 6, 2);
+      ctx.fillRect(2, 1, 1, 1);
+      ctx.fillRect(9, 1, 1, 1);
+
+      // Hair
+      ctx.fillStyle = '#2B1D16';
+      ctx.fillRect(2, 2, 1, 6);
+      ctx.fillRect(9, 2, 1, 6);
+      ctx.fillRect(4, 2, 4, 1);
+
+      // Face
+      ctx.fillStyle = '#F7D4B6';
+      ctx.fillRect(3, 3, 6, 4);
+
+      // Eyes
+      ctx.fillStyle = '#1F2937';
+      ctx.fillRect(4, 4, 1, 1);
+      ctx.fillRect(7, 4, 1, 1);
+
+      // Blush
+      ctx.fillStyle = '#F2A7A7';
+      ctx.fillRect(3, 5, 1, 1);
+      ctx.fillRect(8, 5, 1, 1);
+
+      // Red Ao Dai
+      ctx.fillStyle = '#B3263A';
+      ctx.fillRect(3, 7, 6, 2);
+      ctx.fillRect(2, 9, 8, 4);
+
+      // Bouquet pink & green
+      ctx.fillStyle = '#F9A8D4';
+      ctx.fillRect(5, 9, 2, 2);
+      ctx.fillStyle = '#4D7C0F';
+      ctx.fillRect(5, 11, 2, 1);
+
+      // Gold pattern on chest
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillRect(5, 7, 2, 1);
+
+      // Pants & Shoes
+      ctx.fillStyle = '#F5F0E6';
+      if (runFrame === 1) {
+        ctx.fillRect(3, 13, 2, 2);
+        ctx.fillRect(7, 13, 2, 1);
+      } else if (runFrame === 2) {
+        ctx.fillRect(3, 13, 2, 1);
+        ctx.fillRect(7, 13, 2, 2);
+      } else {
+        ctx.fillRect(3, 13, 2, 2);
+        ctx.fillRect(7, 13, 2, 2);
+      }
+
+      ctx.fillStyle = '#0F0F10';
+      ctx.fillRect(3, 15, 2, 1);
+      ctx.fillRect(7, 15, 2, 1);
+
+      ctx.restore();
+    }
+
+    // DRAW PIXEL SONG HY (囍) COIN
+    function drawPixelSongHy(ctx, x, y, size = 24, rotation = 0) {
+      ctx.save();
+      ctx.translate(x + size/2, y + size/2);
+      ctx.scale(Math.cos(rotation), 1);
+      
+      // Gold background circle
+      ctx.fillStyle = '#D4AF37';
+      ctx.beginPath();
+      ctx.arc(0, 0, size/2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#F9E29D';
+      ctx.stroke();
+
+      // Red 囍 character
+      ctx.fillStyle = '#8B1E2D';
+      ctx.font = `bold ${Math.round(size * 0.58)}px 'Plus Jakarta Sans', sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('囍', 0, 1);
+
+      ctx.restore();
+    }
+
+    // DRAW QUESTION BLOCK [ ? ]
+    function drawQuestionBlock(ctx, block) {
+      const x = block.x;
+      const y = block.y + (block.bumpY || 0);
+      const w = block.width;
+      const h = block.height;
+
+      if (block.hit) {
+        // Empty block (hit)
+        ctx.fillStyle = '#6B7280';
+        ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = '#4B5563';
+        ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
+        ctx.strokeStyle = '#1F2937';
+        ctx.strokeRect(x, y, w, h);
+      } else {
+        // Active Question Block (Gold)
+        ctx.fillStyle = '#D4AF37';
+        ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = '#F59E0B';
+        ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
+        ctx.fillStyle = '#FEF3C7';
+        ctx.fillRect(x + 2, y + 2, w - 4, 3);
+        ctx.fillRect(x + 2, y + 2, 3, h - 4);
+
+        ctx.strokeStyle = '#78350F';
+        ctx.strokeRect(x, y, w, h);
+
+        // Screws in corners
+        ctx.fillStyle = '#78350F';
+        ctx.fillRect(x + 3, y + 3, 2, 2);
+        ctx.fillRect(x + w - 5, y + 3, 2, 2);
+        ctx.fillRect(x + 3, y + h - 5, 2, 2);
+        ctx.fillRect(x + w - 5, y + h - 5, 2, 2);
+
+        // White '?' symbol
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = "bold 15px 'Press Start 2P', monospace";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', x + w/2, y + h/2 + 1);
+      }
+    }
+
+    // DRAW WEDDING ARCH (FINISH GATE)
+    function drawWeddingArch(ctx, x, y) {
+      const w = 120;
+      const h = 180;
+      ctx.save();
+      ctx.translate(x, y - h);
+
+      // Gold Pillars
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillRect(10, 20, 14, h - 20);
+      ctx.fillRect(w - 24, 20, 14, h - 20);
+
+      // Arch Dome
+      ctx.beginPath();
+      ctx.arc(w/2, 50, 45, Math.PI, 0);
+      ctx.lineWidth = 14;
+      ctx.strokeStyle = '#D4AF37';
+      ctx.stroke();
+
+      // Flowers pink & ruby on arch
+      const colors = ['#F43F5E', '#FDA4AF', '#8B1E2D', '#FFFFFF', '#D4AF37'];
+      for (let i = 0; i < 18; i++) {
+        const ang = Math.PI + (i / 17) * Math.PI;
+        const fx = w/2 + Math.cos(ang) * 45;
+        const fy = 50 + Math.sin(ang) * 45;
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.beginPath();
+        ctx.arc(fx, fy, 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Grand Song Hy banner at top center
+      ctx.fillStyle = '#8B1E2D';
+      ctx.fillRect(w/2 - 25, 10, 50, 26);
+      ctx.strokeStyle = '#D4AF37';
+      ctx.strokeRect(w/2 - 25, 10, 50, 26);
+      ctx.fillStyle = '#F9E29D';
+      ctx.font = "bold 16px 'Plus Jakarta Sans', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.fillText('囍', w/2, 28);
+
+      // Bride waiting at gate (if playing groom), or Groom waiting (if playing bride)
+      if (currentRole === 'groom') {
+        drawPixelBride(ctx, w/2 - 15, h - 40, 2.5, 0);
+      } else {
+        drawPixelGroom(ctx, w/2 - 15, h - 40, 2.5, 0);
+      }
+
+      ctx.restore();
+    }
+
+    // ==========================================
+    // 3. GAME STATE & ENTITIES
+    // ==========================================
+    let player = {
+      x: 60,
+      y: 0,
+      width: 30,
+      height: 40,
+      vy: 0,
+      jumpStrength: -11.5,
+      gravity: 0.62,
+      isGrounded: false,
+      jumpsRemaining: 2,
+      runFrame: 0,
+      runTimer: 0,
+      invincibleTimer: 0
+    };
+
+    let hearts = 3;
+    let gameSpeed = 3.6;
+    let bgScroll = 0;
+
+    let blocks = [];
+    let coins = [];
+    let obstacles = [];
+    let particles = [];
+    let popups = [];
+    let finishArch = null;
+
+    function resetGameEntities() {
+      score = 0;
+      coinsCollected = 0;
+      distance = 0;
+      hearts = 3;
+      gameSpeed = 3.6;
+      bgScroll = 0;
+
+      player.x = 60;
+      player.y = groundY - player.height;
+      player.vy = 0;
+      player.isGrounded = true;
+      player.jumpsRemaining = 2;
+      player.invincibleTimer = 0;
+
+      blocks = [];
+      coins = [];
+      obstacles = [];
+      particles = [];
+      popups = [];
+      finishArch = null;
+
+      updateHUD();
+    }
+
+    function selectCharacter(role) {
+      currentRole = role;
+      document.getElementById('sel-groom').classList.toggle('selected', role === 'groom');
+      document.getElementById('sel-bride').classList.toggle('selected', role === 'bride');
+    }
+
+    function startGame() {
+      initAudio();
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('gameover-screen').classList.add('hidden');
+      document.getElementById('victory-screen').classList.add('hidden');
+      resetGameEntities();
+      gameState = 'PLAYING';
+    }
+
+    function restartGame() {
+      startGame();
+    }
+
+    function handleJumpAction(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      initAudio();
+
+      if (gameState === 'START' || gameState === 'GAMEOVER' || gameState === 'VICTORY') {
+        startGame();
+        return;
+      }
+
+      if (gameState === 'PLAYING') {
+        if (player.jumpsRemaining > 0) {
+          player.vy = player.jumpsRemaining === 2 ? player.jumpStrength : player.jumpStrength * 0.9;
+          player.jumpsRemaining--;
+          player.isGrounded = false;
+          sfxJump();
+
+          // Spawn little jump dust particles
+          for (let i = 0; i < 4; i++) {
+            particles.push({
+              x: player.x + player.width/2,
+              y: player.y + player.height,
+              vx: (Math.random() - 0.5) * 3 - gameSpeed * 0.4,
+              vy: Math.random() * -2,
+              life: 20,
+              color: '#FFFFFF'
+            });
+          }
+        }
+      }
+    }
+
+    // Keyboard controls
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+        handleJumpAction(e);
+      }
+    });
+
+    // Tap canvas to jump
+    canvasWrap.addEventListener('touchstart', (e) => {
+      // Don't trigger if clicked on jump button or top bar
+      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar')) return;
+      handleJumpAction(e);
+    }, { passive: false });
+
+    canvasWrap.addEventListener('mousedown', (e) => {
+      if (e.target.closest('#btn-jump') || e.target.closest('.top-bar')) return;
+      handleJumpAction(e);
+    });
+
+    // ==========================================
+    // 4. LEVEL GENERATOR & SPAWNING
+    // ==========================================
+    let spawnTimer = 0;
+
+    function spawnWorldElements() {
+      if (distance >= GOAL_DISTANCE && !finishArch) {
+        // Spawn Finish Wedding Arch
+        finishArch = {
+          x: width + 80,
+          y: groundY
+        };
+        return;
+      }
+
+      if (distance >= GOAL_DISTANCE) return;
+
+      spawnTimer++;
+      if (spawnTimer % 90 === 0) {
+        const rand = Math.random();
+
+        // 1. Question Block [ ? ]
+        if (rand < 0.45) {
+          blocks.push({
+            x: width + 20,
+            y: groundY - 80 - Math.floor(Math.random() * 2) * 35,
+            width: 32,
+            height: 32,
+            hit: false,
+            bumpY: 0
+          });
+        }
+        // 2. Obstacle (Gift box / Flower bush)
+        else if (rand < 0.8) {
+          obstacles.push({
+            x: width + 20,
+            y: groundY - 32,
+            width: 28,
+            height: 32,
+            type: Math.random() > 0.5 ? 'gift' : 'bush'
+          });
+        }
+        // 3. Free floating Song Hy coin
+        else {
+          coins.push({
+            x: width + 20,
+            y: groundY - 50 - Math.random() * 50,
+            size: 24,
+            rotation: 0
+          });
+        }
+      }
+    }
+
+    // ==========================================
+    // 5. UPDATE LOOP
+    // ==========================================
+    function update() {
+      if (gameState !== 'PLAYING') return;
+
+      // Distance & speed progression
+      distance += (gameSpeed * 0.05);
+      gameSpeed = 3.6 + Math.min(2.0, distance * 0.002);
+      bgScroll += gameSpeed;
+
+      // Player run cycle
+      player.runTimer++;
+      if (player.runTimer % 6 === 0) {
+        player.runFrame = (player.runFrame + 1) % 3;
+      }
+
+      // Player Invincibility timer
+      if (player.invincibleTimer > 0) {
+        player.invincibleTimer--;
+      }
+
+      // Player Gravity & Jump Physics
+      player.vy += player.gravity;
+      player.y += player.vy;
+
+      if (player.y >= groundY - player.height) {
+        player.y = groundY - player.height;
+        player.vy = 0;
+        player.isGrounded = true;
+        player.jumpsRemaining = 2;
+      }
+
+      // Spawning
+      spawnWorldElements();
+
+      // Update Question Blocks & Hit Detection
+      for (let i = blocks.length - 1; i >= 0; i--) {
+        const b = blocks[i];
+        b.x -= gameSpeed;
+
+        // Bump animation return
+        if (b.bumpY < 0) {
+          b.bumpY += 1.5;
+          if (b.bumpY > 0) b.bumpY = 0;
+        }
+
+        // Mario Head-bump collision (jumping upward into bottom of block)
+        if (!b.hit && player.vy < 0) {
+          if (
+            player.x + player.width > b.x &&
+            player.x < b.x + b.width &&
+            player.y <= b.y + b.height &&
+            player.y >= b.y + b.height - 14
+          ) {
+            b.hit = true;
+            b.bumpY = -8;
+            player.vy = 1; // bounce back down slightly
+            sfxBump();
+
+            // Reward: 囍 Song Hy coin or Ring
+            const isRing = Math.random() < 0.3;
+            score += isRing ? 200 : 100;
+            coinsCollected++;
+            sfxCoin();
+
+            // Float popup text
+            popups.push({
+              x: b.x + b.width/2,
+              y: b.y - 10,
+              text: isRing ? '+200 💍' : '+100 囍',
+              color: isRing ? '#38BDF8' : '#F9E29D',
+              vy: -2,
+              life: 35
+            });
+          }
+        }
+
+        if (b.x + b.width < -40) {
+          blocks.splice(i, 1);
+        }
+      }
+
+      // Update Coins
+      for (let i = coins.length - 1; i >= 0; i--) {
+        const c = coins[i];
+        c.x -= gameSpeed;
+        c.rotation += 0.08;
+
+        // Collect detection
+        if (
+          player.x + player.width > c.x &&
+          player.x < c.x + c.size &&
+          player.y + player.height > c.y &&
+          player.y < c.y + c.size
+        ) {
+          coins.splice(i, 1);
+          score += 100;
+          coinsCollected++;
+          sfxCoin();
+
+          popups.push({
+            x: c.x,
+            y: c.y,
+            text: '+100 囍',
+            color: '#F9E29D',
+            vy: -2,
+            life: 30
+          });
+          continue;
+        }
+
+        if (c.x + c.size < -40) {
+          coins.splice(i, 1);
+        }
+      }
+
+      // Update Obstacles
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const o = obstacles[i];
+        o.x -= gameSpeed;
+
+        // Collision with player
+        if (
+          player.invincibleTimer <= 0 &&
+          player.x + player.width - 6 > o.x &&
+          player.x + 6 < o.x + o.width &&
+          player.y + player.height > o.y + 6 &&
+          player.y < o.y + o.height
+        ) {
+          hearts--;
+          player.invincibleTimer = 65; // ~1.5s invincibility
+          sfxHurt();
+
+          // Screen shake & particles
+          for (let p = 0; p < 8; p++) {
+            particles.push({
+              x: player.x + player.width/2,
+              y: player.y + player.height/2,
+              vx: (Math.random() - 0.5) * 6,
+              vy: (Math.random() - 0.5) * 6,
+              life: 25,
+              color: '#EF4444'
+            });
+          }
+
+          if (hearts <= 0) {
+            triggerGameOver();
+            return;
+          }
+        }
+
+        if (o.x + o.width < -40) {
+          obstacles.splice(i, 1);
+        }
+      }
+
+      // Update Wedding Arch (Finish Gate)
+      if (finishArch) {
+        finishArch.x -= gameSpeed;
+        if (player.x >= finishArch.x + 20) {
+          triggerVictory();
+          return;
+        }
+      }
+
+      // Update Popups & Particles
+      for (let i = popups.length - 1; i >= 0; i--) {
+        const p = popups[i];
+        p.y += p.vy;
+        p.life--;
+        if (p.life <= 0) popups.splice(i, 1);
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const pt = particles[i];
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.life--;
+        if (pt.life <= 0) particles.splice(i, 1);
+      }
+
+      updateHUD();
+    }
+
+    function updateHUD() {
+      // Hearts
+      let heartStr = '';
+      for (let i = 0; i < 3; i++) {
+        heartStr += i < hearts ? '❤️' : '🖤';
+      }
+      document.getElementById('hud-hearts').innerText = heartStr;
+
+      // Score & Distance
+      document.getElementById('hud-score').innerText = String(score).padStart(5, '0');
+      const distShown = Math.min(GOAL_DISTANCE, Math.floor(distance));
+      document.getElementById('hud-dist').innerText = `${distShown}m / ${GOAL_DISTANCE}m`;
+    }
+
+    function triggerGameOver() {
+      gameState = 'GAMEOVER';
+      document.getElementById('over-score').innerText = score;
+      document.getElementById('over-coins').innerText = coinsCollected;
+      document.getElementById('over-dist').innerText = `${Math.floor(distance)}m`;
+      document.getElementById('gameover-screen').classList.remove('hidden');
+    }
+
+    function triggerVictory() {
+      gameState = 'VICTORY';
+      sfxWin();
+
+      // Confetti burst
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 80,
+          spread: 80,
+          origin: { y: 0.5 },
+          colors: ['#D4AF37', '#8B1E2D', '#FFB6C1', '#FFFFFF']
+        });
+      }
+
+      const totalScore = score + 500; // Bonus for completion
+      document.getElementById('vic-score').innerText = totalScore;
+      document.getElementById('vic-coins').innerText = coinsCollected;
+      
+      let title = 'Chàng Rể Kim Cương';
+      if (currentRole === 'bride') {
+        title = totalScore > 1200 ? 'Nàng Dâu Tuyệt Sắc 👑' : 'Nàng Dâu Duyên Dáng 🌸';
+      } else {
+        title = totalScore > 1200 ? 'Chàng Rể Siêu Cấp 🏆' : 'Chàng Rể Tinh Anh 🤵';
+      }
+      document.getElementById('vic-title').innerText = title;
+
+      document.getElementById('victory-screen').classList.remove('hidden');
+    }
+
+    // ==========================================
+    // 6. RENDER LOOP
+    // ==========================================
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 1. SKY GRADIENT (Sunset Peach & Royal Warmth)
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
+      skyGrad.addColorStop(0, '#FBCFE8'); // Soft pink
+      skyGrad.addColorStop(0.5, '#FED7AA'); // Warm peach
+      skyGrad.addColorStop(1, '#FFFBEB'); // Warm gold-white
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, width, groundY);
+
+      // Pixel Sun
+      ctx.fillStyle = '#FDE047';
+      ctx.beginPath();
+      ctx.arc(width - 70, 70, 28, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 2. PARALLAX CLOUDS (Layer 1)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      const cloudOffset = (bgScroll * 0.2) % (width + 120);
+      drawPixelCloud(ctx, width - cloudOffset, 65, 50);
+      drawPixelCloud(ctx, width * 0.4 - cloudOffset * 0.7, 105, 40);
+
+      // 3. DISTANT HILLS / HANOI & GIALAI OUTLINE (Layer 2)
+      ctx.fillStyle = '#E9D5FF';
+      ctx.beginPath();
+      ctx.moveTo(0, groundY);
+      for (let i = 0; i <= width; i += 40) {
+        const hillH = Math.sin((i + bgScroll * 0.4) * 0.015) * 25 + 45;
+        ctx.lineTo(i, groundY - hillH);
+      }
+      ctx.lineTo(width, groundY);
+      ctx.fill();
+
+      // 4. GREEN MEADOW & WEDDING RUNWAY (Ground)
+      // Grass top layer
+      ctx.fillStyle = '#10B981';
+      ctx.fillRect(0, groundY, width, 14);
+
+      // Dark emerald soil
+      ctx.fillStyle = '#065F46';
+      ctx.fillRect(0, groundY + 14, width, height - groundY - 14);
+
+      // Gold wedding carpet line on ground
+      ctx.fillStyle = '#D4AF37';
+      ctx.fillRect(0, groundY + 6, width, 2);
+
+      // Flowers on grass
+      for (let i = 0; i < width + 40; i += 35) {
+        const fx = (i - (bgScroll % 35));
+        ctx.fillStyle = (i % 2 === 0) ? '#F43F5E' : '#FFFFFF';
+        ctx.fillRect(fx, groundY + 2, 3, 3);
+      }
+
+      // 5. WEDDING FINISH ARCH
+      if (finishArch) {
+        drawWeddingArch(ctx, finishArch.x, finishArch.y);
+      }
+
+      // 6. QUESTION BLOCKS
+      blocks.forEach(b => drawQuestionBlock(ctx, b));
+
+      // 7. COINS (Song Hy)
+      coins.forEach(c => drawPixelSongHy(ctx, c.x, c.y, c.size, c.rotation));
+
+      // 8. OBSTACLES (Wedding Gift Boxes / Flower Bushes)
+      obstacles.forEach(o => {
+        if (o.type === 'gift') {
+          // Luxury Red Gift Box with Gold Ribbon
+          ctx.fillStyle = '#8B1E2D';
+          ctx.fillRect(o.x, o.y, o.width, o.height);
+          ctx.fillStyle = '#D4AF37';
+          ctx.fillRect(o.x + o.width/2 - 2, o.y, 4, o.height); // vertical ribbon
+          ctx.fillRect(o.x, o.y + o.height/2 - 2, o.width, 4); // horizontal ribbon
+          // Ribbon bow at top
+          ctx.beginPath();
+          ctx.arc(o.x + o.width/2 - 4, o.y - 3, 4, 0, Math.PI * 2);
+          ctx.arc(o.x + o.width/2 + 4, o.y - 3, 4, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Rose Bush
+          ctx.fillStyle = '#047857';
+          ctx.beginPath();
+          ctx.arc(o.x + 8, o.y + 16, 12, 0, Math.PI*2);
+          ctx.arc(o.x + 20, o.y + 14, 14, 0, Math.PI*2);
+          ctx.fill();
+          // Roses
+          ctx.fillStyle = '#E11D48';
+          ctx.fillRect(o.x + 6, o.y + 8, 4, 4);
+          ctx.fillRect(o.x + 18, o.y + 10, 4, 4);
+        }
+      });
+
+      // 9. PLAYER (Duy Tân or Khánh Chi)
+      const isBlinking = player.invincibleTimer > 0 && Math.floor(player.invincibleTimer / 4) % 2 === 0;
+      if (!isBlinking) {
+        const frame = player.isGrounded ? player.runFrame : 1;
+        if (currentRole === 'groom') {
+          drawPixelGroom(ctx, player.x, player.y, 2.5, frame);
+        } else {
+          drawPixelBride(ctx, player.x, player.y, 2.5, frame);
+        }
+      }
+
+      // 10. PARTICLES
+      particles.forEach(pt => {
+        ctx.fillStyle = pt.color;
+        ctx.fillRect(pt.x, pt.y, 3, 3);
+      });
+
+      // 11. POPUP TEXTS (+100 囍)
+      popups.forEach(p => {
+        ctx.save();
+        ctx.fillStyle = p.color;
+        ctx.font = "bold 11px 'Press Start 2P', monospace";
+        ctx.textAlign = 'center';
+        ctx.shadowColor = '#000';
+        ctx.shadowBlur = 4;
+        ctx.fillText(p.text, p.x, p.y);
+        ctx.restore();
+      });
+    }
+
+    function drawPixelCloud(ctx, x, y, size) {
+      ctx.beginPath();
+      ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+      ctx.arc(x + size * 0.35, y - size * 0.15, size * 0.35, 0, Math.PI * 2);
+      ctx.arc(x + size * 0.7, y, size * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // ==========================================
+    // 7. MAIN ENGINE LOOP
+    // ==========================================
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Init canvas & loop
+    resizeCanvas();
+    requestAnimationFrame(gameLoop);
+
+  </script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</body>
+</html>
