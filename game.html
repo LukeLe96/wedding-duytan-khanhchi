@@ -334,6 +334,14 @@
       padding-top: 8px;
       border-top: 1px dashed rgba(212, 175, 55, 0.3);
     }
+    .story-progress {
+      align-self: flex-end;
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(249, 226, 157, 0.75);
+      letter-spacing: 0.3px;
+    }
     .btn-nav-prev {
       background: #251318;
       color: #F9E29D;
@@ -617,6 +625,7 @@
             Xem Tiếp Hồi 2 ➔
           </button>
         </div>
+        <div class="story-progress" id="story-progress">Hồi 1 / 6 • 16%</div>
       </div>
     </div>
 
@@ -970,9 +979,38 @@
         btnNext.style.color = '#1A0D04';
       }
 
+      // Reading progress
+      const pct = Math.floor((idx + 1) / CHAPTERS.length * 100);
+      document.getElementById('story-progress').innerText = `Hồi ${idx + 1} / ${CHAPTERS.length} • ${pct}%`;
+
       // Reset scroll position
       document.getElementById('story-stage').scrollTop = 0;
     }
+
+    // Touch swipe: left → next chapter, right → previous chapter
+    const storyStage = document.getElementById('story-stage');
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    storyStage.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+      touchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
+
+    storyStage.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].clientX - touchStartX;
+      const diffY = e.changedTouches[0].clientY - touchStartY;
+      // Ignore mostly-vertical gestures so scrolling dialogues doesn't flip chapters
+      if (Math.abs(diffX) <= Math.abs(diffY)) return;
+      if (diffX < -50) {
+        nextChapter();
+      } else if (diffX > 50) {
+        prevChapter();
+      } else {
+        return;
+      }
+      if (isAutoPlay) runAutoPlay();
+    }, { passive: true });
 
     // ==========================================
     // 3. ANIMATED PIXEL SCENE RENDERER (CANVAS)
