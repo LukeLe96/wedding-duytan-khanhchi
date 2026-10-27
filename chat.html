@@ -1081,14 +1081,15 @@
         // Follow up with Invitation Card
         setTimeout(() => {
           const followPrompt = elder
-            ? `Dạ, ${guestName || 'Gia đình mình'} có thể chạm vào các gợi ý bên dưới hoặc nhắn gửi cho hai cháu bất cứ điều gì cần dặn dò ạ! 💌`
-            : `Bạn có thể nhắn cho tụi mình bất cứ câu hỏi nào, hoặc bấm các gợi ý phía dưới để xem lịch trình, ngắm ảnh cưới hay báo tin tham dự nhé! 💌`;
+            ? `Dạ, ${guestName || 'Gia đình mình'} có điều gì cần hỏi han hay dặn dò cứ nhắn tin ở đây cho hai cháu nhé, cháu sẽ giải đáp toàn bộ và thật chu đáo ạ! 🙏`
+            : `Bạn có điều gì cần hỏi han hay dặn dò cứ nhắn tin ở đây nhé, tụi mình sẽ giải đáp toàn bộ nha! 💕`;
 
           botReply(`
             ${cardInvitation(guestData)}
-            <p class="text-xs text-stone-600 pt-1 font-serif italic">
-              ${followPrompt}
-            </p>
+            <div class="mt-2 p-2.5 bg-ruby-light/40 border border-ruby/20 rounded-xl text-xs text-ruby font-medium text-center flex items-center justify-center gap-1.5 shadow-sm">
+              <span>💬</span>
+              <span>${followPrompt}</span>
+            </div>
           `, 600);
         }, 500);
 
