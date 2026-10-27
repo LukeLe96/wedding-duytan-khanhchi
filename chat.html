@@ -160,63 +160,74 @@
       animation: pxBurst 0.9s steps(8) both;
     }
 
-    /* Acrobatic Stunt: Run to corner, slide down edge, shoot cable & grapple up */
-    .px-rope-vert {
+    /* Autonomous Roaming Pixel Couple (Đi dạo tự do khắp nơi, KHÔNG DÂY) */
+    .px-roam-actor {
       position: fixed;
-      width: 2px;
-      background: linear-gradient(to bottom, #F9E29D, #D4AF37, #99781A);
-      z-index: 61;
-      pointer-events: none;
-      box-shadow: 0 0 6px rgba(212,175,55,0.7);
-      transition: opacity 0.25s ease-out;
-    }
-    .px-grapple-wire {
-      position: fixed;
-      height: 2px;
-      background: linear-gradient(to right, #D4AF37, #F9E29D);
-      z-index: 61;
-      pointer-events: none;
-      transform-origin: 0 0;
-      box-shadow: 0 0 8px rgba(212,175,55,0.85);
-    }
-    .px-stunt-actor {
-      position: fixed;
-      z-index: 62;
-      pointer-events: none;
+      z-index: 99;
+      pointer-events: auto;
+      cursor: pointer;
       display: inline-flex;
       flex-direction: column;
       align-items: center;
-      transform-origin: 50% 0;
+      justify-content: flex-end;
+      width: 56px;
+      height: 42px;
+      transform-origin: 50% 100%;
+      user-select: none;
+      touch-action: manipulation;
+      transition: left 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), top 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.3));
+    }
+    .px-roam-actor:active {
+      transform: scale(0.92);
+    }
+    .px-roam-actor .px-couple {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      transition: transform 0.25s ease;
     }
     @keyframes pxRunBob {
       0% { transform: translateY(0) rotate(-4deg); }
-      50% { transform: translateY(-4px) rotate(4deg); }
+      50% { transform: translateY(-5px) rotate(4deg); }
       100% { transform: translateY(0) rotate(-4deg); }
     }
     .px-runner-body {
-      display: inline-flex;
-      align-items: flex-end;
-      animation: pxRunBob 0.2s steps(2) infinite alternate;
+      animation: pxRunBob 0.18s steps(2) infinite alternate !important;
+    }
+    @keyframes pxHopJoy {
+      0% { transform: translateY(0) scaleY(1); }
+      35% { transform: translateY(-18px) scaleY(1.1); }
+      70% { transform: translateY(-6px) scaleY(1.02); }
+      100% { transform: translateY(0) scaleY(0.96); }
+    }
+    .is-hopping {
+      animation: pxHopJoy 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .px-bubble {
-      background: rgba(255, 255, 255, 0.95);
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.98);
       border: 1.5px solid #D4AF37;
       border-radius: 9999px;
-      padding: 2px 8px;
-      font-size: 10px;
+      padding: 3px 10px;
+      font-size: 11px;
       font-weight: 700;
       color: #8B1E2D;
       white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      margin-bottom: 3px;
-      animation: pxBreathe 1s ease-in-out infinite;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 100;
     }
     .px-trail-drop {
       position: fixed;
       pointer-events: none;
       z-index: 61;
-      font-size: 11px;
-      animation: pxFloat 1s ease-out forwards;
+      font-size: 13px;
+      animation: pxFloat 1.2s ease-out forwards;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -224,9 +235,8 @@
       .px-mascot.is-bouncing .px-art,
       .px-runner-body { animation: none; }
       .px-typing .px-heart,
-      .px-rope-vert,
-      .px-grapple-wire,
-      .px-stunt-actor { display: none !important; }
+      .px-trail-drop,
+      .px-roam-actor { display: none !important; }
     }
   </style>
 </head>
@@ -673,208 +683,288 @@
       scrollToBottom();
     }
 
-    // Header pixel mascot: Rectangular Patrol Stunt (Đi hình chữ nhật men theo 4 mép màn hình!)
-    let isStuntActive = false;
+    // ==============================================================
+    // AUTONOMOUS ROAMING PIXEL COUPLE (Tự do đi dạo khắp nơi, KHÔNG DÂY)
+    // ==============================================================
+    let roamActor = null;
+    let roamTimer = null;
+    let isRoamingMoving = false;
+    let curRoamX = 0;
+    let curRoamY = 0;
 
-    function celebrateMascot() {
-      if (isStuntActive) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      launchRectanglePatrol();
-    }
+    const ROAM_QUOTES = [
+      'Tân & Chi đi dạo nè! 🌸',
+      'Dẫn Chi đi xem thiệp cưới! 💕',
+      'Chào cả nhà yêu thương! ✨',
+      'Hôn lễ 16-17.01.2027 nha! 💍',
+      'Ghé đọc tin nhắn xíu! 💌',
+      'Thơ mộng quá ta! ☕',
+      'Tân & Chi thả tim nè! 💖',
+      'Hai đứa dạo quanh xíu! 👫',
+      'Vui quá chừng! 🌸',
+      'Chúc một ngày an vui! 💐'
+    ];
 
-    function launchRectanglePatrol() {
-      isStuntActive = true;
+    function createRoamingActor() {
+      if (roamActor) return roamActor;
       const mascot = document.getElementById('px-mascot');
-      if (!mascot) { isStuntActive = false; return; }
+      const startR = mascot ? mascot.getBoundingClientRect() : { left: window.innerWidth - 90, top: 18 };
+      
+      curRoamX = startR.left;
+      curRoamY = startR.top;
 
-      const r = mascot.getBoundingClientRect();
-      const startX = r.left;
-      const topY = r.top;
-      const rightX = window.innerWidth - 44; // Góc trên phải
-      const leftX = 16;                      // Góc dưới/trên trái
-      const bottomY = window.innerHeight - 95; // Mép dưới đáy trên chat bar
-
-      // Tạm ẩn mascot gốc trên header
-      mascot.style.transition = 'opacity 0.2s ease';
-      mascot.style.opacity = '0';
-
-      // Tạo Actor biểu diễn
       const actor = document.createElement('div');
-      actor.className = 'px-stunt-actor';
+      actor.id = 'px-roam-actor';
+      actor.className = 'px-roam-actor';
+      actor.setAttribute('role', 'button');
+      actor.setAttribute('aria-label', 'Cặp đôi Pixel Tân & Chi đang đi dạo');
+      actor.title = 'Chạm vào Tân & Chi để nhận lời chúc 💕';
       actor.innerHTML = `
-        <div class="px-bubble px-bubble-tag" style="opacity: 0; transition: opacity 0.2s;">Đi dạo nè! 🌸</div>
+        <div class="px-bubble px-bubble-tag" style="opacity: 0; transform: translateX(-50%) translateY(4px);">Đi dạo nè! 🌸</div>
         <div class="px-couple px-actor-body">
-          <svg class="px-art px-groom" width="24" height="32" aria-hidden="true"><use href="#px-groom"/></svg>
-          <svg class="px-art px-bride" width="24" height="32" aria-hidden="true"><use href="#px-bride"/></svg>
+          <svg class="px-art px-groom" width="28" height="38" aria-hidden="true"><use href="#px-groom"/></svg>
+          <svg class="px-art px-bride" width="28" height="38" aria-hidden="true"><use href="#px-bride"/></svg>
         </div>
       `;
-      actor.style.left = `${startX}px`;
-      actor.style.top = `${topY}px`;
-      document.body.appendChild(actor);
+      actor.style.left = `${curRoamX}px`;
+      actor.style.top = `${curRoamY}px`;
 
-      const bubble = actor.querySelector('.px-bubble-tag');
-      const body = actor.querySelector('.px-actor-body');
-
-      // ==========================================
-      // CẠNH 1: [startX, topY] ➔ [rightX, topY] (Chạy ngang mép trên sang góc phải)
-      // ==========================================
-      body.classList.add('px-runner-body');
-      actor.style.transition = 'left 0.65s ease-in-out';
-      requestAnimationFrame(() => {
-        actor.style.left = `${rightX}px`;
+      // Click/Tap on roaming actor
+      actor.addEventListener('click', (e) => {
+        e.stopPropagation();
+        interactWithRoamingActor();
       });
 
-      // ==========================================
-      // CẠNH 2: [rightX, topY] ➔ [rightX, bottomY] (Tuột thẳng đứng dọc mép phải)
-      // ==========================================
+      document.body.appendChild(actor);
+      roamActor = actor;
+
+      // Hide original static mascot once roaming actor takes over
+      if (mascot) {
+        mascot.style.transition = 'opacity 0.3s ease';
+        mascot.style.opacity = '0';
+      }
+
+      return actor;
+    }
+
+    function interactWithRoamingActor() {
+      if (!roamActor) createRoamingActor();
+      const body = roamActor.querySelector('.px-actor-body');
+      const bubble = roamActor.querySelector('.px-bubble-tag');
+      
+      // Joyful hop & hearts burst
+      if (body) {
+        body.classList.remove('px-runner-body');
+        body.classList.add('is-hopping');
+        setTimeout(() => body.classList.remove('is-hopping'), 500);
+      }
+
+      // Show loving response bubble
+      if (bubble) {
+        const tapQuotes = [
+          'Cảm ơn bạn đã chúc phúc! 🥰',
+          'Tân & Chi cảm ơn bạn nha! 💍',
+          'Yêu thương ngập tràn! 💖',
+          'Hẹn gặp bạn 16-17.01.2027! ✨'
+        ];
+        bubble.innerText = tapQuotes[Math.floor(Math.random() * tapQuotes.length)];
+        bubble.style.opacity = '1';
+        bubble.style.transform = 'translateX(-50%) translateY(0)';
+      }
+
+      // Burst of hearts from actor
+      const HEART_COUNT = 8;
+      for (let i = 0; i < HEART_COUNT; i++) {
+        const spread = (i / (HEART_COUNT - 1)) * 2 - 1;
+        const heart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        heart.setAttribute('class', 'px-art px-heart');
+        heart.setAttribute('aria-hidden', 'true');
+        heart.innerHTML = '<use href="#px-heart"/>';
+        heart.style.position = 'absolute';
+        heart.style.top = '10px';
+        heart.style.left = '20px';
+        heart.style.setProperty('--dx', `${Math.round(spread * 35 + (Math.random() * 8 - 4))}px`);
+        heart.style.setProperty('--dy', `${Math.round(-12 - Math.random() * 16 + Math.abs(spread) * 8)}px`);
+        heart.style.animationDelay = `${i * 35}ms`;
+        heart.addEventListener('animationend', () => heart.remove(), { once: true });
+        roamActor.appendChild(heart);
+      }
+
+      // Mini confetti
+      if (typeof confetti === 'function') {
+        const r = roamActor.getBoundingClientRect();
+        confetti({
+          particleCount: 15,
+          spread: 45,
+          origin: { x: (r.left + 24) / window.innerWidth, y: (r.top + 20) / window.innerHeight },
+          colors: ['#D4AF37', '#8B1E2D', '#FFB6C1', '#FCD34D']
+        });
+      }
+
+      // Schedule next roam step after brief pause
+      clearTimeout(roamTimer);
+      roamTimer = setTimeout(() => {
+        scheduleNextRoamStep();
+      }, 1800);
+    }
+
+    function getRandomRoamTarget() {
+      const actorW = 58;
+      const padX = 18;
+      const padTop = 72; // Below header
+      const padBottom = 135; // Above chat input & quick chips
+      const maxW = Math.max(padX + 20, window.innerWidth - actorW - padX);
+      const maxH = Math.max(padTop + 40, window.innerHeight - padBottom);
+
+      const zones = [
+        // 1. Left side of chat
+        { x: padX, y: padTop + Math.random() * (maxH - padTop) },
+        // 2. Right side of chat (fully visible, not cut off)
+        { x: maxW, y: padTop + Math.random() * (maxH - padTop) },
+        // 3. Bottom above quick chips (promenading across)
+        { x: padX + Math.random() * (maxW - padX), y: maxH },
+        // 4. Center area (visiting between messages)
+        { x: padX + (maxW - padX) * (0.25 + Math.random() * 0.5), y: padTop + 20 + Math.random() * (maxH - padTop - 40) },
+        // 5. Header area (greeting from header bar)
+        { x: Math.max(padX, Math.min(maxW, window.innerWidth * 0.5 - 28)), y: 16 }
+      ];
+
+      const choice = zones[Math.floor(Math.random() * zones.length)];
+      return {
+        x: Math.round(choice.x),
+        y: Math.round(choice.y)
+      };
+    }
+
+    function roamTo(targetX, targetY, customQuote = '') {
+      if (!roamActor) createRoamingActor();
+      if (isRoamingMoving) return;
+      isRoamingMoving = true;
+
+      const actor = roamActor;
+      const body = actor.querySelector('.px-actor-body');
+      const bubble = actor.querySelector('.px-bubble-tag');
+
+      const dx = targetX - curRoamX;
+      const dy = targetY - curRoamY;
+      const dist = Math.hypot(dx, dy);
+
+      // Duration based on distance: ~1.2s to 2.5s for smooth walking
+      const duration = Math.max(1.1, Math.min(2.5, dist / 150));
+
+      // Face direction of movement (scaleX)
+      if (dx < -8) {
+        body.style.transform = 'scaleX(-1)';
+      } else if (dx > 8) {
+        body.style.transform = 'scaleX(1)';
+      }
+
+      // Add running bobbing motion
+      body.classList.add('px-runner-body');
+
+      // Hide bubble while moving
+      if (bubble) {
+        bubble.style.opacity = '0';
+        bubble.style.transform = 'translateX(-50%) translateY(4px)';
+      }
+
+      // Set smooth transition
+      actor.style.transition = `left ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94), top ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+      
+      // Move to target coordinates
+      requestAnimationFrame(() => {
+        actor.style.left = `${targetX}px`;
+        actor.style.top = `${targetY}px`;
+      });
+
+      // Trail of petals/sparks occasionally while walking (KHÔNG DÂY)
+      const trailInterval = setInterval(() => {
+        if (!isRoamingMoving) { clearInterval(trailInterval); return; }
+        const r = actor.getBoundingClientRect();
+        const drop = document.createElement('div');
+        drop.className = 'px-trail-drop';
+        drop.innerHTML = Math.random() > 0.5 ? '🌸' : '✨';
+        drop.style.left = `${r.left + 14 + (Math.random() * 8 - 4)}px`;
+        drop.style.top = `${r.top + 16 + (Math.random() * 6 - 3)}px`;
+        document.body.appendChild(drop);
+        setTimeout(() => drop.remove(), 1100);
+      }, 220);
+
+      // Arrival at destination
       setTimeout(() => {
+        clearInterval(trailInterval);
+        isRoamingMoving = false;
+        curRoamX = targetX;
+        curRoamY = targetY;
+
+        // Stop running bob
         body.classList.remove('px-runner-body');
 
-        // Thả sợi dây vàng dọc mép phải
-        const ropeRight = document.createElement('div');
-        ropeRight.className = 'px-rope-vert';
-        ropeRight.style.left = `${rightX + 16}px`;
-        ropeRight.style.top = `${topY + 10}px`;
-        ropeRight.style.height = `${bottomY - topY + 20}px`;
-        document.body.appendChild(ropeRight);
+        // Cute hop upon arrival
+        body.classList.add('is-hopping');
+        setTimeout(() => body.classList.remove('is-hopping'), 500);
 
-        body.style.transform = 'rotate(8deg)';
-        bubble.innerText = 'Tuột xuống nè! 🎢';
-        bubble.style.opacity = '1';
-
-        actor.style.transition = 'top 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        actor.style.top = `${bottomY}px`;
-
-        const dropTimerRight = setInterval(() => {
-          const curR = actor.getBoundingClientRect();
-          const drop = document.createElement('div');
-          drop.className = 'px-trail-drop';
-          drop.innerHTML = '✨';
-          drop.style.left = `${curR.left + 8}px`;
-          drop.style.top = `${curR.top + 8}px`;
-          document.body.appendChild(drop);
-          setTimeout(() => drop.remove(), 1000);
-        }, 120);
-
-        // ==========================================
-        // CẠNH 3: [rightX, bottomY] ➔ [leftX, bottomY] (Chạy ngang qua đáy sang góc trái)
-        // ==========================================
-        setTimeout(() => {
-          clearInterval(dropTimerRight);
-          ropeRight.style.opacity = '0';
-          setTimeout(() => ropeRight.remove(), 250);
-
-          body.style.transform = 'scaleX(-1)'; // Quay mặt sang trái
-          body.classList.add('px-runner-body');
-          bubble.innerText = 'Tân & Chi qua đây! 💕';
-
-          // Mini confetti khi tiếp đất góc phải
-          if (typeof confetti === 'function') {
-            confetti({
-              particleCount: 10,
-              spread: 35,
-              origin: { x: rightX / window.innerWidth, y: bottomY / window.innerHeight },
-              colors: ['#D4AF37', '#8B1E2D', '#FFB6C1']
-            });
-          }
-
-          actor.style.transition = 'left 1.4s linear';
-          actor.style.left = `${leftX}px`;
-
-          // Rớt hoa & tim dọc đường chạy đáy
-          const dropTimerBottom = setInterval(() => {
-            const curR = actor.getBoundingClientRect();
-            if (curR.left < leftX + 10) return;
-            const drop = document.createElement('div');
-            drop.className = 'px-trail-drop';
-            drop.innerHTML = Math.random() > 0.5 ? '🌸' : '💖';
-            drop.style.left = `${curR.left + 10}px`;
-            drop.style.top = `${curR.top + 10}px`;
-            document.body.appendChild(drop);
-            setTimeout(() => drop.remove(), 1200);
-          }, 200);
-
-          // ==========================================
-          // CẠNH 4: [leftX, bottomY] ➔ [leftX, topY] (Bắn dây đu thẳng đứng lên góc trên trái)
-          // ==========================================
+        // Show cute random quote bubble
+        if (bubble) {
+          const quote = customQuote || ROAM_QUOTES[Math.floor(Math.random() * ROAM_QUOTES.length)];
+          bubble.innerText = quote;
+          bubble.style.opacity = '1';
+          bubble.style.transform = 'translateX(-50%) translateY(0)';
           setTimeout(() => {
-            clearInterval(dropTimerBottom);
-            body.classList.remove('px-runner-body');
-            body.style.transform = 'none';
+            if (!isRoamingMoving) {
+              bubble.style.opacity = '0';
+              bubble.style.transform = 'translateX(-50%) translateY(4px)';
+            }
+          }, 3000);
+        }
 
-            // Dây leo dọc mép trái
-            const ropeLeft = document.createElement('div');
-            ropeLeft.className = 'px-rope-vert';
-            ropeLeft.style.left = `${leftX + 12}px`;
-            ropeLeft.style.top = `${topY + 10}px`;
-            ropeLeft.style.height = `${bottomY - topY + 20}px`;
-            document.body.appendChild(ropeLeft);
+        // Rest at waypoint for 4.5s to 7.5s, then roam again!
+        clearTimeout(roamTimer);
+        const restDuration = 4500 + Math.random() * 3000;
+        roamTimer = setTimeout(() => {
+          scheduleNextRoamStep();
+        }, restDuration);
 
-            bubble.innerText = 'Đu lên nè! 🚀';
-            body.style.transform = 'rotate(-8deg)';
-
-            actor.style.transition = 'top 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
-            actor.style.top = `${topY}px`;
-
-            const dropTimerLeft = setInterval(() => {
-              const curR = actor.getBoundingClientRect();
-              const drop = document.createElement('div');
-              drop.className = 'px-trail-drop';
-              drop.innerHTML = '✨';
-              drop.style.left = `${curR.left + 8}px`;
-              drop.style.top = `${curR.top + 8}px`;
-              document.body.appendChild(drop);
-              setTimeout(() => drop.remove(), 1000);
-            }, 120);
-
-            // ==========================================
-            // KHÉP GÓC: [leftX, topY] ➔ [startX, topY] (Chạy về vị trí ban đầu trên Header)
-            // ==========================================
-            setTimeout(() => {
-              clearInterval(dropTimerLeft);
-              ropeLeft.style.opacity = '0';
-              setTimeout(() => ropeLeft.remove(), 250);
-
-              body.style.transform = 'none';
-              body.classList.add('px-runner-body');
-              bubble.innerText = 'Về đích rồi! ✨';
-
-              actor.style.transition = 'left 0.5s ease-out';
-              actor.style.left = `${startX}px`;
-
-              // KẾT THÚC: Tiếp đất an toàn tại Mascot Header & Ăn mừng!
-              setTimeout(() => {
-                actor.remove();
-                mascot.style.opacity = '1';
-                mascot.classList.add('is-bouncing');
-                setTimeout(() => mascot.classList.remove('is-bouncing'), 700);
-
-                // Burst of hearts
-                const HEART_COUNT = 8;
-                for (let i = 0; i < HEART_COUNT; i++) {
-                  const spread = (i / (HEART_COUNT - 1)) * 2 - 1;
-                  const heart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                  heart.setAttribute('class', 'px-art px-heart');
-                  heart.setAttribute('aria-hidden', 'true');
-                  heart.innerHTML = '<use href="#px-heart"/>';
-                  heart.style.setProperty('--dx', `${Math.round(spread * 35 + (Math.random() * 8 - 4))}px`);
-                  heart.style.setProperty('--dy', `${Math.round(-10 - Math.random() * 15 + Math.abs(spread) * 8)}px`);
-                  heart.style.animationDelay = `${i * 35}ms`;
-                  heart.addEventListener('animationend', () => heart.remove(), { once: true });
-                  mascot.appendChild(heart);
-                }
-
-                isStuntActive = false;
-              }, 550);
-
-            }, 800);
-
-          }, 1450);
-
-        }, 850);
-
-      }, 700);
+      }, duration * 1000);
     }
+
+    function scheduleNextRoamStep() {
+      if (document.hidden) {
+        roamTimer = setTimeout(scheduleNextRoamStep, 2000);
+        return;
+      }
+      const target = getRandomRoamTarget();
+      roamTo(target.x, target.y);
+    }
+
+    function celebrateMascot() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!roamActor) {
+        createRoamingActor();
+      }
+      interactWithRoamingActor();
+    }
+
+    // Auto-start roaming after page loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (!roamActor && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          createRoamingActor();
+          const bubble = roamActor.querySelector('.px-bubble-tag');
+          if (bubble) {
+            bubble.innerText = 'Tân & Chi đi dạo nè! 🌸';
+            bubble.style.opacity = '1';
+            bubble.style.transform = 'translateX(-50%) translateY(0)';
+            setTimeout(() => {
+              bubble.style.opacity = '0';
+              scheduleNextRoamStep();
+            }, 2000);
+          } else {
+            scheduleNextRoamStep();
+          }
+        }
+      }, 1500);
+    });
 
     // Show/hide typing
     function setTyping(isTyping) {

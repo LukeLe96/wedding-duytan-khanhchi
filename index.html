@@ -137,50 +137,6 @@
 </head>
 <body class="antialiased pb-28">
 
-  <!-- INVITATION ENVELOPE OPENING EXPERIENCE -->
-  <div id="invitation-gate" class="fixed inset-0 z-[999] flex items-center justify-center px-5 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" style="background: linear-gradient(160deg, #2d1a0e 0%, #3d2210 30%, #4a2a12 55%, #3a1e0c 80%, #2a1408 100%);">
-    <!-- Warm bokeh glow spots -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <div class="absolute top-[-10%] left-[-5%] w-[55%] h-[55%] rounded-full opacity-40" style="background: radial-gradient(circle, rgba(212,175,55,.45) 0%, transparent 70%); filter: blur(48px);"></div>
-      <div class="absolute bottom-[-8%] right-[-5%] w-[50%] h-[50%] rounded-full opacity-30" style="background: radial-gradient(circle, rgba(205,133,63,.5) 0%, transparent 70%); filter: blur(52px);"></div>
-      <div class="absolute top-[40%] right-[10%] w-[30%] h-[30%] rounded-full opacity-20" style="background: radial-gradient(circle, rgba(244,162,97,.6) 0%, transparent 65%); filter: blur(36px);"></div>
-    </div>
-    <!-- Subtle gold floral pattern overlay -->
-    <div class="absolute inset-0 opacity-[0.04] pointer-events-none" style="background-image: repeating-linear-gradient(45deg, rgba(212,175,55,1) 0px, rgba(212,175,55,1) 1px, transparent 1px, transparent 28px), repeating-linear-gradient(-45deg, rgba(212,175,55,1) 0px, rgba(212,175,55,1) 1px, transparent 1px, transparent 28px);"></div>
-
-    <div class="relative w-full max-w-[340px] text-center flex flex-col items-center gap-7">
-      <!-- Header text -->
-      <div class="flex flex-col items-center gap-1.5">
-        <span class="text-[10px] font-bold tracking-[0.32em] text-amber-300/90 uppercase">✦ Thiệp Cưới Chính Thức ✦</span>
-        <h2 class="font-display text-[30px] font-bold leading-snug tracking-tight" style="color: #fdf0d5;">Lê Duy Tân<br><span class="font-script text-[34px] font-normal" style="color: #f5c842; line-height:1;">✦</span> Đinh Khánh Chi</h2>
-        <p class="text-sm leading-relaxed" style="color: rgba(253,230,190,.75);">Chạm vào xi sáp để mở lời mời<br>từ gia đình hai bên.</p>
-      </div>
-
-      <!-- Envelope -->
-      <div id="envelope-card" class="relative w-full h-[210px]" style="perspective: 1200px;">
-        <!-- Body -->
-        <div class="absolute inset-x-0 bottom-0 h-[160px] rounded-[20px] overflow-hidden" style="background: linear-gradient(155deg, #f2e2b6 0%, #e0c882 40%, #c9aa55 100%); border: 1px solid rgba(212,175,55,.6); box-shadow: 0 24px 50px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.3);">
-          <div class="absolute inset-0" style="background-image: linear-gradient(135deg, transparent 49.5%, rgba(120,85,20,.25) 50%, transparent 50.5%), linear-gradient(225deg, transparent 49.5%, rgba(120,85,20,.2) 50%, transparent 50.5%);"></div>
-        </div>
-        <!-- Flap -->
-        <div id="envelope-flap" class="absolute inset-x-0 top-[50px] w-full h-[116px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" style="transform-origin: 50% 100%;">
-          <div class="w-full h-full" style="clip-path: polygon(50% 0%, 100% 100%, 0% 100%); background: linear-gradient(170deg, #fbecc8 0%, #dfc070 100%); border: 1px solid rgba(212,175,55,.4); box-shadow: 0 6px 20px rgba(0,0,0,.2);"></div>
-        </div>
-        <!-- Letter peek -->
-        <div id="letter-peek" class="absolute left-5 right-5 bottom-[55px] h-[125px] rounded-[16px] flex flex-col items-center justify-center px-4 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" style="background: #FFFAF3; border: 1px solid rgba(212,175,55,.45); box-shadow: 0 8px 28px rgba(0,0,0,.18);">
-          <span class="text-[9px] font-bold tracking-[0.26em] text-amber-700 uppercase mb-1.5">Trân trọng kính mời</span>
-          <div class="font-display text-xl font-bold text-stone-900 leading-snug">Duy Tân <span class="font-script text-2xl font-normal text-amber-500">✦</span> Khánh Chi</div>
-          <div class="text-[11px] text-stone-400 mt-1.5 tracking-wide">16 & 17 · 01 · 2027</div>
-        </div>
-        <!-- Wax seal -->
-        <button id="wax-seal" onclick="openInvitationGate()" aria-label="Mở thiệp cưới" class="absolute left-1/2 -translate-x-1/2 bottom-[54px] w-[80px] h-[80px] rounded-full flex flex-col items-center justify-center active:scale-95 focus:outline-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none" style="background: radial-gradient(circle at 36% 34%, #c0392b, #8b1a1a 58%, #5c0e0e); border: 1.5px solid rgba(253,186,116,.6); box-shadow: 0 14px 30px rgba(0,0,0,.5), inset 0 2px 5px rgba(255,180,120,.25), inset 0 -2px 5px rgba(0,0,0,.3);">
-          <span class="font-display text-[22px] leading-none select-none" style="color: #fde8c0;">T&C</span>
-          <span class="text-[7px] tracking-[0.2em] uppercase mt-0.5" style="color: rgba(253,215,160,.75);">Mở thiệp</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- PETAL RAIN CANVAS -->
   <canvas id="canvas-petals"></canvas>
 
